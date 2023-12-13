@@ -5,11 +5,12 @@
  */
 package ejb;
 
+import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
+import entity.Game;
 import entity.User;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -17,8 +18,7 @@ import javax.persistence.PersistenceContext;
  *
  * @author 2dam
  */
-@Stateless
-public class UserEJB implements UserEJBLocal{  
+public class AdminEJB implements AdminEJBLocal{
     /**
      * Logger for the class.
      */
@@ -30,37 +30,21 @@ public class UserEJB implements UserEJBLocal{
     @PersistenceContext
     private EntityManager em;
     
-    @Override
-    public User findUserByLogin(String login){
-        User user=null;
-        try{
-            LOGGER.info("UserManager: Finding user by login.");
-            user=em.find(User.class, login);
-            if(user!=null)
-                LOGGER.log(Level.INFO,"UserManager: User found {0}", 
-                        user.getEmail());
-        }catch(Exception e){
-            LOGGER.log(Level.SEVERE, "UserManager: Exception Finding user by login:",
-                    e.getMessage());
-        }
-        return user;
-    }
     /**
      * Finds a List of {@link User} objects containing data for all users in the
      * application data storage.
      * @return A List of {@link User} objects.
      */
     @Override
-    public List<User> findAllUsers() {
-        List<User> users=null;
+    public List<Game> findAllGamesCreatedByAdmin() {
+        List<Game> games=null;
         try{
-            LOGGER.info("UserManager: Reading all users.");
-            users=em.createNamedQuery("findAllUsers").getResultList();
+            LOGGER.info("UserManager: Reading all games.");
+            games=em.createNamedQuery("findAllGamesCreatedByAdmin").getResultList();
         }catch(Exception e){
-            LOGGER.log(Level.SEVERE, "UserManager: Exception reading all users:",
+            LOGGER.log(Level.SEVERE, "UserManager: Exception reading all games created by admin",
                     e.getMessage());
         }
-        return users;
+        return games;
     }
 }
-

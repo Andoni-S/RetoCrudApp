@@ -18,20 +18,31 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
 /**
  *
  * @author 2dam
  */
 @Entity
 @Table(name="games",schema="esportsdb")
-@NamedQuery(name="findAllGames",
-            query="SELECT g FROM games g")
+@NamedQueries({
+    @NamedQuery(name="findAllGames",
+            query="SELECT g FROM games g"),
+    @NamedQuery(name="updateGame",
+            query="UPDATE Game g SET g.property = :newValue WHERE g.user.id = :userId"),
+    @NamedQuery(name="deleteGame",
+            query="DELETE FROM Game g WHERE g.user.id = :userId"),
+})
 public class Game implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    @ManyToOne
+    private Admin admin;
+        
     private String name;
     private String genre;
     private String platform;

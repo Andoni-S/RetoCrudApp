@@ -14,6 +14,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 /**
@@ -25,6 +27,8 @@ import javax.persistence.Table;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="user_type", 
   discriminatorType = DiscriminatorType.INTEGER)
+@NamedQuery(name="findAllUsers",
+            query="SELECT u FROM User u ORDER BY u.name DESC")
 public class User implements Serializable{
 
     @Id
