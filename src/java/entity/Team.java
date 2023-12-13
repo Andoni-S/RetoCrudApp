@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 /**
@@ -20,6 +21,9 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="teams",schema="esportsdb")
+@NamedQuery(name="findAllTeamsById",
+            query="SELECT pt.teamId FROM PlayerTeam pt WHERE pt.playerId = :playerId"
+)
 public class Team implements Serializable {
     @Id
     private Long id;

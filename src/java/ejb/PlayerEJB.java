@@ -16,32 +16,37 @@ import javax.persistence.PersistenceContext;
  *
  * @author Jagoba Bartolomé Barroso
  */
-public class PlayerEJB {
+public class PlayerEJB implements PlayerEJBLocal {
 
     /**
      * Logger for the class.
      */
-    private static final Logger LOGGER
-            = Logger.getLogger("java");
+    private static final Logger LOGGER = Logger.getLogger("java");
     /**
      * Entity manager object.
      */
     @PersistenceContext
     private EntityManager em;
-
+    
+    /**
+     * Finds a {@link User} by its login. 
+     * @param login The login for the user to be found.
+     * @return The {@link User} object containing user data. 
+     * @throws ReadException If there is any Exception during processing.
+     */
     @Override
     public Player findPlayerByLogin(String login) {
-        Player players = null;
+        User user = null;
         try {
             LOGGER.info("PlayerManager: Finding player by login.");
-            players= em.createNamedQuery("findPlayerByLogin").getResultList();
-            if(player!=null)
+            user = em.find(User.class, login);
+            if(user!=null)
                 LOGGER.log(Level.INFO,"PlayerManager: Player found {0}", 
-                        player.getEmail());
+                        user.getEmail());
         }catch(Exception e){
             LOGGER.log(Level.SEVERE, "UserManager: Exception Finding player by login:",
                     e.getMessage());
         }
-        return player;
+        return (Player) user;
     }
 }

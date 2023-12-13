@@ -18,5 +18,5 @@ public interface PlayerEJBLocal {
      * @param login The login for the player to be found.
      * @return The {@link Player} object containing player data. 
      */
-    public Player findPlayerByLogin(String login);
+    public User findPlayerByLogin(String login);
 }

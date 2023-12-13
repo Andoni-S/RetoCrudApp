@@ -14,6 +14,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
@@ -23,10 +24,8 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="users",schema="esportsdb")
-@NamedQuery(name="findPlayerByLogin", query="SELECT p FROM User u WHERE user_type=1 ORDER BY p.name DESC")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorValue("1")
-public class Player implements Serializable {
+public class Player extends User implements Serializable {
     @Id
     private Long id;
     
