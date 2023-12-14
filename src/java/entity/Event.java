@@ -55,7 +55,7 @@ public class Event implements Serializable {
     /**
      * Date of the event.
      */
-    @Temporal(javax.persistence.TemporalType.DATE)
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date date;
     /**
      * Prize of the event for the winner.
