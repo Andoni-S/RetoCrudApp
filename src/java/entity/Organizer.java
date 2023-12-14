@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "users", schema = "esportsdb")
 @NamedQueries({
-    @NamedQuery(name = "findAllEvents", query = "SELECT e from Events e")
+    @NamedQuery(name = "findAllOrganizers", query = "SELECT u FROM User u WHERE u.user_type = 2 ORDER BY u.username DESC")
 })
 public class Organizer extends User {
 
@@ -144,7 +144,7 @@ public class Organizer extends User {
 
     @Override
     public String toString() {
-        return "Organizer{" + "company=" + company + ", web=" + web + ", events=" + events + '}';
+        return "javafxserverside.entity.Organizer[ username=" + super.getUsername()+ " ]";
     }
 
 }

@@ -1,11 +1,16 @@
+package entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Objects;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
 
 /**
  * Entity JPA class for Event data. This class contains the properties for the
@@ -15,6 +20,17 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "events", schema = "esportsdb")
+@NamedQueries({
+    @NamedQuery(name = "findEventsByOrganizer", query = "")
+    ,
+    @NamedQuery(name = "findEventsByGame", query = "")
+    ,
+    @NamedQuery(name = "findEventsWonByPlayer", query = "")
+    ,
+    @NamedQuery(name = "findEventsWonByTeam", query = "")
+    ,
+    @NamedQuery(name = "findEventsByONG", query = "")
+})
 public class Event implements Serializable {
 
     /**
@@ -37,7 +53,8 @@ public class Event implements Serializable {
     /**
      * Date of the event.
      */
-    private String date;
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date date;
     /**
      * Prize of the event for the winner.
      */
@@ -47,9 +64,10 @@ public class Event implements Serializable {
      */
     private Float donation;
     /**
-     * Number of players participating in the event.
+     * Number of participants in the event. Participants can be either
+     * {@link Player} or {@link Team}.
      */
-    private Integer playerNum;
+    private Integer participantNum;
     /**
      * {@link Game} of the Event.
      */
@@ -57,115 +75,147 @@ public class Event implements Serializable {
     private String game;
 
     /**
-     * @return the id
+     * Gets id value of the Event.
+     *
+     * @return the id value.
      */
     public Long getId() {
         return id;
     }
 
     /**
-     * @param id the id to set
+     * Sets the id value of the Event.
+     *
+     * @param id the id to set.
      */
     public void setId(Long id) {
         this.id = id;
     }
 
     /**
-     * @return the name
+     * Gets the name of the Event.
+     *
+     * @return the name value.
      */
     public String getName() {
         return name;
     }
 
     /**
-     * @param name the name to set
+     * Sets the name of the Event.
+     *
+     * @param name the name to set.
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * @return the location
+     * Gets the location of the event.
+     *
+     * @return the location value.
      */
     public String getLocation() {
         return location;
     }
 
     /**
-     * @param location the location to set
+     * Sets the location of the event.
+     *
+     * @param location the location to set.
      */
     public void setLocation(String location) {
         this.location = location;
     }
 
     /**
-     * @return the ong
+     * Gets the NGO to which the event is donating.
+     *
+     * @return the ong value.
      */
     public String getOng() {
         return ong;
     }
 
     /**
-     * @param ong the ong to set
+     * Sets the NGO to which the event is donating.
+     *
+     * @param ong the ong to set.
      */
     public void setOng(String ong) {
         this.ong = ong;
     }
 
     /**
-     * @return the date
+     * Gets the date of creation for the event.
+     *
+     * @return the date value.
      */
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
     /**
-     * @param date the date to set
+     * Sets the date of creation for the event.
+     *
+     * @param date the date to set.
      */
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
     /**
-     * @return the prize
+     * Gets the prize pool for the event.
+     *
+     * @return the prize value.
      */
     public Float getPrize() {
         return prize;
     }
 
     /**
-     * @param prize the prize to set
+     * Sets the prize pool for the event.
+     *
+     * @param prize the prize to set.
      */
     public void setPrize(Float prize) {
         this.prize = prize;
     }
 
     /**
-     * @return the donation
+     * Gets the donation percentage for the event.
+     *
+     * @return the donation value.
      */
     public Float getDonation() {
         return donation;
     }
 
     /**
-     * @param donation the donation to set
+     * Sets the donation percentage for the event.
+     *
+     * @param donation the donation to set.
      */
     public void setDonation(Float donation) {
         this.donation = donation;
     }
 
     /**
-     * @return the playerNum
+     * Gets the number of players participating in the event.
+     *
+     * @return the participantNum value.
      */
-    public Integer getPlayerNum() {
-        return playerNum;
+    public Integer getParticipantNum() {
+        return participantNum;
     }
 
     /**
-     * @param playerNum the playerNum to set
+     * Sets the number of players participating in the event.
+     *
+     * @param participantNum the participantNum to set
      */
-    public void setPlayerNum(Integer playerNum) {
-        this.playerNum = playerNum;
+    public void setParticipantNum(Integer participantNum) {
+        this.participantNum = participantNum;
     }
 
     /**
@@ -186,34 +236,54 @@ public class Event implements Serializable {
         this.game = game;
     }
 
+    /**
+     * HashCode method implementation of the entity.
+     *
+     * @return An integer value as hashcode for the object.
+     */
     @Override
     public int hashCode() {
         int hash = 0;
-        hash = 89 * hash + Objects.hashCode(this.id);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
+    /**
+     * Indicates whether some other Event is "equal to" this one. This method
+     * implements an equivalence relation on non-null object references:
+     * <ul>
+     * <li><strong>It is reflexive:</strong> for any non-null reference value x,
+     * x.equals(x) should return true.</li>
+     * <li><strong>It is symmetric:</strong> for any non-null reference values x
+     * and y, x.equals(y) should return true if and only if y.equals(x) returns
+     * true.</li>
+     * <li><strong>It is transitive:</strong> for any non-null reference values
+     * x, y, and z, if x.equals(y) returns true and y.equals(z) returns true,
+     * then x.equals(z) should return true.</li>
+     * </ul>
+     *
+     * @param object The object to compare with this Event.
+     * @return true if the given object represents an Event equivalent to this
+     * organizer, false otherwise.
+     */
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
+    public boolean equals(Object object) {
+        // Check if the object is the same reference as this (the same object)
+        if (this == object) {
             return true;
         }
-        if (obj == null) {
+        // Check if the passed object is null or not an instance of Event
+        if (object == null || getClass() != object.getClass()) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Event other = (Event) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        // Convert the passed object to Event to compare the IDs
+        Event other = (Event) object;
+        return Objects.equals(this.id, other.id);
     }
 
     @Override
     public String toString() {
-        return "Event{" + "id=" + id + ", name=" + name + ", location=" + location + ", ong=" + ong + ", date=" + date + ", prize=" + prize + ", donation=" + donation + ", playerNum=" + playerNum + '}';
+        return " javafxserverside.entity.Event[id=" + id + ", name=" + name + ", location=" + location + ", ong=" + ong + ", date=" + date + ", prize=" + prize + ", donation=" + donation + ", playerNum=" + participantNum + "]";
     }
 
 }
