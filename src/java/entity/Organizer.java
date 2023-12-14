@@ -1,5 +1,5 @@
+package entity;
 
-import entity.User;
 import java.util.HashSet;
 import java.util.Objects;
 
@@ -34,7 +34,6 @@ public class Organizer extends User {
     /**
      * Set of {@link Event} belonging to the organizer.
      */
-    @XmlTransient
     @OneToMany(mappedBy = "users")
     private HashSet<Event> events;
 
@@ -79,6 +78,7 @@ public class Organizer extends User {
      *
      * @return A Set of {@link Event}.
      */
+    @XmlTransient
     public HashSet<Event> getEvents() {
         return events;
     }
@@ -92,31 +92,54 @@ public class Organizer extends User {
         this.events = events;
     }
 
+    /**
+     * HashCode method implementation of the entity.
+     *
+     * @return An integer value as hashcode for the object.
+     */
     @Override
-    //TO-DO: write this code properly
     public int hashCode() {
-        int hash = 5;
-        hash = 97 * hash + Objects.hashCode(this.id);
+        int hash = 0;
+        hash += (super.getId() != null ? super.getId().hashCode() : 0);
         return hash;
     }
 
+    /**
+     * Indicates whether some other Organizer is "equal to" this one. This
+     * method implements an equivalence relation on non-null object references:
+     * <ul>
+     * <li><strong>It is reflexive:</strong> for any non-null reference value x,
+     * x.equals(x) should return true.</li>
+     * <li><strong>It is symmetric:</strong> for any non-null reference values x
+     * and y, x.equals(y) should return true if and only if y.equals(x) returns
+     * true.</li>
+     * <li><strong>It is transitive:</strong> for any non-null reference values
+     * x, y, and z, if x.equals(y) returns true and y.equals(z) returns true,
+     * then x.equals(z) should return true.</li>
+     * </ul>
+     *
+     * @param object The object to compare with this Organizer.
+     * @return true if the given object represents an Organizer equivalent to
+     * this organizer, false otherwise.
+     */
     @Override
-    //TO-DO: write this code properly
-    public boolean equals(Object obj) {
-        if (this == obj) {
+    public boolean equals(Object object) {
+        // Check if the object is the same reference as this (the same object)
+        if (this == object) {
             return true;
         }
-        if (obj == null) {
+        // Check if the passed object is null or not an instance of Organizer
+        if (object == null || getClass() != object.getClass()) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        // Call the equals method of the base class (User) to check equality in the class hierarchy
+        if (!super.equals(object)) {
             return false;
         }
-        final Organizer other = (Organizer) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        // Convert the passed object to Organizer to compare the IDs
+        Organizer organizer = (Organizer) object;
+        // Compare the IDs using Objects.equals to handle null values
+        return Objects.equals(super.getId(), organizer.getId());
     }
 
     @Override

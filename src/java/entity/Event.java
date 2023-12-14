@@ -5,9 +5,7 @@ import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Entity JPA class for Event data. This class contains the properties for the
@@ -190,7 +188,7 @@ public class Event implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 7;
+        int hash = 0;
         hash = 89 * hash + Objects.hashCode(this.id);
         return hash;
     }
