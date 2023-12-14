@@ -5,18 +5,14 @@
  */
 package entity;
 
-import java.io.Serializable;
 import java.util.List;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 /**
  *
@@ -27,11 +23,10 @@ import javax.persistence.Table;
 @NamedQueries({
     @NamedQuery(name="findGameCreatedByAdmin",
             query="SELECT g FROM Game g WHERE user.id = :userId"),
-    @NamedQuery(name="findAllUsers",
-            query="SELECT u FROM User u"
-    ),
-    @NamedQuery(name="updateGame",
-            query="UPDATE Game g SET g.property = :newValue WHERE g.user.id = :userId"),
+    @NamedQuery(name = "findAllAdmins",
+                query = "SELECT u FROM user u where u.user_type = 3 ORDER BY u.username DESC"),
+    @NamedQuery(name = "findAdminByPermissions",
+                query = "SELECT u FROM User u WHERE u.permissions = :permissions"),
 })
 public class Admin extends User {
     

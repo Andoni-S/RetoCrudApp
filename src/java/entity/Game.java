@@ -7,6 +7,7 @@ package entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -20,6 +21,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
+import javax.persistence.OneToMany;
 /**
  *
  * @author 2dam
@@ -27,12 +29,20 @@ import javax.persistence.NamedQueries;
 @Entity
 @Table(name="games",schema="esportsdb")
 @NamedQueries({
-    @NamedQuery(name="findAllGames",
-            query="SELECT g FROM games g"),
-    @NamedQuery(name="updateGame",
-            query="UPDATE Game g SET g.property = :newValue WHERE g.user.id = :userId"),
-    @NamedQuery(name="deleteGame",
-            query="DELETE FROM Game g WHERE g.user.id = :userId"),
+    @NamedQuery(name = "findAllGames",
+                query = "SELECT g FROM Game g"),
+    @NamedQuery(name = "findGamesByName",
+                query = "SELECT g FROM Game g WHERE g.name = :name"),
+    @NamedQuery(name = "findGamesByGenre",
+                query = "SELECT g FROM Game g WHERE g.genre = :genre"),
+    @NamedQuery(name = "findGamesByPlatform",
+                query = "SELECT g FROM Game g WHERE g.platform = :platform"),
+    @NamedQuery(name = "findGamesByPVPType",
+                query = "SELECT g FROM Game g WHERE g.PVPType = :pvpType"),
+    @NamedQuery(name = "findGamesByReleaseDate",
+                query = "SELECT g FROM Game g WHERE g.releaseDate = :releaseDate"),
+     @NamedQuery(name = "findGamesByGenreAndReleaseDate",
+                query = "SELECT g FROM Game g WHERE g.genre = :genre AND g.releaseDate > (SELECT AVG(g2.releaseDate) FROM Game g2 WHERE g2.genre = :genre)")
 })
 public class Game implements Serializable{
 
@@ -43,6 +53,9 @@ public class Game implements Serializable{
     @ManyToOne
     private Admin admin;
         
+    @OneToMany
+    private List<Event> events;
+    
     private String name;
     private String genre;
     private String platform;
