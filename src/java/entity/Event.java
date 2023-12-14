@@ -21,13 +21,15 @@ import javax.persistence.Temporal;
 @Entity
 @Table(name = "events", schema = "esportsdb")
 @NamedQueries({
-    @NamedQuery(name = "findEventsByOrganizer", query = "")
+    @NamedQuery(name = "findEventsByOrganizer", query = "SELECT e FROM Event e WHERE e.organizer = :organizerName")
     ,
-    @NamedQuery(name = "findEventsByGame", query = "")
+    @NamedQuery(name = "findEventsByGame", query = "SELECT e FROM Event e WHERE e.game = :gameName")
     ,
-    @NamedQuery(name = "findEventsWonByPlayer", query = "")
+    @NamedQuery(name = "findEventsWonByPlayer", query = "SELECT pe.event FROM PlayerEvent pe\n"
+            + "WHERE pe.player = :player AND pe.result = :result")
     ,
-    @NamedQuery(name = "findEventsWonByTeam", query = "")
+    @NamedQuery(name = "findEventsWonByTeam", query = "SELECT te.event FROM TeamEvent te\n" +
+"WHERE te.team = :team AND te.result = :result")
     ,
     @NamedQuery(name = "findEventsByONG", query = "")
 })
@@ -73,6 +75,11 @@ public class Event implements Serializable {
      */
     @ManyToOne
     private String game;
+    /**
+     * {@link Organizer} of the Event.
+     */
+    @ManyToOne
+    private String organizer;
 
     /**
      * Gets id value of the Event.
@@ -221,7 +228,7 @@ public class Event implements Serializable {
     /**
      * Gets the {@link Game} of the Event.
      *
-     * @return the game
+     * @return the game value.
      */
     public String getGame() {
         return game;
@@ -234,6 +241,24 @@ public class Event implements Serializable {
      */
     public void setGame(String game) {
         this.game = game;
+    }
+
+    /**
+     * Gets the {@link Organizer} of the Event.
+     *
+     * @return the organizer value.
+     */
+    public String getOrganizer() {
+        return organizer;
+    }
+
+    /**
+     * Sets the {@link Organizer} of the Event.
+     *
+     * @param organizer the organizer to set.
+     */
+    public void setOrganizer(String organizer) {
+        this.organizer = organizer;
     }
 
     /**
