@@ -1,11 +1,10 @@
 package entity;
 
-import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
+import javax.persistence.DiscriminatorValue;
 
 import javax.persistence.Entity;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlTransient;
@@ -17,12 +16,8 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Ander Goirigolzarri Iturburu
  */
 @Entity
+@DiscriminatorValue("2")
 @Table(name = "users", schema = "esportsdb")
-@NamedQueries({
-    @NamedQuery(name = "findAllOrganizers", query = "SELECT u FROM User u WHERE u.user_type = 2 ORDER BY u.username DESC")
-    ,
-    @NamedQuery(name = "findOrganizersByCompany", query = "SELECT u FROM User u WHERE u.user_type = 2 AND u.company = :companyName ORDER BY u.username DESC")
-})
 public class Organizer extends User {
 
     /**
@@ -37,7 +32,7 @@ public class Organizer extends User {
      * Set of {@link Event} belonging to the organizer.
      */
     @OneToMany(mappedBy = "organizer")
-    private HashSet<Event> events;
+    private Set<Event> events;
 
     /**
      * Gets company value for Organizer.
@@ -81,7 +76,7 @@ public class Organizer extends User {
      * @return A Set of {@link Event}.
      */
     @XmlTransient
-    public HashSet<Event> getEvents() {
+    public Set<Event> getEvents() {
         return events;
     }
 
@@ -90,7 +85,7 @@ public class Organizer extends User {
      *
      * @param events A Set of {@link Event}.
      */
-    public void setEvents(HashSet<Event> events) {
+    public void setEvents(Set<Event> events) {
         this.events = events;
     }
 

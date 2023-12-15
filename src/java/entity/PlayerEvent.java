@@ -3,6 +3,8 @@ package entity;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.EmbeddedId;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.xml.bind.annotation.XmlTransient;
@@ -21,6 +23,8 @@ public class PlayerEvent implements Serializable {
     @MapsId("eventId")
     @ManyToOne
     private Event event;
+    @Enumerated(EnumType.STRING)
+    private Result result;
 
     @XmlTransient
     public Player getPlayer() {
@@ -38,6 +42,20 @@ public class PlayerEvent implements Serializable {
 
     public void setEvent(Event event) {
         this.event = event;
+    }
+
+    /**
+     * @return the result
+     */
+    public Result getResult() {
+        return result;
+    }
+
+    /**
+     * @param result the result to set
+     */
+    public void setResult(Result result) {
+        this.result = result;
     }
 
     @Override
@@ -64,4 +82,5 @@ public class PlayerEvent implements Serializable {
         }
         return true;
     }
+
 }

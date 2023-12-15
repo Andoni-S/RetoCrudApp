@@ -3,14 +3,19 @@ package entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Entity JPA class for Event data. This class contains the properties for the
@@ -25,13 +30,15 @@ import javax.persistence.Temporal;
     ,
     @NamedQuery(name = "findEventsByGame", query = "SELECT e FROM Event e WHERE e.game = :gameName")
     ,
+    @NamedQuery(name = "findOpenEvents", query = "SELECT e FROM Event e WHERE e.open = true")
+    ,
     @NamedQuery(name = "findEventsWonByPlayer", query = "SELECT pe.event FROM PlayerEvent pe\n"
             + "WHERE pe.player = :player AND pe.result = :result")
     ,
-    @NamedQuery(name = "findEventsWonByTeam", query = "SELECT te.event FROM TeamEvent te\n" +
-"WHERE te.team = :team AND te.result = :result")
+    @NamedQuery(name = "findEventsWonByTeam", query = "SELECT te.event FROM TeamEvent te\n"
+            + "WHERE te.team = :team AND te.result = :result")
     ,
-    @NamedQuery(name = "findEventsByONG", query = "")
+    @NamedQuery(name = "findEventsByONG", query = "SELECT e FROM Event e WHERE e.ong = :ongName")
 })
 public class Event implements Serializable {
 
@@ -39,6 +46,7 @@ public class Event implements Serializable {
      * Id field for event entity.
      */
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     /**
      * Name of the event.
@@ -66,10 +74,11 @@ public class Event implements Serializable {
      */
     private Float donation;
     /**
-     * Number of participants in the event. Participants can be either
+     * Number of maximum participants in the event. Participants can be either
      * {@link Player} or {@link Team}.
      */
     private Integer participantNum;
+
     /**
      * {@link Game} of the Event.
      */
@@ -80,6 +89,18 @@ public class Event implements Serializable {
      */
     @ManyToOne
     private String organizer;
+
+    @OneToMany(mappedBy = "event")
+    private Set<PlayerEvent> playerevents;
+
+    @OneToMany(mappedBy = "event")
+    private Set<TeamEvent> teamevents;
+
+    /**
+     * Entry condition for the event. Events can only be joined if they are
+     * open.
+     */
+    private boolean open;
 
     /**
      * Gets id value of the Event.
@@ -262,6 +283,20 @@ public class Event implements Serializable {
     }
 
     /**
+     * @return the open
+     */
+    public boolean isOpen() {
+        return open;
+    }
+
+    /**
+     * @param open the open to set
+     */
+    public void setOpen(boolean open) {
+        this.open = open;
+    }
+
+    /**
      * HashCode method implementation of the entity.
      *
      * @return An integer value as hashcode for the object.
@@ -309,6 +344,34 @@ public class Event implements Serializable {
     @Override
     public String toString() {
         return " javafxserverside.entity.Event[id=" + id + ", name=" + name + ", location=" + location + ", ong=" + ong + ", date=" + date + ", prize=" + prize + ", donation=" + donation + ", playerNum=" + participantNum + "]";
+    }
+
+    /**
+     * @return the teamevents
+     */
+    public Set<TeamEvent> getTeamevents() {
+        return teamevents;
+    }
+
+    /**
+     * @param teamevents the teamevents to set
+     */
+    public void setTeamevents(Set<TeamEvent> teamevents) {
+        this.teamevents = teamevents;
+    }
+
+    /**
+     * @return the playerevents
+     */
+    public Set<PlayerEvent> getPlayerevents() {
+        return playerevents;
+    }
+
+    /**
+     * @param playerevents the playerevents to set
+     */
+    public void setPlayerevents(Set<PlayerEvent> playerevents) {
+        this.playerevents = playerevents;
     }
 
 }
