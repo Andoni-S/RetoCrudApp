@@ -13,6 +13,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -30,10 +31,27 @@ import javax.persistence.OneToMany;
 })
 public class Admin extends User {
     
-    @OneToMany(mappedBy = "users")
+    @OneToMany(mappedBy = "admin")
     private List<User> games;
     
     @Enumerated(EnumType.ORDINAL)
     private Enum permissions;
+
+    @XmlTransient
+    public List<User> getGames() {
+        return games;
+    }
+
+    public void setGames(List<User> games) {
+        this.games = games;
+    }
+
+    public Enum getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(Enum permissions) {
+        this.permissions = permissions;
+    }
     
 }
