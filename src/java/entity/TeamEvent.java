@@ -6,63 +6,64 @@
 package entity;
 
 import java.util.Objects;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
+import javax.persistence.Table;
 
 /**
  *
  * @author Jagoba Bartolomé Barroso
  */
+@Entity
+@Table(name = "team_event", schema = "esportsdb")
 public class TeamEvent {
-    private Long teamId;
-    private Long eventId;
+
+    @EmbeddedId
+    private TeamEventId Id;
+    @MapsId("teamId")
+    @ManyToOne
+    private Team team;
+    @MapsId("eventId")
+    @ManyToOne
+    private Event event;
+    @Enumerated(EnumType.STRING)
     private Result result;
 
-    public Long getTeam_id() {
-        return teamId;
+    public TeamEventId getId() {
+        return Id;
     }
 
-    public Long getEvent_id() {
-        return eventId;
+    public Team getTeam() {
+        return team;
+    }
+
+    public Event getEvent() {
+        return event;
     }
 
     public Result getResult() {
         return result;
     }
 
-    public void setTeam_id(Long team_id) {
-        this.teamId = team_id;
+    public void setId(TeamEventId Id) {
+        this.Id = Id;
     }
 
-    public void setEvent_id(Long event_id) {
-        this.eventId = event_id;
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
     }
 
     public void setResult(Result result) {
         this.result = result;
     }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 59 * hash + Objects.hashCode(this.teamId);
-        hash = 59 * hash + Objects.hashCode(this.eventId);
-        hash = 59 * hash + Objects.hashCode(this.result);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final TeamEvent other = (TeamEvent) obj;
-        return true;
-    }
-    
-    
 }

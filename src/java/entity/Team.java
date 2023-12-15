@@ -9,14 +9,18 @@
     import java.util.Date;
     import java.util.Objects;
     import java.util.Set;
+import static javax.persistence.CascadeType.ALL;
     import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import static javax.persistence.FetchType.EAGER;
     import javax.persistence.Id;
-    import javax.persistence.Inheritance;
-    import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
     import javax.persistence.ManyToMany;
-    import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
     import javax.persistence.Table;
-    import javax.xml.bind.annotation.XmlTransient;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
     /**
      *
@@ -27,15 +31,16 @@
     public class Team implements Serializable {
         @Id
         private Long id;
-        @XmlTransient
         @ManyToMany(mappedBy = "PlayerTeam")
         Set<Player> playersInTeam;  
-
         private String name;
+        @Temporal(TemporalType.DATE)
         private Date foundation;
         private String coach;
         private Long captainID;
-
+        @OneToMany(cascade=ALL, mappedBy="team", fetch=EAGER)
+        private Set<TeamEvent> teamevents;
+        
         public Long getId() {
             return id;
         }

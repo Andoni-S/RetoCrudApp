@@ -8,13 +8,8 @@ package entity;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -44,7 +39,6 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @DiscriminatorValue("1")
 public class Player extends User implements Serializable {
-    @XmlTransient
     @ManyToMany
     @JoinTable(
             name = "PlayerTeam",
@@ -53,6 +47,15 @@ public class Player extends User implements Serializable {
     Set<Team> teamsOfPlayer;
 
     private Integer level;
+
+    public void setTeamsOfPlayer(Set<Team> teamsOfPlayer) {
+        this.teamsOfPlayer = teamsOfPlayer;
+    }
+    
+    @XmlTransient   
+    public Set<Team> getTeamsOfPlayer() {
+        return teamsOfPlayer;
+    }
 
     public Integer getLevel() {
         return level;
