@@ -8,13 +8,18 @@ package entity;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
+import static javax.persistence.CascadeType.ALL;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import static javax.persistence.FetchType.EAGER;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -26,14 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name="users",schema="esportsdb")
 @NamedQueries({
     @NamedQuery(name="findAllPlayers", query="SELECT u FROM User WHERE u.user_type = 1 ORDER BY u.username DESC"), 
-    @NamedQuery(name="findTeamByPlayerId", query="SELECT pt.teamId FROM PlayerTeam pt WHERE pt.playerId = :playerId"),
-    @NamedQuery(name="findTeamByPlayerName", query="SELECT t FROM Team t JOIN TeamPlayer tp ON t.id = tp.teamId +"
-            + " JOIN Player p ON tp.playerId = p.id  WHERE p.name = :playerName"),
-    @NamedQuery(name="findPlayerByLevel", query="SELECT u FROM User WHERE u.level = :level"),
-    @NamedQuery(name="findTeamsByDate", query="SELECT t FROM Team WHERE t.foundation = :date"),
-    @NamedQuery(name="findTeamsByCoach", query="SELECT t FROM Team WHERE t.coach = :coach"),
-    @NamedQuery(name="findTeamsByCaptainId", query="SELECT t FROM Team WHERE t.captainID = :captainID"),
-    @NamedQuery(name="findTeamsWithWins", query="SELECT t from Team t JOIN TeamEvent te ON t.id = te.teamId WHERE tp.result = :result")
+    @NamedQuery(name="findPlayerByLevel", query="SELECT u FROM User WHERE u.level = :level")
 })
 
 
@@ -45,14 +43,36 @@ public class Player extends User implements Serializable {
             joinColumns = @JoinColumn(name = "playerId"),
             inverseJoinColumns = @JoinColumn(name = "teamId"))
     Set<Team> teamsOfPlayer;
+    
+    @OneToMany(cascade=ALL, mappedBy="player", fetch=EAGER)
+    Set<PlayerEvent> playerevent;
 
     private Integer level;
-
+      
+    @Enumerated(EnumType.ORDINAL)
+    private Enum PVPType;
+    
     public void setTeamsOfPlayer(Set<Team> teamsOfPlayer) {
         this.teamsOfPlayer = teamsOfPlayer;
     }
+
+    public void setPlayerevent(Set<PlayerEvent> playerevent) {
+        this.playerevent = playerevent;
+    }
+
+    public void setPVPType(Enum PVPType) {
+        this.PVPType = PVPType;
+    }
     
-    @XmlTransient   
+    public void setLevel(Integer level) {
+        this.level = level;
+    }
+
+    @XmlTransient
+    public Set<PlayerEvent> getPlayerevent() {
+        return playerevent;
+    }
+
     public Set<Team> getTeamsOfPlayer() {
         return teamsOfPlayer;
     }
@@ -61,8 +81,8 @@ public class Player extends User implements Serializable {
         return level;
     }
 
-    public void setLevel(Integer level) {
-        this.level = level;
+    public Enum getPVPType() {
+        return PVPType;
     }
 
     @Override

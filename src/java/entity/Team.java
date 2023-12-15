@@ -13,31 +13,52 @@ import static javax.persistence.CascadeType.ALL;
     import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import static javax.persistence.FetchType.EAGER;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
     import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
     import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
     import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.xml.bind.annotation.XmlTransient;
 
     /**
      *
      * @author Jagoba Bartolomé Barroso
      */
-    @Entity
-    @Table(name="teams",schema="esportsdb")
-    public class Team implements Serializable {
-        @Id
-        private Long id;
+@Entity
+@Table(name = "teams", schema = "esportsdb")
+@NamedQueries({
+    @NamedQuery(name = "findTeamByPlayerId", query = "SELECT pt.teamId FROM PlayerTeam pt WHERE pt.playerId = :playerId")
+    ,
+    @NamedQuery(name = "findTeamByPlayerName", query = "SELECT t FROM Team t JOIN TeamPlayer tp ON t.id = tp.teamId +"
+            + " JOIN Player p ON tsp.playerId = p.id  WHERE p.name = :playerName")
+    ,
+    @NamedQuery(name = "findTeamsByDate", query = "SELECT t FROM Team WHERE t.foundation = :date")
+    ,
+    @NamedQuery(name = "findTeamsByCoach", query = "SELECT t FROM Team WHERE t.coach = :coach")
+    ,
+    @NamedQuery(name = "findTeamsByCaptainId", query = "SELECT t FROM Team WHERE t.captainID = :captainID")
+    ,
+    @NamedQuery(name = "findTeamsWithWins", query = "SELECT t from Team t JOIN TeamEvent te ON t.id = te.teamId WHERE tp.result = :result")
+})
+public class Team implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
         @ManyToMany(mappedBy = "PlayerTeam")
         Set<Player> playersInTeam;  
         private String name;
-        @Temporal(TemporalType.DATE)
+        @Temporal(TemporalType.TIMESTAMP)
         private Date foundation;
         private String coach;
-        private Long captainID;
+        private Player captainID;
         @OneToMany(cascade=ALL, mappedBy="team", fetch=EAGER)
         private Set<TeamEvent> teamevents;
         
@@ -57,9 +78,19 @@ import javax.persistence.TemporalType;
             return coach;
         }
 
-        public Long getCaptainID() {
+        public Player getCaptainID() {
             return captainID;
         }
+        
+    @XmlTransient
+    public Set<Player> getPlayersInTeam() {
+        return playersInTeam;
+    }
+    
+    @XmlTransient
+    public Set<TeamEvent> getTeamevents() {
+        return teamevents;
+    }
 
         public void setId(Long id) {
             this.id = id;
@@ -77,7 +108,7 @@ import javax.persistence.TemporalType;
             this.coach = coach;
         }
 
-        public void setCaptainID(Long captainID) {
+        public void setCaptainID(Player captainID) {
             this.captainID = captainID;
         }
 
