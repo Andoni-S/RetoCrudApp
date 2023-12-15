@@ -7,6 +7,7 @@ package entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -18,19 +19,42 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.OneToMany;
 /**
  *
  * @author 2dam
  */
 @Entity
 @Table(name="games",schema="esportsdb")
-@NamedQuery(name="findAllGames",
-            query="SELECT g FROM games g")
+@NamedQueries({
+    @NamedQuery(name = "findAllGames",
+                query = "SELECT g FROM Game g"),
+    @NamedQuery(name = "findGamesByName",
+                query = "SELECT g FROM Game g WHERE g.name = :name"),
+    @NamedQuery(name = "findGamesByGenre",
+                query = "SELECT g FROM Game g WHERE g.genre = :genre"),
+    @NamedQuery(name = "findGamesByPlatform",
+                query = "SELECT g FROM Game g WHERE g.platform = :platform"),
+    @NamedQuery(name = "findGamesByPVPType",
+                query = "SELECT g FROM Game g WHERE g.PVPType = :pvpType"),
+    @NamedQuery(name = "findGamesByReleaseDate",
+                query = "SELECT g FROM Game g WHERE g.releaseDate = :releaseDate"),
+     @NamedQuery(name = "findGamesByGenreAndReleaseDate",
+                query = "SELECT g FROM Game g WHERE g.genre = :genre AND g.releaseDate > (SELECT AVG(g2.releaseDate) FROM Game g2 WHERE g2.genre = :genre)")
+})
 public class Game implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
+    @ManyToOne
+    private Admin admin;
+        
+    @OneToMany
+    private List<Event> events;
     
     private String name;
     private String genre;

@@ -14,6 +14,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 /**
@@ -25,6 +28,26 @@ import javax.persistence.Table;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="user_type", 
   discriminatorType = DiscriminatorType.INTEGER)
+@NamedQueries({
+    @NamedQuery(name = "findAllUsers",
+                query = "SELECT u FROM User u ORDER BY u.username DESC"),
+    @NamedQuery(name = "findUserByUsername",
+                query = "SELECT u FROM User u WHERE u.username = :username"),
+    @NamedQuery(name = "findUsersByEmail",
+                query = "SELECT u FROM User u WHERE u.email = :email"),
+    @NamedQuery(name = "findUsersByName",
+                query = "SELECT u FROM User u WHERE u.name = :name"),
+    @NamedQuery(name = "findUsersByBirthDate",
+                query = "SELECT u FROM User u WHERE u.birthDate = :birthDate"),
+    @NamedQuery(name = "findUsersByBirthDateBefore",
+                query = "SELECT u FROM User u WHERE u.birthDate < :birthDate"),
+    @NamedQuery(name = "findUsersByBirthDateAfter",
+                query = "SELECT u FROM User u WHERE u.birthDate > :birthDate"),
+    @NamedQuery(name = "findUsersByNameAndSurname",
+                query = "SELECT u FROM User u WHERE u.name = :name AND u.surnames = :surnames"),
+    @NamedQuery(name = "findUsersBornAfterAvgBirthDate",
+                query = "SELECT u FROM User u WHERE u.birthDate > (SELECT AVG(u2.birthDate) FROM User u2)")
+})
 public class User implements Serializable{
 
     @Id
