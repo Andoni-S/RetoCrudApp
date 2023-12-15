@@ -20,6 +20,8 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "users", schema = "esportsdb")
 @NamedQueries({
     @NamedQuery(name = "findAllOrganizers", query = "SELECT u FROM User u WHERE u.user_type = 2 ORDER BY u.username DESC")
+    ,
+    @NamedQuery(name = "findOrganizersByCompany", query = "SELECT u FROM User u WHERE u.user_type = 2 AND u.company = :companyName ORDER BY u.username DESC")
 })
 public class Organizer extends User {
 
@@ -34,7 +36,7 @@ public class Organizer extends User {
     /**
      * Set of {@link Event} belonging to the organizer.
      */
-    @OneToMany(mappedBy = "users")
+    @OneToMany(mappedBy = "organizer")
     private HashSet<Event> events;
 
     /**
@@ -144,7 +146,7 @@ public class Organizer extends User {
 
     @Override
     public String toString() {
-        return "javafxserverside.entity.Organizer[ username=" + super.getUsername()+ " ]";
+        return "javafxserverside.entity.Organizer[ username=" + super.getUsername() + " ]";
     }
 
 }
