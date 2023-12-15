@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Id;
@@ -24,7 +25,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.OneToMany;
 /**
  *
- * @author 2dam
+ * @author Andoni Sanz
  */
 @Entity
 @Table(name="games",schema="esportsdb")
@@ -53,8 +54,8 @@ public class Game implements Serializable{
     @ManyToOne
     private Admin admin;
         
-    @OneToMany
-    private List<Event> events;
+    @OneToMany(mappedBy = "game")
+    private Set<Event> events;
     
     private String name;
     private String genre;
@@ -63,7 +64,7 @@ public class Game implements Serializable{
     @Enumerated(EnumType.ORDINAL)
     private Enum PVPType;
     
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date releaseDate;
     
     public Long getId() {

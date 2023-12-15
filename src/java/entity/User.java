@@ -8,9 +8,12 @@ package entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -18,10 +21,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  *
- * @author 2dam
+ * @author Andoni Sanz
  */
 @Entity
 @Table(name="users",schema="esportsdb")
@@ -51,13 +56,17 @@ import javax.persistence.Table;
 public class User implements Serializable{
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     private String username;
     private String password;
+    
+    @Column(unique=true)
     private String email;
     private String name;
     private String surnames;
+    @Temporal(TemporalType.TIMESTAMP)
     private Date birthDate;
   
     public Long getId() {
