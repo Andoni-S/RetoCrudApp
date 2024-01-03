@@ -5,14 +5,12 @@
  */
 package entity;
 
-import java.util.List;
+import java.util.Date;
 import java.util.Set;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
@@ -20,17 +18,15 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Andoni Sanz
  */
 @Entity
-@Table(name = "users", schema = "esportsdb")
-@DiscriminatorValue("3")
-@NamedQueries({
-    @NamedQuery(name="findGameCreatedByAdmin",
-            query="SELECT g FROM Game g WHERE user.id = :userId"),
-})
+@Table(name = "admin", schema = "esportsdb")
+@XmlRootElement
 public class Admin extends User {
+
+    private Date entryDate;
     
     @OneToMany(mappedBy = "admin")
     private Set<Game> games;
-
+    
     @XmlTransient
     public Set<Game> getGames() {
         return games;

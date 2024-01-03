@@ -5,16 +5,14 @@
  */
 package entity;
 
-import java.util.Objects;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -22,6 +20,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "team_event", schema = "esportsdb")
+@XmlRootElement
 public class TeamEvent {
 
     @EmbeddedId

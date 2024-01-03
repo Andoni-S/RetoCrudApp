@@ -3,20 +3,25 @@ package entity;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
-import javax.xml.bind.annotation.XmlTransient;
+import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Ander Goirigolzarri Iturburu
  */
+@Entity
+@Table(name="player_event",schema="esportsdb")
+@XmlRootElement
 public class PlayerEvent implements Serializable {
 
     @EmbeddedId
-    private PlayerEvent id;
+    private PlayerEventId id;
     @MapsId("playerId")
     @ManyToOne
     private Player player;
@@ -26,7 +31,6 @@ public class PlayerEvent implements Serializable {
     @Enumerated(EnumType.STRING)
     private Result result;
 
-    @XmlTransient
     public Player getPlayer() {
         return player;
     }
@@ -35,7 +39,6 @@ public class PlayerEvent implements Serializable {
         this.player = player;
     }
 
-    @XmlTransient
     public Event getEvent() {
         return event;
     }

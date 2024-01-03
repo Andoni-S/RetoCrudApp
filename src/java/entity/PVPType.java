@@ -10,12 +10,12 @@ package entity;
  * @author 2dam
  */
 public enum PVPType {
-    TEAM_BASED_5V5("Team-based 5v5", 5),
-    TEAM_BASED_3V3("Team-based 3v3", 3),
-    SOLO_BASED_1V1("1V1", 1),
-    BATTLE_ROYALE("Battle Royale", 100);
+    TEAM_BASED_5V5,
+    TEAM_BASED_3V3,
+    SOLO_BASED_1V1,
+    BATTLE_ROYALE;
 
-    private final String displayName;
+    /*private final String displayName;
     private final int maxPlayers;
 
     PVPType(String displayName, int maxPlayers) {
@@ -29,5 +29,5 @@ public enum PVPType {
 
     public int getMaxPlayers() {
         return maxPlayers;
-    }
+    }*/
 }

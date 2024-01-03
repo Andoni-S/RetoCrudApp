@@ -5,6 +5,7 @@
  */
 package entity;
 
+import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Embeddable;
 
@@ -13,7 +14,7 @@ import javax.persistence.Embeddable;
  * @author Jagoba Bartolomé Barroso
  */
 @Embeddable
-public class TeamEventId {
+public class TeamEventId implements Serializable {
     private Long teamId;
     private Long eventId;
     

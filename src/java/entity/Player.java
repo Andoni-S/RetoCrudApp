@@ -5,22 +5,16 @@
  */
 package entity;
 
-import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
 import static javax.persistence.CascadeType.ALL;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import static javax.persistence.FetchType.EAGER;
-import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
@@ -28,30 +22,23 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Jagoba Bartolomé Barroso
  */
 @Entity
-@Table(name="users",schema="esportsdb")
-@NamedQueries({
-    @NamedQuery(name="findAllPlayers", query="SELECT u FROM User WHERE u.user_type = 1 ORDER BY u.username DESC"), 
-    @NamedQuery(name="findPlayerByLevel", query="SELECT u FROM User WHERE u.level = :level")
-})
+@Table(name = "player", schema = "esportsdb")
+/*@NamedQueries({
+    @NamedQuery(name = "findPlayerByLevel", query = "SELECT p FROM player p WHERE p.level = :level")
+})*/
+//@DiscriminatorValue("1")
+@XmlRootElement
+public class Player extends User {
 
-
-@DiscriminatorValue("1")
-public class Player extends User implements Serializable {
     @ManyToMany
-    @JoinTable(
-            name = "PlayerTeam",
-            joinColumns = @JoinColumn(name = "playerId"),
-            inverseJoinColumns = @JoinColumn(name = "teamId"))
-    Set<Team> teamsOfPlayer;
-    
-    @OneToMany(cascade=ALL, mappedBy="player", fetch=EAGER)
-    Set<PlayerEvent> playerevent;
+    @JoinTable(name = "PlayerTeam", schema = "esportsdb")
+    private Set<Team> teamsOfPlayer;
+
+    @OneToMany(cascade = ALL, mappedBy = "player", fetch = EAGER)
+    private Set<PlayerEvent> playerevent;
 
     private Integer level;
-      
-    @Enumerated(EnumType.ORDINAL)
-    private Enum PVPType;
-    
+
     public void setTeamsOfPlayer(Set<Team> teamsOfPlayer) {
         this.teamsOfPlayer = teamsOfPlayer;
     }
@@ -60,29 +47,24 @@ public class Player extends User implements Serializable {
         this.playerevent = playerevent;
     }
 
-    public void setPVPType(Enum PVPType) {
-        this.PVPType = PVPType;
-    }
-    
     public void setLevel(Integer level) {
         this.level = level;
     }
+
 
     @XmlTransient
     public Set<PlayerEvent> getPlayerevent() {
         return playerevent;
     }
 
+
+    @XmlTransient
     public Set<Team> getTeamsOfPlayer() {
         return teamsOfPlayer;
     }
 
     public Integer getLevel() {
         return level;
-    }
-
-    public Enum getPVPType() {
-        return PVPType;
     }
 
     @Override
@@ -94,7 +76,7 @@ public class Player extends User implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-         // Check if the object is the same reference as this (the same object)
+        // Check if the object is the same reference as this (the same object)
         if (this == obj) {
             return true;
         }
@@ -111,5 +93,5 @@ public class Player extends User implements Serializable {
         // Compare the IDs using Objects.equals to handle null values
         return Objects.equals(super.getId(), player.getId());
     }
-    
+
 }

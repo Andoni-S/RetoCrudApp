@@ -7,7 +7,6 @@ package entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Entity;
@@ -23,50 +22,60 @@ import javax.persistence.GenerationType;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
 /**
  *
  * @author Andoni Sanz
  */
 @Entity
-@Table(name="games",schema="esportsdb")
+@Table(name = "game", schema = "esportsdb")
 @NamedQueries({
     @NamedQuery(name = "findAllGames",
-                query = "SELECT g FROM Game g"),
+            query = "SELECT g FROM Game g")
+    ,
     @NamedQuery(name = "findGamesByName",
-                query = "SELECT g FROM Game g WHERE g.name = :name"),
+            query = "SELECT g FROM Game g WHERE g.name = :name")
+    ,
     @NamedQuery(name = "findGamesByGenre",
-                query = "SELECT g FROM Game g WHERE g.genre = :genre"),
+            query = "SELECT g FROM Game g WHERE g.genre = :genre")
+    ,
     @NamedQuery(name = "findGamesByPlatform",
-                query = "SELECT g FROM Game g WHERE g.platform = :platform"),
+            query = "SELECT g FROM Game g WHERE g.platform = :platform")
+    ,
     @NamedQuery(name = "findGamesByPVPType",
-                query = "SELECT g FROM Game g WHERE g.PVPType = :pvpType"),
+            query = "SELECT g FROM Game g WHERE g.PVPType = :pvpType")
+    ,
     @NamedQuery(name = "findGamesByReleaseDate",
-                query = "SELECT g FROM Game g WHERE g.releaseDate = :releaseDate"),
-     @NamedQuery(name = "findGamesByGenreAndReleaseDate",
-                query = "SELECT g FROM Game g WHERE g.genre = :genre AND g.releaseDate > (SELECT AVG(g2.releaseDate) FROM Game g2 WHERE g2.genre = :genre)")
+            query = "SELECT g FROM Game g WHERE g.releaseDate = :releaseDate")
+    ,
+    @NamedQuery(name = "findGamesByGenreAndReleaseDate",
+            query = "SELECT g FROM Game g WHERE g.genre = :genre AND g.releaseDate > (SELECT AVG(g2.releaseDate) FROM Game g2 WHERE g2.genre = :genre)")
 })
-public class Game implements Serializable{
+@XmlRootElement
+public class Game implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @ManyToOne
     private Admin admin;
-        
+
     @OneToMany(mappedBy = "game")
     private Set<Event> events;
-    
+
     private String name;
     private String genre;
     private String platform;
-    
+
     @Enumerated(EnumType.ORDINAL)
-    private Enum PVPType;
-    
+    private PVPType PVPType;
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date releaseDate;
-    
+
     public Long getId() {
         return id;
     }
@@ -99,11 +108,11 @@ public class Game implements Serializable{
         this.platform = platform;
     }
 
-    public Enum getPVPType() {
+    public PVPType getPVPType() {
         return PVPType;
     }
 
-    public void setPVPType(Enum PVPType) {
+    public void setPVPType(PVPType PVPType) {
         this.PVPType = PVPType;
     }
 
@@ -113,6 +122,35 @@ public class Game implements Serializable{
 
     public void setReleaseDate(Date releaseDate) {
         this.releaseDate = releaseDate;
+    }
+
+    /**
+     * @return the admin
+     */
+    public Admin getAdmin() {
+        return admin;
+    }
+
+    /**
+     * @param admin the admin to set
+     */
+    public void setAdmin(Admin admin) {
+        this.admin = admin;
+    }
+
+    /**
+     * @return the events
+     */
+    @XmlTransient
+    public Set<Event> getEvents() {
+        return events;
+    }
+
+    /**
+     * @param events the events to set
+     */
+    public void setEvents(Set<Event> events) {
+        this.events = events;
     }
 
     @Override
@@ -139,5 +177,5 @@ public class Game implements Serializable{
         }
         return true;
     }
-    
+
 }

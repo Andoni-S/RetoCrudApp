@@ -15,6 +15,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
@@ -24,13 +25,11 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Ander Goirigolzarri Iturburu
  */
 @Entity
-@Table(name = "events", schema = "esportsdb")
+@Table(name = "event", schema = "esportsdb")
 @NamedQueries({
     @NamedQuery(name = "findEventsByOrganizer", query = "SELECT e FROM Event e WHERE e.organizer = :organizerName")
     ,
     @NamedQuery(name = "findEventsByGame", query = "SELECT e FROM Event e WHERE e.game = :gameName")
-    ,
-    @NamedQuery(name = "findOpenEvents", query = "SELECT e FROM Event e WHERE e.open = true")
     ,
     @NamedQuery(name = "findEventsWonByPlayer", query = "SELECT pe.event FROM PlayerEvent pe\n"
             + "WHERE pe.player = :player AND pe.result = :result")
@@ -40,6 +39,7 @@ import javax.xml.bind.annotation.XmlTransient;
     ,
     @NamedQuery(name = "findEventsByONG", query = "SELECT e FROM Event e WHERE e.ong = :ongName")
 })
+@XmlRootElement
 public class Event implements Serializable {
 
     /**
@@ -83,12 +83,12 @@ public class Event implements Serializable {
      * {@link Game} of the Event.
      */
     @ManyToOne
-    private String game;
+    private Game game;
     /**
      * {@link Organizer} of the Event.
      */
     @ManyToOne
-    private String organizer;
+    private Organizer organizer;
 
     @OneToMany(mappedBy = "event")
     private Set<PlayerEvent> playerevents;
@@ -96,11 +96,6 @@ public class Event implements Serializable {
     @OneToMany(mappedBy = "event")
     private Set<TeamEvent> teamevents;
 
-    /**
-     * Entry condition for the event. Events can only be joined if they are
-     * open.
-     */
-    private boolean open;
 
     /**
      * Gets id value of the Event.
@@ -251,7 +246,7 @@ public class Event implements Serializable {
      *
      * @return the game value.
      */
-    public String getGame() {
+    public Game getGame() {
         return game;
     }
 
@@ -260,7 +255,7 @@ public class Event implements Serializable {
      *
      * @param game the game to set
      */
-    public void setGame(String game) {
+    public void setGame(Game game) {
         this.game = game;
     }
 
@@ -269,7 +264,7 @@ public class Event implements Serializable {
      *
      * @return the organizer value.
      */
-    public String getOrganizer() {
+    public Organizer getOrganizer() {
         return organizer;
     }
 
@@ -278,23 +273,10 @@ public class Event implements Serializable {
      *
      * @param organizer the organizer to set.
      */
-    public void setOrganizer(String organizer) {
+    public void setOrganizer(Organizer organizer) {
         this.organizer = organizer;
     }
 
-    /**
-     * @return the open
-     */
-    public boolean isOpen() {
-        return open;
-    }
-
-    /**
-     * @param open the open to set
-     */
-    public void setOpen(boolean open) {
-        this.open = open;
-    }
 
     /**
      * HashCode method implementation of the entity.
@@ -349,6 +331,7 @@ public class Event implements Serializable {
     /**
      * @return the teamevents
      */
+    @XmlTransient
     public Set<TeamEvent> getTeamevents() {
         return teamevents;
     }
@@ -363,6 +346,7 @@ public class Event implements Serializable {
     /**
      * @return the playerevents
      */
+    @XmlTransient
     public Set<PlayerEvent> getPlayerevents() {
         return playerevents;
     }
