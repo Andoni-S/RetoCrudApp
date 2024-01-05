@@ -5,25 +5,34 @@
  */
 package entity;
 
-import java.io.Serializable;
-import javax.persistence.DiscriminatorValue;
+import java.util.Date;
+import java.util.Set;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author 2dam
+ * @author Andoni Sanz
  */
 @Entity
-@DiscriminatorValue("3")
+@Table(name = "admin", schema = "esportsdb")
+@XmlRootElement
 public class Admin extends User {
+
+    private Date entryDate;
     
+    @OneToMany(mappedBy = "admin")
+    private Set<Game> games;
     
-    @Enumerated(EnumType.ORDINAL)
-    private Enum permissions;
-    
+    @XmlTransient
+    public Set<Game> getGames() {
+        return games;
+    }
+
+    public void setGames(Set<Game> games) {
+        this.games = games;
+    }
 }
