@@ -28,7 +28,7 @@ import javax.ws.rs.core.MediaType;
 @Path("entity.team")
 public class TeamFacadeREST extends AbstractFacade<Team> {
 
-    @PersistenceContext(unitName = "uwuPU")
+    @PersistenceContext(unitName = "RetoCrudAppPU")
     private EntityManager em;
 
     public TeamFacadeREST() {

@@ -28,7 +28,7 @@ import javax.ws.rs.core.MediaType;
 @Path("entity.game")
 public class GameFacadeREST extends AbstractFacade<Game> {
 
-    @PersistenceContext(unitName = "uwuPU")
+    @PersistenceContext(unitName = "RetoCrudAppPU")
     private EntityManager em;
 
     public GameFacadeREST() {

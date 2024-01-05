@@ -30,7 +30,7 @@ import javax.ws.rs.core.PathSegment;
 @Path("entity.playerevent")
 public class PlayerEventFacadeREST extends AbstractFacade<PlayerEvent> {
 
-    @PersistenceContext(unitName = "uwuPU")
+    @PersistenceContext(unitName = "RetoCrudAppPU")
     private EntityManager em;
 
     private PlayerEventId getPrimaryKey(PathSegment pathSegment) {

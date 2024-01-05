@@ -28,7 +28,7 @@ import javax.ws.rs.core.MediaType;
 @Path("entity.organizer")
 public class OrganizerFacadeREST extends AbstractFacade<Organizer> {
 
-    @PersistenceContext(unitName = "uwuPU")
+    @PersistenceContext(unitName = "RetoCrudAppPU")
     private EntityManager em;
 
     public OrganizerFacadeREST() {

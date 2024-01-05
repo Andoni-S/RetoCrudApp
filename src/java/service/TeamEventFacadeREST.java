@@ -30,7 +30,7 @@ import javax.ws.rs.core.PathSegment;
 @Path("entity.teamevent")
 public class TeamEventFacadeREST extends AbstractFacade<TeamEvent> {
 
-    @PersistenceContext(unitName = "uwuPU")
+    @PersistenceContext(unitName = "RetoCrudAppPU")
     private EntityManager em;
 
     private TeamEventId getPrimaryKey(PathSegment pathSegment) {

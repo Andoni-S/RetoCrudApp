@@ -28,7 +28,7 @@ import javax.ws.rs.core.MediaType;
 @Path("entity.user")
 public class UserFacadeREST extends AbstractFacade<User> {
 
-    @PersistenceContext(unitName = "uwuPU")
+    @PersistenceContext(unitName = "RetoCrudAppPU")
     private EntityManager em;
 
     public UserFacadeREST() {

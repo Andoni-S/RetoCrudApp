@@ -28,7 +28,7 @@ import javax.ws.rs.core.MediaType;
 @Path("entity.event")
 public class EventFacadeREST extends AbstractFacade<Event> {
 
-    @PersistenceContext(unitName = "uwuPU")
+    @PersistenceContext(unitName = "RetoCrudAppPU")
     private EntityManager em;
 
     public EventFacadeREST() {
