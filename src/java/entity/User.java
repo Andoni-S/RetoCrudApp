@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 //@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 //@DiscriminatorColumn(name="user_type", 
-  //discriminatorType = DiscriminatorType.INTEGER)
+//discriminatorType = DiscriminatorType.INTEGER)
 @NamedQueries({
     @NamedQuery(name = "findAllUsers",
                 query = "SELECT u FROM User u ORDER BY u.username DESC"),
@@ -56,7 +56,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class User implements Serializable{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     private String username;
