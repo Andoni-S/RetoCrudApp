@@ -50,6 +50,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "findGamesByReleaseDate",
             query = "SELECT g FROM Game g WHERE g.releaseDate = :releaseDate")
     ,
+    @NamedQuery(name = "findAllGamesCreatedByAdmin",
+            query = "SELECT g FROM Game g WHERE g.admin.id IN (SELECT a.id FROM Admin a WHERE a.username = :adminUsername)")
+    ,
     @NamedQuery(name = "findGamesByGenreAndReleaseDate",
             query = "SELECT g FROM Game g WHERE g.genre = :genre AND g.releaseDate > (SELECT AVG(g2.releaseDate) FROM Game g2 WHERE g2.genre = :genre)")
 })
