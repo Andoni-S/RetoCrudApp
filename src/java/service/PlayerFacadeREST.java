@@ -6,7 +6,11 @@
 package service;
 
 import entity.Player;
+import entity.Result;
+import entity.Team;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -22,13 +26,13 @@ import javax.ws.rs.core.MediaType;
 
 /**
  *
- * @author Ander Goirigolzarri Iturburu
+ * @author Jagoba Bartolomé Barroso
  */
 @Stateless
 @Path("entity.player")
 public class PlayerFacadeREST extends AbstractFacade<Player> {
 
-    @PersistenceContext(unitName = "RetoCrudAppPU")
+    @PersistenceContext(unitName = "RetoTestingCrudPU")
     private EntityManager em;
 
     public PlayerFacadeREST() {
@@ -88,4 +92,39 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
         return em;
     }
     
+    @GET
+    @Path("team/{name}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Set<Team> findTeamsByName(@PathParam("name") String name) {
+        return super.findTeamsByName(name);
+    }
+    
+    @GET
+    @Path("team/{date}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Set<Team> findTeamsByDate(@PathParam("date") Date date) {
+        return super.findTeamsByDate(date);
+    }
+
+    @GET
+    @Path("team/{coach}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Set<Team> findTeamsByCoach(@PathParam("coach") String coach) {
+        return super.findTeamsByCoach(coach);
+    }
+    
+    @GET
+    @Path("PlayerTeam/{playerId}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Set<Team> findTeamsByPlayerId(@PathParam("playerId") Long playerId) {
+        return super.findTeamsByPlayerId(playerId);
+    }
+
+    @GET
+    @Path("teamevents/{result}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Set<Team> findTeamsWithWins(@PathParam("result") Result result) {
+        return super.findTeamsWithWins(result);
+    }
+
 }
