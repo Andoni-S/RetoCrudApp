@@ -6,6 +6,7 @@
 package service;
 
 import entity.Event;
+import entity.Game;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -20,6 +21,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import java.util.logging.Logger;
+
 /**
  *
  * @author Ander Goirigolzarri Iturburu
@@ -30,6 +33,11 @@ public class EventFacadeREST extends AbstractFacade<Event> {
 
     @PersistenceContext(unitName = "RetoCrudAppPU")
     private EntityManager em;
+
+    /**
+     * Logger for this class.
+     */
+    private Logger LOGGER = Logger.getLogger(AdminFacadeREST.class.getName());
 
     public EventFacadeREST() {
         super(Event.class);
@@ -87,5 +95,75 @@ public class EventFacadeREST extends AbstractFacade<Event> {
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
+    @GET
+    @Path("findEventsByOrganizer/{organizerName}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Event> findEventsByOrganizer(@PathParam("organizerName") String organizerName) throws Exception {
+        List<Event> events = null;
+        try {
+            events = (List) getEntityManager().createNamedQuery("findEventsByOrganizer", Event.class)
+                    .setParameter("name", organizerName).getResultList();
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+        return events;
+    }
+
+    @GET
+    @Path("findEventsByGame/{gameName}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Event> findEventsByGame(@PathParam("gameName") String gameName) throws Exception {
+        List<Event> events = null;
+        try {
+            events = (List) getEntityManager().createNamedQuery("findEventsByOrganizer", Event.class)
+                    .setParameter("name", gameName).getResultList();
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+        return events;
+    }
+
+    @GET
+    @Path("findEventsWonByPlayer/{playerName}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Event> findEventsWonByPlayer(@PathParam("playerName") String playerName) throws Exception {
+        List<Event> events = null;
+        try {
+            events = (List) getEntityManager().createNamedQuery("findEventsByOrganizer", Event.class)
+                    .setParameter("name", playerName).getResultList();
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+        return events;
+    }
+
+    @GET
+    @Path("findEventsWonByTeam/{teamName}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Event> findEventsWonByTeam(@PathParam("teamName") String teamName) throws Exception {
+        List<Event> events = null;
+        try {
+            events = (List) getEntityManager().createNamedQuery("findEventsByOrganizer", Event.class)
+                    .setParameter("name", teamName).getResultList();
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+        return events;
+    }
+
+    @GET
+    @Path("findEventsByONG/{ongName}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Event> findEventsByONG(@PathParam("ongName") String ongName) throws Exception {
+        List<Event> events = null;
+        try {
+            events = (List) getEntityManager().createNamedQuery("findEventsByOrganizer", Event.class)
+                    .setParameter("name", ongName).getResultList();
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+        return events;
+    }
+
 }
