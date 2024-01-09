@@ -114,7 +114,7 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
     }
     
     @GET
-    @Path("team/{name}")
+    @Path("byName/{name}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Set<Team> findTeamsByName(@PathParam("name") String name) {
         try {
@@ -127,7 +127,7 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
     }
     
     @GET
-    @Path("team/{date}")
+    @Path("byDate/{date}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Set<Team> findTeamsByDate(@PathParam("date") Date date) {
         try {
@@ -140,7 +140,7 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
     }
 
     @GET
-    @Path("team/{coach}")
+    @Path("byCoach/{coach}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Set<Team> findTeamsByCoach(@PathParam("coach") String coach) {
         try {
@@ -153,7 +153,7 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
     }
     
     @GET
-    @Path("PlayerTeam/{playerId}")
+    @Path("byPlayerId/{playerId}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Set<Team> findTeamsByPlayerId(@PathParam("playerId") Long playerId) {
         try {
@@ -164,9 +164,9 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
-
+/**
     @GET
-    @Path("teamevents/{result}")
+    @Path("byWins/{result}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Set<Team> findTeamsWithWins(@PathParam("result") Result result) {
          try {
@@ -177,7 +177,7 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
-    
+   **/ 
     @POST
     @Path("createTeam")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
