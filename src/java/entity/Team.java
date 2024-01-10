@@ -32,8 +32,11 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "team", schema = "esportsdb")
 @NamedQueries({
-    @NamedQuery(name = "findAllTeams", query = "SELECT t FROM Team t"), 
-    @NamedQuery(name = "findTeamByPlayerName", query = "SELECT t FROM Team t JOIN t.playersInTeam tp JOIN tp.teamsOfPlayer p WHERE p.name = :playerName")
+    @NamedQuery(name = "findAllTeams", query = "SELECT t FROM Team t")
+    ,
+    @NamedQuery(name= "findTeamsByName", query = "SELECT t FROM Team t WHERE t.name = :name")
+    ,
+    @NamedQuery(name = "findTeamsByPlayerName", query = "SELECT t FROM Team t JOIN t.playersInTeam tp JOIN tp.teamsOfPlayer p WHERE p.name = :playerName")
     ,
     @NamedQuery(name = "findTeamsByDate", query = "SELECT t FROM Team t WHERE t.foundation = :date")
     ,

@@ -14,7 +14,7 @@ import exceptions.ReadException;
 import exceptions.UpdateException;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
@@ -83,18 +83,18 @@ public abstract class AbstractFacade<T> {
      *
      * <p>
      * This method queries the database to retrieve all {@link Team} entities
-     * available. The result is returned as a {@link Set}. If no teams are
-     * found, the Set will be empty.
+     * available. The result is returned as a {@link List}. If no teams are
+     * found, the List will be empty.
      *
-     * @return A {@link Set} of {@link Team} entities representing all teams.
+     * @return A {@link List} of {@link Team} entities representing all teams.
      * @throws ReadException If an error occurs during the retrieval process.
      * Check the log for details.
      */
-    public Set<Team> findAllTeams() throws ReadException {
-        Set<Team> teams = null;
+    public List<Team> findAllTeams() throws ReadException {
+        List<Team> teams = null;
         try {
             LOGGER.info("TeamManager: Finding all teams.");
-            teams = (Set) getEntityManager().createNamedQuery("findAllTeams").getResultList();
+            teams = (List) getEntityManager().createNamedQuery("findAllTeams", Team.class).getResultList();
         } catch (Exception e){
             LOGGER.log(Level.SEVERE, "TeamManager: Exception finding all teams.", e.getMessage());
             throw new ReadException(e.getMessage());
@@ -103,19 +103,19 @@ public abstract class AbstractFacade<T> {
     }
     
     /**
-     * Finds a Set of {@link Team} entities based on the provided team name.
+     * Finds a List of {@link Team} entities based on the provided team name.
      *
      * @param name The name of the team to be found.
-     * @return A {@link Set} of {@link Team} entities matching the specified
-     * team name. If no teams are found, the Set will be empty.
+     * @return A {@link List} of {@link Team} entities matching the specified
+     * team name. If no teams are found, the List will be empty.
      * @throws ReadException If there is any exception during the retrieval
      * process. Check the log for details.
      */
-    public Set<Team> findTeamsByName(String name) throws ReadException {
-        Set<Team> teams = null;
+    public List<Team> findTeamsByName(String name) throws ReadException {
+        List<Team> teams = null;
         try {
-            LOGGER.info("TeamManager: Finding team by id.");
-            teams = (Set) getEntityManager().createNamedQuery("findTeamByPlayerName").setParameter("name", name).getResultList();
+            LOGGER.info("TeamManager: Finding team by name.");
+            teams = (List) getEntityManager().createNamedQuery("findTeamsByName", Team.class).setParameter("name", name).getResultList();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "TeamManager: Exception finding teams by name.", e.getMessage());
             throw new ReadException(e.getMessage());
@@ -124,21 +124,21 @@ public abstract class AbstractFacade<T> {
     }
 
     /**
-     * Finds a Set of {@link Team} entities based on the provided foundation
+     * Finds a List of {@link Team} entities based on the provided foundation
      * date.
      *
      * @param date The foundation date of the teams to be found.
-     * @return A {@link Set} of {@link Team} entities whose foundation date
-     * matches the specified value. If no teams are found, the Set will be
+     * @return A {@link List} of {@link Team} entities whose foundation date
+     * matches the specified value. If no teams are found, the List will be
      * empty.
      * @throws ReadException If there is any exception during the retrieval
      * process. Check the log for details.
      */
-    public Set<Team> findTeamsByDate(Date date) throws ReadException {
-        Set<Team> teams = null;
+    public List<Team> findTeamsByDate(Date date) throws ReadException {
+        List<Team> teams = null;
         try {
             LOGGER.info("TeamManager: Finding team by date.");
-            teams = (Set) getEntityManager().createNamedQuery("findTeamByDate").setParameter("date", date).getResultList();
+            teams = (List) getEntityManager().createNamedQuery("findTeamsByDate", Team.class).setParameter("date", date).getResultList();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "TeamManager: Exception finding team by date.", e.getMessage());
             throw new ReadException(e.getMessage());
@@ -147,19 +147,19 @@ public abstract class AbstractFacade<T> {
     }
 
     /**
-     * Finds a Set of {@link Team} entities based on the provided coach name.
+     * Finds a List of {@link Team} entities based on the provided coach name.
      *
      * @param coach The name of the coach associated with the teams to be found.
-     * @return A {@link Set} of {@link Team} entities whose coach name matches
-     * the specified value. If no teams are found, the Set will be empty.
+     * @return A {@link List} of {@link Team} entities whose coach name matches
+     * the specified value. If no teams are found, the List will be empty.
      * @throws ReadException If there is any exception during the retrieval
      * process. Check the log for details.
      */
-    public Set<Team> findTeamsByCoach(String coach) throws ReadException {
-        Set<Team> teams = null;
+    public List<Team> findTeamsByCoach(String coach) throws ReadException {
+        List<Team> teams = null;
         try {
             LOGGER.info("TeamManager: Finding team by coach.");
-            teams = (Set) getEntityManager().createNamedQuery("findTeamByCoach").setParameter("coach", coach).getResultList();
+            teams = (List) getEntityManager().createNamedQuery("findTeamsByCoach", Team.class).setParameter("coach", coach).getResultList();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "TeamManager: Exception finding team by coach.", e.getMessage());
             throw new ReadException(e.getMessage());
@@ -173,33 +173,33 @@ public abstract class AbstractFacade<T> {
      * @param id The ID of the team to be found.
      * @return The {@link Team} object containing team data.
      */
-    public Set<Team> findTeamsByPlayerId(Long id) throws ReadException {
-        Set<Team> teams = null;
+    public List<Team> findTeamsByPlayerName(String name) throws ReadException {
+        List<Team> teams = null;
         try {
-            LOGGER.info("TeamManager: Finding team by id.");
-            teams = (Set) getEntityManager().createNamedQuery("findTeamByPlayerId").setParameter("playerId", id).getResultList();
+            LOGGER.info("TeamManager: Finding team by name.");
+            teams = (List) getEntityManager().createNamedQuery("findTeamsByPlayerName", Team.class).setParameter("name", name).getResultList();
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "TeamManager: Exception finding team by player id.", e.getMessage());
+            LOGGER.log(Level.SEVERE, "TeamManager: Exception finding team by player name.", e.getMessage());
             throw new ReadException(e.getMessage());
         }
         return teams;
     }
    
     /**
-     * Finds a Set of {@link Team} entities based on the provided result
+     * Finds a List of {@link Team} entities based on the provided result
      * indicating wins.
      *
      * @param result The result associated with the teams to be found.
-     * @return A {@link Set} of {@link Team} entities with the specified result
-     * indicating wins. If no teams are found, the Set will be empty.
+     * @return A {@link List} of {@link Team} entities with the specified result
+     * indicating wins. If no teams are found, the List will be empty.
      * @throws ReadException If there is any exception during the retrieval
      * process. Check the log for details.
      */
-    public Set<Team> findTeamsWithWins(Result result) throws ReadException {
-        Set<Team> teams = null;
+    public List<Team> findTeamsWithWins(Result result) throws ReadException {
+        List<Team> teams = null;
         try {
             LOGGER.info("TeamManager: Finding team wins by id.");
-            teams = (Set)getEntityManager().createNamedQuery("findTeamWithWins").setParameter("result", result).getResultList();
+            teams = (List)getEntityManager().createNamedQuery("findTeamsWithWins", Team.class).setParameter("result", result).getResultList();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "TeamManager: Exception finding team with wins by id.", e.getMessage());
             throw new ReadException(e.getMessage());

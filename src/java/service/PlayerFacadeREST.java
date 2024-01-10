@@ -14,7 +14,6 @@ import exceptions.ReadException;
 import exceptions.UpdateException;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -101,9 +100,10 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
     }
     
     @GET
+    @Override
     @Path("allTeams")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Set<Team> findAllTeams() throws ReadException {
+    public List<Team> findAllTeams() throws ReadException {
         try {
             LOGGER.info("Fetching all games");
             return super.findAllTeams();
@@ -114,9 +114,10 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
     }
     
     @GET
+    @Override
     @Path("byName/{name}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Set<Team> findTeamsByName(@PathParam("name") String name) {
+    public List<Team> findTeamsByName(@PathParam("name") String name) {
         try {
             LOGGER.info("Fetching all games");
             return super.findTeamsByName(name);
@@ -127,9 +128,10 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
     }
     
     @GET
+    @Override
     @Path("byDate/{date}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Set<Team> findTeamsByDate(@PathParam("date") Date date) {
+    public List<Team> findTeamsByDate(@PathParam("date") Date date) {
         try {
             LOGGER.info("Fetching all games");
             return super.findTeamsByDate(date);
@@ -140,9 +142,10 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
     }
 
     @GET
+    @Override
     @Path("byCoach/{coach}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Set<Team> findTeamsByCoach(@PathParam("coach") String coach) {
+    public List<Team> findTeamsByCoach(@PathParam("coach") String coach) {
         try {
             LOGGER.info("Fetching all games");
             return super.findTeamsByCoach(coach);
@@ -153,12 +156,13 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
     }
     
     @GET
-    @Path("byPlayerId/{playerId}")
+    @Override
+    @Path("byPlayerName/playersInTeam/{playerId}/player/{name}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Set<Team> findTeamsByPlayerId(@PathParam("playerId") Long playerId) {
+    public List<Team> findTeamsByPlayerName(@PathParam("name") String name) {
         try {
             LOGGER.info("Fetching all games");
-            return super.findTeamsByPlayerId(playerId);
+            return super.findTeamsByPlayerName(name);
         } catch (ReadException ex) {
             LOGGER.info("Error fetching all games");
             throw new InternalServerErrorException(ex.getMessage());
@@ -166,9 +170,10 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
     }
 
     @GET
-    @Path("byWins/{result}")
+    @Override
+    @Path("byWins/teamevents/{result}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Set<Team> findTeamsWithWins(@PathParam("result") Result result) {
+    public List<Team> findTeamsWithWins(@PathParam("result") Result result) {
          try {
             LOGGER.info("Fetching all games");
             return super.findTeamsWithWins(result);
