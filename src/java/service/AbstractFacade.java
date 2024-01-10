@@ -30,11 +30,6 @@ public abstract class AbstractFacade<T> {
      * Logger for the class.
      */
     private static final Logger LOGGER = Logger.getLogger("java");
-    /**
-     * Entity manager object.
-     */
-    @PersistenceContext
-    private EntityManager em;
     
     private Class<T> entityClass;
 
@@ -120,7 +115,7 @@ public abstract class AbstractFacade<T> {
         Set<Team> teams = null;
         try {
             LOGGER.info("TeamManager: Finding team by id.");
-            teams = (Set) em.createNamedQuery("findTeamByPlayerName").setParameter("name", name).getResultList();
+            teams = (Set) getEntityManager().createNamedQuery("findTeamByPlayerName").setParameter("name", name).getResultList();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "TeamManager: Exception finding teams by name.", e.getMessage());
             throw new ReadException(e.getMessage());
@@ -143,7 +138,7 @@ public abstract class AbstractFacade<T> {
         Set<Team> teams = null;
         try {
             LOGGER.info("TeamManager: Finding team by date.");
-            teams = (Set) em.createNamedQuery("findTeamByDate").setParameter("date", date).getResultList();
+            teams = (Set) getEntityManager().createNamedQuery("findTeamByDate").setParameter("date", date).getResultList();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "TeamManager: Exception finding team by date.", e.getMessage());
             throw new ReadException(e.getMessage());
@@ -164,7 +159,7 @@ public abstract class AbstractFacade<T> {
         Set<Team> teams = null;
         try {
             LOGGER.info("TeamManager: Finding team by coach.");
-            teams = (Set) em.createNamedQuery("findTeamByCoach").setParameter("coach", coach).getResultList();
+            teams = (Set) getEntityManager().createNamedQuery("findTeamByCoach").setParameter("coach", coach).getResultList();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "TeamManager: Exception finding team by coach.", e.getMessage());
             throw new ReadException(e.getMessage());
@@ -182,7 +177,7 @@ public abstract class AbstractFacade<T> {
         Set<Team> teams = null;
         try {
             LOGGER.info("TeamManager: Finding team by id.");
-            teams = (Set) em.createNamedQuery("findTeamByPlayerId").setParameter("playerId", id).getResultList();
+            teams = (Set) getEntityManager().createNamedQuery("findTeamByPlayerId").setParameter("playerId", id).getResultList();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "TeamManager: Exception finding team by player id.", e.getMessage());
             throw new ReadException(e.getMessage());
@@ -204,14 +199,14 @@ public abstract class AbstractFacade<T> {
         Set<Team> teams = null;
         try {
             LOGGER.info("TeamManager: Finding team wins by id.");
-            teams = (Set) em.createNamedQuery("findTeamWithWins").setParameter("result", result).getResultList();
+            teams = (Set)getEntityManager().createNamedQuery("findTeamWithWins").setParameter("result", result).getResultList();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "TeamManager: Exception finding team with wins by id.", e.getMessage());
             throw new ReadException(e.getMessage());
         }
         return teams;
     }   
-    
+    /**
     /**
      * Creates a new Team.
      *
@@ -222,8 +217,8 @@ public abstract class AbstractFacade<T> {
     @Transactional
     public Team createTeam(Team newTeam) throws CreateException {
         try {
-            em.persist(newTeam);
-            em.flush();
+            getEntityManager().persist(newTeam);
+            getEntityManager().flush();
             return newTeam;
         } catch (Exception e) {
             throw new CreateException(e.getMessage());
@@ -240,8 +235,8 @@ public abstract class AbstractFacade<T> {
     @Transactional
     public Team updateTeam(Team teamToUpdate) throws UpdateException {
         try {
-            Team updatedTeam = em.merge(teamToUpdate);
-            em.flush();
+            Team updatedTeam = (Team) getEntityManager().merge(teamToUpdate);
+            getEntityManager().flush();
             return updatedTeam;
         } catch (Exception e) {
             throw new UpdateException(e.getMessage());
@@ -257,11 +252,12 @@ public abstract class AbstractFacade<T> {
     @Transactional
     public void deleteTeam(Team teamToDelete) throws DeleteException {
         try {
-            teamToDelete = em.merge(teamToDelete);
-            em.remove(teamToDelete);
-            em.flush();
+            teamToDelete = getEntityManager().merge(teamToDelete);
+            getEntityManager().remove(teamToDelete);
+            getEntityManager().flush();
         } catch (Exception e) {
             throw new DeleteException(e.getMessage());
         }
     }
+    
 }

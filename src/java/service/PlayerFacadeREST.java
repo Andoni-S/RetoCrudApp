@@ -40,7 +40,7 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
 
     private static final Logger LOGGER = Logger.getLogger("java");
     
-    @PersistenceContext(unitName = "RetoAppCrudPU")
+    @PersistenceContext(unitName = "RetoCrudAppPU")
     private EntityManager em;
 
     public PlayerFacadeREST() {
@@ -164,7 +164,7 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
-/**
+
     @GET
     @Path("byWins/{result}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -177,8 +177,9 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
-   **/ 
+   
     @POST
+    @Override
     @Path("createTeam")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})

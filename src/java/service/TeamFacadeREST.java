@@ -22,7 +22,7 @@ import javax.ws.rs.core.MediaType;
 
 /**
  *
- * @author Ander Goirigolzarri Iturburu
+ * @author Jagoba Bartolomé Barroso
  */
 @Stateless
 @Path("entity.team")
