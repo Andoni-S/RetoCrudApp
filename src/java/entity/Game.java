@@ -127,6 +127,7 @@ public class Game implements Serializable {
     /**
      * @return the admin
      */
+    @XmlTransient
     public Admin getAdmin() {
         return admin;
     }

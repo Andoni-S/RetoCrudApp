@@ -56,6 +56,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class User implements Serializable{
 
     @Id
+    @GeneratedValue(strategy=GenerationType.TABLE)
     private Long id;
     
     private String username;
