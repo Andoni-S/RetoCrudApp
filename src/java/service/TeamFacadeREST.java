@@ -5,14 +5,25 @@
  */
 package service;
 
+import entity.Result;
 import entity.Team;
+import exceptions.CreateException;
+import exceptions.DeleteException;
+import exceptions.ReadException;
+import exceptions.UpdateException;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -28,7 +39,9 @@ import javax.ws.rs.core.MediaType;
 @Path("entity.team")
 public class TeamFacadeREST extends AbstractFacade<Team> {
 
-    @PersistenceContext(unitName = "RetoCrudAppPU")
+     private static final Logger LOGGER = Logger.getLogger("java");
+    
+    @PersistenceContext(unitName = "RetoAppCrudPU")
     private EntityManager em;
 
     public TeamFacadeREST() {
@@ -88,4 +101,134 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
         return em;
     }
     
+     
+    @GET
+    @Override
+    @Path("allTeams")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Team> findAllTeams() throws ReadException {
+        try {
+            LOGGER.info("Fetching all games");
+            return super.findAllTeams();
+        } catch (ReadException ex) {
+            LOGGER.info("Error fetching all games");
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
+    
+    @GET
+    @Override
+    @Path("byName/{name}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Team> findTeamsByName(@PathParam("name") String name) {
+        try {
+            LOGGER.info("Fetching all games");
+            return super.findTeamsByName(name);
+        } catch (ReadException ex) {
+            LOGGER.info("Error fetching all games");
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
+    
+    @GET
+    @Path("byDate/{date}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Team> findTeamsByDate(@PathParam("date") String date) {
+        try {
+            LOGGER.info("Fetching all games");
+            OffsetDateTime offsetDateTime = OffsetDateTime.parse(date);
+            Date newDate = Date.from(offsetDateTime.toInstant());
+            return super.findTeamsByDate(newDate);
+        } catch (ReadException ex) {
+            LOGGER.info("Error fetching all games");
+            throw new InternalServerErrorException(ex.getMessage());
+        }  
+    }
+
+    @GET
+    @Override
+    @Path("byCoach/{coach}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Team> findTeamsByCoach(@PathParam("coach") String coach) {
+        try {
+            LOGGER.info("Fetching all games");
+            return super.findTeamsByCoach(coach);
+        } catch (ReadException ex) {
+            LOGGER.info("Error fetching all games");
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
+    
+    @GET
+    @Override
+    @Path("byPlayerName/playersInTeam/{playerId}/player/{name}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Team> findTeamsByPlayerName(@PathParam("name") String name) {
+        try {
+            LOGGER.info("Fetching all games");
+            return super.findTeamsByPlayerName(name);
+        } catch (ReadException ex) {
+            LOGGER.info("Error fetching all games");
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
+
+    @GET
+    @Override
+    @Path("Won/teamevents/{result}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Team> findTeamsWithWins(@PathParam("result") Result result) {
+         try {
+            LOGGER.info("Fetching all teams that won");
+            return super.findTeamsWithWins(result);
+        } catch (ReadException ex) {
+            LOGGER.info("Error fetching all teams that won");
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
+    
+    @POST
+    @Override
+    @Path("createTeam")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Team createTeam (Team newTeam) {
+        try {
+            LOGGER.info("Creating a new team");
+            return super.createTeam(newTeam);
+        } catch (CreateException ex) {
+            LOGGER.info("Error creating a new team");
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
+
+    @PUT
+    @Override
+    @Path("updateTeam")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Team updateTeam(Team teamToUpdate) {
+        try {
+            LOGGER.info("Updating a team");
+            return super.updateTeam(teamToUpdate);
+        } catch (UpdateException ex) {
+            LOGGER.info("Error updating a team");
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
+
+    @DELETE
+    @Override
+    @Path("deleteTeam")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public void deleteTeam(Team teamToDelete) {
+        try {
+            LOGGER.info("Deleting a team");
+            super.deleteTeam(teamToDelete);
+        } catch (DeleteException ex) {
+            LOGGER.info("Error deleting a team");
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
 }
