@@ -6,6 +6,7 @@
 package service;
 
 import static com.sun.xml.ws.spi.db.BindingContextFactory.LOGGER;
+import entity.Player;
 import entity.Result;
 import entity.Team;
 import exceptions.CreateException;
@@ -206,6 +207,29 @@ public abstract class AbstractFacade<T> {
         }
         return teams;
     }   
+    
+    /**
+ * Retrieves a list of teams associated with a player by their name.
+ *
+ * This method queries the database to find teams associated with a player
+ * based on the provided player name.
+ *
+ * @param name The name of the player for whom teams are to be retrieved.
+ * @return A list of teams associated with the specified player.
+ * @throws ReadException If an error occurs while retrieving the teams from the database.
+ */
+    public List<Team> findMyTeams(Player player) throws ReadException {
+        List<Team> teams = null;
+        try {
+            LOGGER.info("TeamManager: Finding the player's teams.");
+            teams = (List) getEntityManager().createNamedQuery("findMyTeams", Team.class).setParameter("player", player).getResultList();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "TeamManager: Exception finding the player's teams.", e.getMessage());
+            throw new ReadException(e.getMessage());
+        }
+        return teams;
+    }
+
     /**
     /**
      * Creates a new Team.

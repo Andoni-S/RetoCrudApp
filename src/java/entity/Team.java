@@ -43,6 +43,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "findTeamsByCoach", query = "SELECT t FROM Team t WHERE t.coach = :coach")
     ,
     @NamedQuery(name = "findTeamsWithWins", query = "SELECT t from Team t JOIN t.teamevents te WHERE te.result = :result")
+    ,
+    @NamedQuery(name = "findMyTeams", query = "SELECT t from Team t JOIN t.playersInTeam tp WHERE tp = :player")
 })
 @XmlRootElement
 public class Team implements Serializable {

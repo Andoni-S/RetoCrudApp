@@ -39,7 +39,7 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
 
     private static final Logger LOGGER = Logger.getLogger("java");
     
-    @PersistenceContext(unitName = "RetoCrudAppPU")
+    @PersistenceContext(unitName = "RetoAppCrudPU")
     private EntityManager em;
 
     public PlayerFacadeREST() {
@@ -98,134 +98,17 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
     protected EntityManager getEntityManager() {
         return em;
     }
-    
-    @GET
-    @Override
-    @Path("allTeams")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Team> findAllTeams() throws ReadException {
-        try {
-            LOGGER.info("Fetching all games");
-            return super.findAllTeams();
-        } catch (ReadException ex) {
-            LOGGER.info("Error fetching all games");
-            throw new InternalServerErrorException(ex.getMessage());
-        }
-    }
-    
-    @GET
-    @Override
-    @Path("byName/{name}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Team> findTeamsByName(@PathParam("name") String name) {
-        try {
-            LOGGER.info("Fetching all games");
-            return super.findTeamsByName(name);
-        } catch (ReadException ex) {
-            LOGGER.info("Error fetching all games");
-            throw new InternalServerErrorException(ex.getMessage());
-        }
-    }
-    
-    @GET
-    @Override
-    @Path("byDate/{date}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Team> findTeamsByDate(@PathParam("date") Date date) {
-        try {
-            LOGGER.info("Fetching all games");
-            return super.findTeamsByDate(date);
-        } catch (ReadException ex) {
-            LOGGER.info("Error fetching all games");
-            throw new InternalServerErrorException(ex.getMessage());
-        }  
-    }
 
     @GET
-    @Override
-    @Path("byCoach/{coach}")
+    @Path("MyTeams/{teamsOfPlayer}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Team> findTeamsByCoach(@PathParam("coach") String coach) {
+    public List<Team> findMyTeams(@PathParam("player") Player player) {
         try {
-            LOGGER.info("Fetching all games");
-            return super.findTeamsByCoach(coach);
+            LOGGER.info("Fetching all teams of player");
+            return super.findMyTeams(player);
         } catch (ReadException ex) {
-            LOGGER.info("Error fetching all games");
+            LOGGER.info("Error fetching all teams of player");
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
-    
-    @GET
-    @Override
-    @Path("byPlayerName/playersInTeam/{playerId}/player/{name}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Team> findTeamsByPlayerName(@PathParam("name") String name) {
-        try {
-            LOGGER.info("Fetching all games");
-            return super.findTeamsByPlayerName(name);
-        } catch (ReadException ex) {
-            LOGGER.info("Error fetching all games");
-            throw new InternalServerErrorException(ex.getMessage());
-        }
-    }
-
-    @GET
-    @Override
-    @Path("byWins/teamevents/{result}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Team> findTeamsWithWins(@PathParam("result") Result result) {
-         try {
-            LOGGER.info("Fetching all games");
-            return super.findTeamsWithWins(result);
-        } catch (ReadException ex) {
-            LOGGER.info("Error fetching all games");
-            throw new InternalServerErrorException(ex.getMessage());
-        }
-    }
-   
-    @POST
-    @Override
-    @Path("createTeam")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Team createTeam (Team newTeam) {
-        try {
-            LOGGER.info("Creating a new team");
-            return super.createTeam(newTeam);
-        } catch (CreateException ex) {
-            LOGGER.info("Error creating a new team");
-            throw new InternalServerErrorException(ex.getMessage());
-        }
-    }
-
-    @PUT
-    @Override
-    @Path("updateTeam")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Team updateTeam(Team teamToUpdate) {
-        try {
-            LOGGER.info("Updating a team");
-            return super.updateTeam(teamToUpdate);
-        } catch (UpdateException ex) {
-            LOGGER.info("Error updating a team");
-            throw new InternalServerErrorException(ex.getMessage());
-        }
-    }
-
-    @DELETE
-    @Override
-    @Path("deleteTeam")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void deleteTeam(Team teamToDelete) {
-        try {
-            LOGGER.info("Deleting a team");
-            super.deleteTeam(teamToDelete);
-        } catch (DeleteException ex) {
-            LOGGER.info("Error deleting a team");
-            throw new InternalServerErrorException(ex.getMessage());
-        }
-    }
-
 }
