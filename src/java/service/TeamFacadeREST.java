@@ -41,7 +41,7 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
 
      private static final Logger LOGGER = Logger.getLogger("java");
     
-    @PersistenceContext(unitName = "RetoAppCrudPU")
+    @PersistenceContext(unitName = "RetoCrudAppPU")
     private EntityManager em;
 
     public TeamFacadeREST() {
@@ -175,12 +175,12 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
 
     @GET
     @Override
-    @Path("Won/teamevents/{result}")
+    @Path("Won/teamevents")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Team> findTeamsWithWins(@PathParam("result") Result result) {
+    public List<Team> findTeamsWithWins() {
          try {
             LOGGER.info("Fetching all teams that won");
-            return super.findTeamsWithWins(result);
+            return super.findTeamsWithWins();
         } catch (ReadException ex) {
             LOGGER.info("Error fetching all teams that won");
             throw new InternalServerErrorException(ex.getMessage());
@@ -232,3 +232,4 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
         }
     }
 }
+

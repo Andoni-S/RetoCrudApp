@@ -27,8 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Andoni Sanz
  */
 @Entity
-@Table(name="user",schema="esportsdb")
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.JOINED)
 //@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 //@DiscriminatorColumn(name="user_type", 
 //discriminatorType = DiscriminatorType.INTEGER)
@@ -52,10 +51,12 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "findUsersBornAfterAvgBirthDate",
                 query = "SELECT u FROM User u WHERE u.birthDate > (SELECT AVG(u2.birthDate) FROM User u2)")
 })
+@Table(name="user",schema="esportsdb")
 @XmlRootElement
 public class User implements Serializable{
 
     @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
     
     private String username;

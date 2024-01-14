@@ -196,11 +196,12 @@ public abstract class AbstractFacade<T> {
      * @throws ReadException If there is any exception during the retrieval
      * process. Check the log for details.
      */
-    public List<Team> findTeamsWithWins(Result result) throws ReadException {
+    public List<Team> findTeamsWithWins() throws ReadException {
+        Result result = null;
         List<Team> teams = null;
         try {
             LOGGER.info("TeamManager: Finding team wins by id.");
-            teams = (List)getEntityManager().createNamedQuery("findTeamsWithWins", Team.class).setParameter("result", result).getResultList();
+            teams = (List)getEntityManager().createNamedQuery("findTeamsWithWins", Team.class).setParameter("result", result.Won).getResultList();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "TeamManager: Exception finding team with wins by id.", e.getMessage());
             throw new ReadException(e.getMessage());
