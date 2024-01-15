@@ -5,6 +5,8 @@
  */
 package entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
@@ -77,6 +79,8 @@ public class Game implements Serializable {
     private PVPType PVPType;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonSerialize(as=Date.class)
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ssXXX")
     private Date releaseDate;
 
     public Long getId() {
@@ -130,6 +134,7 @@ public class Game implements Serializable {
     /**
      * @return the admin
      */
+    @XmlTransient
     public Admin getAdmin() {
         return admin;
     }
