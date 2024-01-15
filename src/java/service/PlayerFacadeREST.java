@@ -6,13 +6,8 @@
 package service;
 
 import entity.Player;
-import entity.Result;
 import entity.Team;
-import exceptions.CreateException;
-import exceptions.DeleteException;
 import exceptions.ReadException;
-import exceptions.UpdateException;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
@@ -36,10 +31,10 @@ import javax.ws.rs.core.MediaType;
 @Stateless
 @Path("entity.player")
 public class PlayerFacadeREST extends AbstractFacade<Player> {
-
+ 
     private static final Logger LOGGER = Logger.getLogger("java");
     
-    @PersistenceContext(unitName = "RetoAppCrudPU")
+    @PersistenceContext(unitName = "RetoCrudAppPU")
     private EntityManager em;
 
     public PlayerFacadeREST() {
@@ -98,7 +93,7 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
     protected EntityManager getEntityManager() {
         return em;
     }
-
+    
     @GET
     @Path("MyTeams/{teamsOfPlayer}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})

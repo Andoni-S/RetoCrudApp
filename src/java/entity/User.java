@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Andoni Sanz
  */
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 //@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 //@DiscriminatorColumn(name="user_type", 
 //discriminatorType = DiscriminatorType.INTEGER)
@@ -56,7 +56,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class User implements Serializable{
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.TABLE)
     private Long id;
     
     private String username;

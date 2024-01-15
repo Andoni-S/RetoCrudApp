@@ -24,7 +24,7 @@ import javax.ws.rs.core.PathSegment;
 
 /**
  *
- * @author Ander Goirigolzarri Iturburu
+ * @author Jagoba Bartolomé Barroso
  */
 @Stateless
 @Path("entity.teamevent")
