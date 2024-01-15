@@ -36,4 +36,18 @@ public class Admin extends User {
     public void setGames(Set<Game> games) {
         this.games = games;
     }
+
+    /**
+     * @return the entryDate
+     */
+    public Date getEntryDate() {
+        return entryDate;
+    }
+
+    /**
+     * @param entryDate the entryDate to set
+     */
+    public void setEntryDate(Date entryDate) {
+        this.entryDate = entryDate;
+    }
 }
