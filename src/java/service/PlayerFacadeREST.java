@@ -8,6 +8,7 @@ package service;
 import entity.Player;
 import entity.Team;
 import exceptions.ReadException;
+import exceptions.UpdateException;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
@@ -102,6 +103,19 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
             LOGGER.info("Fetching all teams of player");
             return super.findMyTeams(player);
         } catch (ReadException ex) {
+            LOGGER.info("Error fetching all teams of player");
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
+    
+    @PUT
+    @Path("JoinTeam/{player}/{team}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public void joinTeam(@PathParam("player")Player player, @PathParam("team") Team team) {
+        try {
+            LOGGER.info("Fetching all teams of player");
+            super.joinTeam(player, team);
+        } catch (UpdateException ex) {
             LOGGER.info("Error fetching all teams of player");
             throw new InternalServerErrorException(ex.getMessage());
         }

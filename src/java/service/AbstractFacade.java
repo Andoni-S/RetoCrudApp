@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
@@ -186,7 +187,7 @@ public abstract class AbstractFacade<T> {
         }
         return teams;
     }
-   
+
     /**
      * Finds a List of {@link Team} entities based on the provided result
      * indicating wins.
@@ -202,24 +203,39 @@ public abstract class AbstractFacade<T> {
         List<Team> teams = null;
         try {
             LOGGER.info("TeamManager: Finding team wins by id.");
-            teams = (List)getEntityManager().createNamedQuery("findTeamsWithWins", Team.class).setParameter("result", result.Won).getResultList();
+            teams = (List) getEntityManager().createNamedQuery("findTeamsWithWins", Team.class).setParameter("result", result.Won).getResultList();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "TeamManager: Exception finding team with wins by id.", e.getMessage());
             throw new ReadException(e.getMessage());
         }
         return teams;
-    }   
+    }
+
+    public void joinTeam(Player player, Team team) throws UpdateException {
+        
+        try {
+            LOGGER.info("TeamManager: Finding player's teams.");
+            player.getTeamsOfPlayer().add(team);
+            getEntityManager().merge(player);
+            getEntityManager().flush();
+            LOGGER.info("TeamManager: List of player's teams updated.");
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "TeamManager: Exception finding team player's teams.", e.getMessage());
+            throw new UpdateException(e.getMessage());
+        }
+    }
     
     /**
- * Retrieves a list of teams associated with a player by their name.
- *
- * This method queries the database to find teams associated with a player
- * based on the provided player name.
- *
- * @param name The name of the player for whom teams are to be retrieved.
- * @return A list of teams associated with the specified player.
- * @throws ReadException If an error occurs while retrieving the teams from the database.
- */
+     * Retrieves a list of teams associated with a player by their name.
+     *
+     * This method queries the database to find teams associated with a player
+     * based on the provided player name.
+     *
+     * @param name The name of the player for whom teams are to be retrieved.
+     * @return A list of teams associated with the specified player.
+     * @throws ReadException If an error occurs while retrieving the teams from
+     * the database.
+     */
     public List<Team> findMyTeams(Player player) throws ReadException {
         List<Team> teams = null;
         try {
