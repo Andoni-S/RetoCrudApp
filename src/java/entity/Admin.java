@@ -6,9 +6,16 @@
 package entity;
 
 import java.util.Date;
+import java.util.Objects;
 import java.util.Set;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -17,8 +24,10 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author Andoni Sanz
  */
+/*@Entity
+@Table(name = "admin", schema = "esportsdb")*/
 @Entity
-@Table(name = "admin", schema = "esportsdb")
+@DiscriminatorValue("Admin")
 @XmlRootElement
 public class Admin extends User {
 
@@ -27,8 +36,7 @@ public class Admin extends User {
     @OneToMany(mappedBy = "admin")
     private Set<Game> games;
     
-    
-    @XmlTransient
+    //@XmlTransient
     public Set<Game> getGames() {
         return games;
     }
@@ -37,17 +45,35 @@ public class Admin extends User {
         this.games = games;
     }
 
-    /**
-     * @return the entryDate
-     */
     public Date getEntryDate() {
         return entryDate;
     }
 
-    /**
-     * @param entryDate the entryDate to set
-     */
     public void setEntryDate(Date entryDate) {
         this.entryDate = entryDate;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 53 * hash + Objects.hashCode(this.entryDate);
+        hash = 53 * hash + Objects.hashCode(this.games);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Admin other = (Admin) obj;
+        return true;
+    }
+    
 }

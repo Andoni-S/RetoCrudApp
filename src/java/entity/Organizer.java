@@ -2,6 +2,7 @@ package entity;
 
 import java.util.Objects;
 import java.util.Set;
+import javax.persistence.DiscriminatorValue;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -15,8 +16,10 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author Ander Goirigolzarri Iturburu
  */
+
+//@Table(name = "organizer", schema = "esportsdb")
 @Entity
-@Table(name = "organizer", schema = "esportsdb")
+@DiscriminatorValue("Organizer")
 @XmlRootElement
 public class Organizer extends User {
 
