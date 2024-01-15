@@ -5,10 +5,14 @@
  */
 package entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,6 +21,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -27,10 +32,10 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Andoni Sanz
  */
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-//@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-//@DiscriminatorColumn(name="user_type", 
-//discriminatorType = DiscriminatorType.INTEGER)
+@Table(name="user",schema="esportsdb")
+//@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)*/
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "user_type",discriminatorType = DiscriminatorType.STRING)
 @NamedQueries({
     @NamedQuery(name = "findAllUsers",
                 query = "SELECT u FROM User u ORDER BY u.username DESC"),
@@ -51,12 +56,11 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "findUsersBornAfterAvgBirthDate",
                 query = "SELECT u FROM User u WHERE u.birthDate > (SELECT AVG(u2.birthDate) FROM User u2)")
 })
-@Table(name="user",schema="esportsdb")
 @XmlRootElement
 public class User implements Serializable{
 
     @Id
-    @GeneratedValue(strategy=GenerationType.TABLE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     private String username;
@@ -67,6 +71,8 @@ public class User implements Serializable{
     private String name;
     private String surnames;
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonSerialize(as=Date.class)
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ssXXX")
     private Date birthDate;
   
     public Long getId() {

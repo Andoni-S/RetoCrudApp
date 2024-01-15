@@ -5,6 +5,8 @@
  */
 package entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
@@ -50,6 +52,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "findGamesByReleaseDate",
             query = "SELECT g FROM Game g WHERE g.releaseDate = :releaseDate")
     ,
+    @NamedQuery(name = "findAllGamesCreatedByAdmin",
+            query = "SELECT g FROM Game g WHERE g.admin.id IN (SELECT a.id FROM Admin a WHERE a.username = :adminUsername)")
+    ,
     @NamedQuery(name = "findGamesByGenreAndReleaseDate",
             query = "SELECT g FROM Game g WHERE g.genre = :genre AND g.releaseDate > (SELECT AVG(g2.releaseDate) FROM Game g2 WHERE g2.genre = :genre)")
 })
@@ -74,6 +79,8 @@ public class Game implements Serializable {
     private PVPType PVPType;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonSerialize(as=Date.class)
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ssXXX")
     private Date releaseDate;
 
     public Long getId() {
@@ -127,6 +134,7 @@ public class Game implements Serializable {
     /**
      * @return the admin
      */
+    @XmlTransient
     public Admin getAdmin() {
         return admin;
     }
