@@ -13,29 +13,30 @@ import javax.persistence.Entity;
 import static javax.persistence.FetchType.EAGER;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
- *
+ * "INSERT INTO PlayerTeam (SELECT FROM Player p WHERE p.id VALUES (:playerId, :teamId)"
  * @author Jagoba Bartolomé Barroso
  */
 
-//@Table(name = "player", schema = "esportsdb")
-/*@NamedQueries({
-    @NamedQuery(name = "findPlayerByLevel", query = "SELECT p FROM player p WHERE p.level = :level")
-})*/
+@Table(name = "player", schema = "esportsdb")
+@NamedQueries({
+    @NamedQuery(name = "findPlayer", query = "SELECT p FROM Player p WHERE p.id = :playerId")
+})
 //@DiscriminatorValue("1")
 @Entity
 @DiscriminatorValue("Player")
 @XmlRootElement
 public class Player extends User {
 
-    @ManyToMany
-    @JoinTable(name = "PlayerTeam", schema = "esportsdb")
-    private Set<Team> teamsOfPlayer;
+    @OneToMany(cascade = ALL, mappedBy = "player", fetch = EAGER)
+    private Set<PlayerTeam> teamsOfPlayer;
 
     @OneToMany(cascade = ALL, mappedBy = "player", fetch = EAGER)
     private Set<PlayerEvent> playerevent;

@@ -109,10 +109,10 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Team> findAllTeams() throws ReadException {
         try {
-            LOGGER.info("Fetching all games");
+            LOGGER.info("Fetching all teams");
             return super.findAllTeams();
         } catch (ReadException ex) {
-            LOGGER.info("Error fetching all games");
+            LOGGER.info("Error fetching all teams");
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
@@ -123,10 +123,10 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Team> findTeamsByName(@PathParam("name") String name) {
         try {
-            LOGGER.info("Fetching all games");
+            LOGGER.info("Fetching teams by name");
             return super.findTeamsByName(name);
         } catch (ReadException ex) {
-            LOGGER.info("Error fetching all games");
+            LOGGER.info("Error fetching by name");
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
@@ -136,12 +136,12 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Team> findTeamsByDate(@PathParam("date") String date) {
         try {
-            LOGGER.info("Fetching all games");
+            LOGGER.info("Fetching teams by date");
             OffsetDateTime offsetDateTime = OffsetDateTime.parse(date);
             Date newDate = Date.from(offsetDateTime.toInstant());
             return super.findTeamsByDate(newDate);
         } catch (ReadException ex) {
-            LOGGER.info("Error fetching all games");
+            LOGGER.info("Error fetching teams by date");
             throw new InternalServerErrorException(ex.getMessage());
         }  
     }
@@ -152,10 +152,10 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Team> findTeamsByCoach(@PathParam("coach") String coach) {
         try {
-            LOGGER.info("Fetching all games");
+            LOGGER.info("Fetching teams by coach");
             return super.findTeamsByCoach(coach);
         } catch (ReadException ex) {
-            LOGGER.info("Error fetching all games");
+            LOGGER.info("Error fetching teams by coach");
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
@@ -166,10 +166,10 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Team> findTeamsByPlayerName(@PathParam("name") String name) {
         try {
-            LOGGER.info("Fetching all games");
+            LOGGER.info("Fetching teams by player name");
             return super.findTeamsByPlayerName(name);
         } catch (ReadException ex) {
-            LOGGER.info("Error fetching all games");
+            LOGGER.info("Error fetching by player name");
             throw new InternalServerErrorException(ex.getMessage());
         }
     }

@@ -111,10 +111,10 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
     @PUT
     @Path("JoinTeam/{player}/{team}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void joinTeam(@PathParam("player")Player player, @PathParam("team") Team team) {
+    public void joinTeam(@PathParam("player")Integer playerId, @PathParam("team") Integer teamId) {
         try {
             LOGGER.info("Fetching all teams of player");
-            super.joinTeam(player, team);
+            super.joinTeam(playerId, teamId);
         } catch (UpdateException ex) {
             LOGGER.info("Error fetching all teams of player");
             throw new InternalServerErrorException(ex.getMessage());

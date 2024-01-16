@@ -47,6 +47,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "findTeamsWithWins", query = "SELECT t from Team t JOIN t.teamevents te WHERE te.result = :result")
     ,
     @NamedQuery(name = "findMyTeams", query = "SELECT t from Team t JOIN t.playersInTeam tp WHERE tp = :player")
+    ,
+    @NamedQuery(name="findTeam", query = "SELECT t FROM Team t WHERE t.id = :teamId")
 })
 @XmlRootElement
 public class Team implements Serializable {
@@ -54,8 +56,8 @@ public class Team implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToMany(mappedBy = "teamsOfPlayer")
-    Set<Player> playersInTeam;
+    @OneToMany(cascade = ALL, mappedBy = "team", fetch = EAGER)
+    Set<PlayerTeam> playersInTeam;
     private String name;
     @Temporal(TemporalType.TIMESTAMP)
     @JsonSerialize(as=Date.class)

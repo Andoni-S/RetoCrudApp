@@ -211,13 +211,22 @@ public abstract class AbstractFacade<T> {
         return teams;
     }
 
-    public void joinTeam(Player player, Team team) throws UpdateException {
-        
+    public void joinTeam(Integer playerId, Integer teamId) throws UpdateException {
         try {
-            LOGGER.info("TeamManager: Finding player's teams.");
+            LOGGER.info("TeamManager: Finding player and team.");
+            Player player = getEntityManager().createNamedQuery("findPlayer", Player.class)
+                    .setParameter("playerId", playerId)
+                    .getSingleResult();
+
+            Team team = getEntityManager().createNamedQuery("findTeam", Team.class)
+                    .setParameter("teamId", teamId)
+                    .getSingleResult();
+
             player.getTeamsOfPlayer().add(team);
+            team.getPlayersInTeam().add(player);
+
             getEntityManager().merge(player);
-            getEntityManager().flush();
+            getEntityManager().merge(team);
             LOGGER.info("TeamManager: List of player's teams updated.");
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "TeamManager: Exception finding team player's teams.", e.getMessage());
