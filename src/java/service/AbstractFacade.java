@@ -24,7 +24,9 @@ import javax.transaction.Transactional;
 
 /**
  *
+ * @author Jaboba Bartolomé Barroso
  * @author Ander Goirigolzarri Iturburu
+ * @author Andoni Sanz Alcalde
  */
 public abstract class AbstractFacade<T> {
 
@@ -77,6 +79,20 @@ public abstract class AbstractFacade<T> {
         return ((Long) q.getSingleResult()).intValue();
     }
 
+    /**
+     * Retrieves a list of events associated with a specific organizer.
+     *
+     * This method queries the database to find events that are organized by the
+     * specified organizer. The search is based on the organizer's name.
+     *
+     * @param organizerName The name of the organizer for whom to retrieve
+     * events.
+     * @return A list of {@link Event} objects associated with the specified
+     * organizer.
+     * @throws Exception If an error occurs while retrieving events from the
+     * database. The exception message provides details about the error.
+     * @see Event
+     */
     public List<Event> findEventsByOrganizer(String organizerName) throws Exception {
         List<Event> events = null;
         try {
@@ -93,6 +109,19 @@ public abstract class AbstractFacade<T> {
         return events;
     }
 
+    /**
+     * Retrieves a list of events associated with a specific game.
+     *
+     * This method queries the database to find events that are related to the
+     * specified game. The search is based on the name of the game.
+     *
+     * @param gameName The name of the game for which to retrieve events.
+     * @return A list of {@link Event} objects associated with the specified
+     * game.
+     * @throws Exception If an error occurs while retrieving events from the
+     * database. The exception message provides details about the error.
+     * @see Event
+     */
     public List<Event> findEventsByGame(String gameName) throws Exception {
         List<Event> events = null;
         try {
@@ -141,6 +170,21 @@ public abstract class AbstractFacade<T> {
         return events;
     }
 
+    /**
+     * Retrieves a list of events associated with a specific non-governmental
+     * organization (ONG).
+     *
+     * This method queries the database to find events that are associated with
+     * the specified ONG. The search is based on the name of the ONG.
+     *
+     * @param ongName The name of the non-governmental organization (ONG) for
+     * which to retrieve events.
+     * @return A list of {@link Event} objects associated with the specified
+     * ONG.
+     * @throws Exception If an error occurs while retrieving events from the
+     * database. The exception message provides details about the error.
+     * @see Event
+     */
     public List<Event> findEventsByONG(String ongName) throws Exception {
         List<Event> events = null;
         try {
