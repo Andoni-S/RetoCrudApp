@@ -22,7 +22,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
-
 /**
  *
  * @author Ander Goirigolzarri Iturburu
@@ -30,7 +29,7 @@ import javax.transaction.Transactional;
 public abstract class AbstractFacade<T> {
 
     private Class<T> entityClass;
-    
+
     private static final Logger LOGGER = Logger.getLogger("javafxserverside");
 
     public AbstractFacade(Class<T> entityClass) {
@@ -77,15 +76,15 @@ public abstract class AbstractFacade<T> {
         javax.persistence.Query q = getEntityManager().createQuery(cq);
         return ((Long) q.getSingleResult()).intValue();
     }
-    
 
-        public List<Event> findEventsByOrganizer(String organizerName) throws Exception {
+    public List<Event> findEventsByOrganizer(String organizerName) throws Exception {
         List<Event> events = null;
         try {
             LOGGER.info("EventFacade: Finding events by organizer.");
-            TypedQuery<Event> query = getEntityManager().createNamedQuery("findEventsByOrganizer", Event.class);
-            query.setParameter("organizerName", organizerName);
-            events = query.getResultList();
+            events = getEntityManager()
+                    .createNamedQuery("findEventsByOrganizer", Event.class)
+                    .setParameter("organizerName", organizerName)
+                    .getResultList();
             LOGGER.log(Level.INFO, "EventFacade: Found {0} events by organizer {1}", new Object[]{events.size(), organizerName});
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "EventFacade: Exception finding events by organizer:", e.getMessage());
@@ -98,9 +97,10 @@ public abstract class AbstractFacade<T> {
         List<Event> events = null;
         try {
             LOGGER.info("EventFacade: Finding events by game.");
-            TypedQuery<Event> query = getEntityManager().createNamedQuery("findEventsByGame", Event.class);
-            query.setParameter("gameName", gameName);
-            events = query.getResultList();
+            events = getEntityManager()
+                    .createNamedQuery("findEventsByGame", Event.class)
+                    .setParameter("gameName", gameName)
+                    .getResultList();
             LOGGER.log(Level.INFO, "EventFacade: Found {0} events by game {1}", new Object[]{events.size(), gameName});
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "EventFacade: Exception finding events by game:", e.getMessage());
@@ -145,9 +145,10 @@ public abstract class AbstractFacade<T> {
         List<Event> events = null;
         try {
             LOGGER.info("EventFacade: Finding events by ONG.");
-            TypedQuery<Event> query = getEntityManager().createNamedQuery("findEventsByONG", Event.class);
-            query.setParameter("ongName", ongName);
-            events = query.getResultList();
+            events = getEntityManager()
+                    .createNamedQuery("findEventsByONG", Event.class)
+                    .setParameter("ongName", ongName)
+                    .getResultList();
             LOGGER.log(Level.INFO, "EventFacade: Found {0} events associated with ONG {1}", new Object[]{events.size(), ongName});
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "EventFacade: Exception finding events by ONG:", e.getMessage());
@@ -155,8 +156,8 @@ public abstract class AbstractFacade<T> {
         }
         return events;
     }
-    
-    public List<Game> findAllGamesCreatedByAdmin(String adminUsername)throws ReadException {
+
+    public List<Game> findAllGamesCreatedByAdmin(String adminUsername) throws ReadException {
         List<Game> games = null;
         try {
             games = (List) getEntityManager().createNamedQuery("findAllGamesCreatedByAdmin")
@@ -225,21 +226,20 @@ public abstract class AbstractFacade<T> {
         }
         return games;
     }*/
-
     public List<Game> findGamesByReleaseDate(Date releaseDate) throws ReadException {
-    List<Game> games = null;
-    try {
-        // Format the Date to a String with the desired pattern
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy");
-        String formattedReleaseDate = dateFormat.format(releaseDate);
+        List<Game> games = null;
+        try {
+            // Format the Date to a String with the desired pattern
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy");
+            String formattedReleaseDate = dateFormat.format(releaseDate);
 
-        // Use the formatted date in the query
-        games = (List) getEntityManager().createNamedQuery("findGamesByReleaseDate", Game.class)
-                .setParameter("releaseDate", formattedReleaseDate)
-                .getResultList();
-    } catch (Exception e) {
-        throw new ReadException(e.getMessage());
-    }
+            // Use the formatted date in the query
+            games = (List) getEntityManager().createNamedQuery("findGamesByReleaseDate", Game.class)
+                    .setParameter("releaseDate", formattedReleaseDate)
+                    .getResultList();
+        } catch (Exception e) {
+            throw new ReadException(e.getMessage());
+        }
         return games;
     }
 

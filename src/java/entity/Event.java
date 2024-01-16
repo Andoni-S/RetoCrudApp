@@ -29,9 +29,9 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "event", schema = "esportsdb")
 @NamedQueries({
-    @NamedQuery(name = "findEventsByOrganizer", query = "SELECT e FROM Event e WHERE e.organizer = :organizerName")
+    @NamedQuery(name = "findEventsByOrganizer", query = "SELECT e FROM Event e WHERE e.organizer.id IN (SELECT o.id FROM Organizer o WHERE o.name = :organizerName)")
     ,
-    @NamedQuery(name = "findEventsByGame", query = "SELECT e FROM Event e WHERE e.game = :gameName")
+    @NamedQuery(name = "findEventsByGame", query = "SELECT e FROM Event e WHERE e.game.id IN (SELECT g.id FROM Game g WHERE g.name = :gameName)")
     ,
     @NamedQuery(name = "findEventsWonByPlayer", query = "SELECT pe.event FROM PlayerEvent pe\n"
             + "WHERE pe.player = :player AND pe.result = :result")
@@ -65,10 +65,10 @@ public class Event implements Serializable {
     /**
      * Date of the event.
      */
-    
+
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    @JsonSerialize(as=Date.class)
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ssXXX")
+    @JsonSerialize(as = Date.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     private Date date;
     /**
      * Prize of the event for the winner.
@@ -100,7 +100,6 @@ public class Event implements Serializable {
 
     @OneToMany(mappedBy = "event")
     private Set<TeamEvent> teamevents;
-
 
     /**
      * Gets id value of the Event.
@@ -281,7 +280,6 @@ public class Event implements Serializable {
     public void setOrganizer(Organizer organizer) {
         this.organizer = organizer;
     }
-
 
     /**
      * HashCode method implementation of the entity.
