@@ -6,7 +6,11 @@
 package service;
 
 import entity.Organizer;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -31,6 +35,8 @@ public class OrganizerFacadeREST extends AbstractFacade<Organizer> {
     @PersistenceContext(unitName = "RetoCrudAppPU")
     private EntityManager em;
 
+    private static final Logger LOGGER = Logger.getLogger("java");
+
     public OrganizerFacadeREST() {
         super(Organizer.class);
     }
@@ -39,6 +45,8 @@ public class OrganizerFacadeREST extends AbstractFacade<Organizer> {
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(Organizer entity) {
+        // Hash the password before persisting the entity
+        entity.setPassword(hashPassword(entity.getPassword()));
         super.create(entity);
     }
 
@@ -46,6 +54,10 @@ public class OrganizerFacadeREST extends AbstractFacade<Organizer> {
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void edit(@PathParam("id") Long id, Organizer entity) {
+        // Check if the password is present before hashing and updating
+        if (entity.getPassword() != null) {
+            entity.setPassword(hashPassword(entity.getPassword()));
+        }
         super.edit(entity);
     }
 
@@ -87,5 +99,28 @@ public class OrganizerFacadeREST extends AbstractFacade<Organizer> {
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
+    /**
+     * Hashes the given password using the SHA-256 algorithm.
+     *
+     * @param password The password to be hashed.
+     * @return The hashed password in hexadecimal format.
+     */
+    private String hashPassword(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hashedBytes = md.digest(password.getBytes());
+
+            // Convert bytes to hexadecimal format
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hashedBytes) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            // Log the exception using LOGGER
+            LOGGER.log(Level.SEVERE, "Error occurred while hashing password.", e);
+            return null;
+        }
+    }
 }
