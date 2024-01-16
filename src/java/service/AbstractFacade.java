@@ -10,6 +10,7 @@ import entity.Player;
 import entity.Result;
 import entity.Team;
 import entity.Game;
+import entity.PlayerTeam;
 import exceptions.CreateException;
 import exceptions.DeleteException;
 import exceptions.ReadException;
@@ -176,7 +177,7 @@ public abstract class AbstractFacade<T> {
      * @param id The ID of the team to be found.
      * @return The {@link Team} object containing team data.
      */
-    public List<Team> findTeamsByPlayerName(String name) throws ReadException {
+    /**public List<Team> findTeamsByPlayerName(String name) throws ReadException {
         List<Team> teams = null;
         try {
             LOGGER.info("TeamManager: Finding team by name.");
@@ -187,7 +188,7 @@ public abstract class AbstractFacade<T> {
         }
         return teams;
     }
-
+**/
     /**
      * Finds a List of {@link Team} entities based on the provided result
      * indicating wins.
@@ -214,19 +215,16 @@ public abstract class AbstractFacade<T> {
     public void joinTeam(Integer playerId, Integer teamId) throws UpdateException {
         try {
             LOGGER.info("TeamManager: Finding player and team.");
-            Player player = getEntityManager().createNamedQuery("findPlayer", Player.class)
+           /** Player player = getEntityManager().createNamedQuery("findPlayer", Player.class)
                     .setParameter("playerId", playerId)
                     .getSingleResult();
 
             Team team = getEntityManager().createNamedQuery("findTeam", Team.class)
                     .setParameter("teamId", teamId)
                     .getSingleResult();
+                    **/
+            getEntityManager().createNamedQuery("joinTeam", PlayerTeam.class).setParameter("playerId", playerId).setParameter("teamId", teamId);
 
-            player.getTeamsOfPlayer().add(team);
-            team.getPlayersInTeam().add(player);
-
-            getEntityManager().merge(player);
-            getEntityManager().merge(team);
             LOGGER.info("TeamManager: List of player's teams updated.");
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "TeamManager: Exception finding team player's teams.", e.getMessage());

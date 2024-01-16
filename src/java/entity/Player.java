@@ -43,7 +43,7 @@ public class Player extends User {
 
     private Integer level;
 
-    public void setTeamsOfPlayer(Set<Team> teamsOfPlayer) {
+    public void setTeamsOfPlayer(Set<PlayerTeam> teamsOfPlayer) {
         this.teamsOfPlayer = teamsOfPlayer;
     }
 
@@ -60,10 +60,9 @@ public class Player extends User {
     public Set<PlayerEvent> getPlayerevent() {
         return playerevent;
     }
-
-
+    
     @XmlTransient
-    public Set<Team> getTeamsOfPlayer() {
+    public Set<PlayerTeam> getTeamsOfPlayer() {
         return teamsOfPlayer;
     }
 

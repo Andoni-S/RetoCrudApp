@@ -5,13 +5,14 @@
  */
 package entity;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  *
  * @author Jagoba Bartolomé Barroso
  */
-public class PlayerTeamId {
+public class PlayerTeamId implements Serializable {
     
     private Long playerId;
     private Long teamId;

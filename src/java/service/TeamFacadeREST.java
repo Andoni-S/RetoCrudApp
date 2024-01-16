@@ -160,7 +160,7 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
         }
     }
     
-    @GET
+   /** @GET
     @Override
     @Path("byPlayerName/playersInTeam/{playerId}/player/{name}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -173,7 +173,7 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
-
+**/
     @GET
     @Override
     @Path("Won/teamevents")
