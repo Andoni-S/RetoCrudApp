@@ -8,7 +8,6 @@ package entity;
 import java.util.Objects;
 import java.util.Set;
 import static javax.persistence.CascadeType.ALL;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import static javax.persistence.FetchType.EAGER;
 import javax.persistence.JoinTable;
@@ -22,14 +21,12 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author Jagoba Bartolomé Barroso
  */
-
-//@Table(name = "player", schema = "esportsdb")
+@Entity
+@Table(name = "player", schema = "esportsdb")
 /*@NamedQueries({
     @NamedQuery(name = "findPlayerByLevel", query = "SELECT p FROM player p WHERE p.level = :level")
 })*/
 //@DiscriminatorValue("1")
-@Entity
-@DiscriminatorValue("Player")
 @XmlRootElement
 public class Player extends User {
 

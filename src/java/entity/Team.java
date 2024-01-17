@@ -5,8 +5,6 @@
  */
 package entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
@@ -52,8 +50,6 @@ public class Team implements Serializable {
     Set<Player> playersInTeam;
     private String name;
     @Temporal(TemporalType.TIMESTAMP)
-    @JsonSerialize(as=Date.class)
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ssXXX")
     private Date foundation;
     private String coach;
     @OneToMany(cascade = ALL, mappedBy = "team", fetch = EAGER)

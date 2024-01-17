@@ -1,7 +1,5 @@
 package entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
@@ -65,10 +63,7 @@ public class Event implements Serializable {
     /**
      * Date of the event.
      */
-    
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    @JsonSerialize(as=Date.class)
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ssXXX")
     private Date date;
     /**
      * Prize of the event for the winner.

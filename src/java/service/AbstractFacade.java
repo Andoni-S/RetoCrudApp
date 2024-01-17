@@ -10,7 +10,6 @@ import exceptions.CreateException;
 import exceptions.DeleteException;
 import exceptions.ReadException;
 import exceptions.UpdateException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -140,19 +139,14 @@ public abstract class AbstractFacade<T> {
     }*/
 
     public List<Game> findGamesByReleaseDate(Date releaseDate) throws ReadException {
-    List<Game> games = null;
-    try {
-        // Format the Date to a String with the desired pattern
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy");
-        String formattedReleaseDate = dateFormat.format(releaseDate);
-
-        // Use the formatted date in the query
-        games = (List) getEntityManager().createNamedQuery("findGamesByReleaseDate", Game.class)
-                .setParameter("releaseDate", formattedReleaseDate)
-                .getResultList();
-    } catch (Exception e) {
-        throw new ReadException(e.getMessage());
-    }
+        List<Game> games = null;
+        try {
+            games = (List) getEntityManager().createNamedQuery("findGamesByReleaseDate", Game.class)
+                    .setParameter("releaseDate", releaseDate)
+                    .getResultList();
+        } catch (Exception e) {
+            throw new ReadException(e.getMessage());
+        }
         return games;
     }
 
