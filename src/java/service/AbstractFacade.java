@@ -230,7 +230,7 @@ public abstract class AbstractFacade<T> {
             playerTeam.setId(id);
 
             // Persist the PlayerTeam entity to the database
-            getEntityManager().merge(playerTeam);
+            getEntityManager().persist(playerTeam);
             //getEntityManager().createNamedQuery("joinTeam", PlayerTeam.class).setParameter("id", id);
 
             LOGGER.info("TeamManager: List of player's teams updated.");
