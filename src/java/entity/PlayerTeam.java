@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @Table(name="player_team", schema="esportsdb")
 @NamedQueries({
-    @NamedQuery(name = "joinTeam", query = "INSERT into PlayerTeamId (playerId, teamId) VALUES (:playerId, :teamId)")
+   // @NamedQuery(name = "joinTeam", query = "INSERT into PlayerTeam (id) VALUES (:id)")
 })
 @XmlRootElement
 public class PlayerTeam implements Serializable {

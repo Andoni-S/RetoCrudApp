@@ -25,6 +25,10 @@ public class PlayerTeamId implements Serializable {
         this.teamId = teamId;
     }
 
+    public PlayerTeamId(Integer playerId, Integer teamId) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     public Long getPlayerId() {
         return playerId;
     }
