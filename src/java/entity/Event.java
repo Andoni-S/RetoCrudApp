@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
+import javax.persistence.CascadeType;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -40,6 +41,8 @@ import javax.xml.bind.annotation.XmlTransient;
             + "WHERE te.team = :team AND te.result = :result")
     ,
     @NamedQuery(name = "findEventsByONG", query = "SELECT e FROM Event e WHERE e.ong = :ongName")
+    ,
+    @NamedQuery(name = "deletePlayerEventByEventId", query = "DELETE FROM PlayerEvent pe WHERE pe.event.id = :eventId")
 })
 @XmlRootElement
 public class Event implements Serializable {
@@ -50,34 +53,40 @@ public class Event implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     /**
      * Name of the event.
      */
     private String name;
+
     /**
      * Location of the event.
      */
     private String location;
+
     /**
      * Entity that is going to perceive the money from the donations.
      */
     private String ong;
+
     /**
      * Date of the event.
      */
-
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     @JsonSerialize(as = Date.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     private Date date;
+
     /**
      * Prize of the event for the winner.
      */
     private Float prize;
+
     /**
      * Percentage of the prize perceive by the NGO.
      */
     private Float donation;
+
     /**
      * Number of maximum participants in the event. Participants can be either
      * {@link Player} or {@link Team}.
@@ -89,13 +98,14 @@ public class Event implements Serializable {
      */
     @ManyToOne
     private Game game;
+
     /**
      * {@link Organizer} of the Event.
      */
     @ManyToOne
     private Organizer organizer;
 
-    @OneToMany(mappedBy = "event")
+    @OneToMany(mappedBy = "event", cascade = CascadeType.REMOVE)
     private Set<PlayerEvent> playerevents;
 
     @OneToMany(mappedBy = "event")

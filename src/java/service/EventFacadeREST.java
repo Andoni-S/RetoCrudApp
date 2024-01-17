@@ -6,7 +6,6 @@
 package service;
 
 import entity.Event;
-import exceptions.ReadException;
 import java.util.List;
 import java.util.logging.Level;
 import javax.ejb.Stateless;
@@ -22,6 +21,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.logging.Logger;
+import javax.persistence.Query;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotFoundException;
 
@@ -107,6 +107,7 @@ public class EventFacadeREST extends AbstractFacade<Event> {
     public void remove(@PathParam("id") Long id) {
         try {
             LOGGER.info("Removing event...");
+            deletePlayerEventsByEventId(id);
             super.remove(super.find(id));
             LOGGER.info("Event removed.");
         } catch (Exception ex) {
@@ -293,6 +294,17 @@ public class EventFacadeREST extends AbstractFacade<Event> {
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error finding events", e);
             throw new InternalServerErrorException(e.getMessage());
+        }
+    }
+
+    private void deletePlayerEventsByEventId(Long eventId) {
+        try {
+            Query query = em.createNamedQuery("deletePlayerEventByEventId");
+            query.setParameter("eventId", eventId);
+            query.executeUpdate();
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "Error deleting player events", ex);
+            throw new InternalServerErrorException(ex.getMessage());
         }
     }
 }
