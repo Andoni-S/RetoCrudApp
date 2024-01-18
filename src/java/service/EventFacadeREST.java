@@ -6,6 +6,7 @@
 package service;
 
 import entity.Event;
+import entity.Player;
 import java.util.List;
 import java.util.logging.Level;
 import javax.ejb.Stateless;
@@ -239,22 +240,27 @@ public class EventFacadeREST extends AbstractFacade<Event> {
     /**
      * Retrieves a list of events won by a specific player.
      *
-     * @param playerName The name of the player.
-     * @return A List of Event entities won by the specified player.
-     * @throws Exception If an error occurs during the retrieval process.
+     * This method queries the database to find events that have been won by the
+     * specified player. The search is based on the player's ID.
+     *
+     * @param playerId The ID of the player for whom to retrieve events won.
+     * @return A List of {@link Event} entities won by the specified player.
+     * @throws InternalServerErrorException If an error occurs during the
+     * retrieval process. The exception message provides details about the
+     * error.
+     * @see Event
      */
     @GET
-    @Path("findEventsWonByPlayer/{playerName}")
+    @Path("findEventsWonByPlayer/{playerId}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Event> findEventsWonByPlayer(@PathParam("playerName") String playerName) throws Exception {
-        List<Event> events = null;
+    public List<Event> findEventsWonByPlayer(@PathParam("playerId") Long playerId) throws Exception {
         try {
-            events = (List) getEntityManager().createNamedQuery("findEventsByOrganizer", Event.class)
-                    .setParameter("name", playerName).getResultList();
+            LOGGER.log(Level.INFO, "Searching for events Won by player with ID: {0}", playerId);
+            return super.findEventsWonByPlayer(playerId);
         } catch (Exception e) {
-            throw new Exception(e.getMessage());
+            LOGGER.log(Level.SEVERE, "Error finding events", e);
+            throw new InternalServerErrorException(e.getMessage());
         }
-        return events;
     }
 
     /**
@@ -307,4 +313,44 @@ public class EventFacadeREST extends AbstractFacade<Event> {
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
+
+    /**
+     * Registers a player for a specific event.
+     *
+     * @param eventId The ID of the event to register the player for.
+     * @param playerId The ID of the player to register for the event.
+     * @throws InternalServerErrorException If an error occurs during the
+     * registration process.
+     */
+    /*
+    @PUT
+    @Path("registerPlayer/{eventId}/{playerId}")
+    public void registerPlayerForEvent(@PathParam("eventId") Long eventId, @PathParam("playerId") Long playerId) {
+        try {
+            LOGGER.info("Registering player with ID " + playerId + " for event with ID " + eventId);
+
+            // Find the event by ID
+            Event event = super.find(eventId);
+
+            if (event == null) {
+                throw new NotFoundException("Event not found with ID: " + eventId);
+            }
+
+            // Find the player by ID
+            Player player = getEntityManager().find(Player.class, playerId);
+
+            if (player == null) {
+                throw new NotFoundException("Player not found with ID: " + playerId);
+            }
+
+            // Register the player for the event
+            event.registerPlayer(player);
+
+            LOGGER.info("Player with ID " + playerId + " registered successfully for event.");
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "Error registering player for event", ex);
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
+     */
 }

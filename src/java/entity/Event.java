@@ -34,11 +34,9 @@ import javax.xml.bind.annotation.XmlTransient;
     ,
     @NamedQuery(name = "findEventsByGame", query = "SELECT e FROM Event e WHERE e.game.id IN (SELECT g.id FROM Game g WHERE g.name = :gameName)")
     ,
-    @NamedQuery(name = "findEventsWonByPlayer", query = "SELECT pe.event FROM PlayerEvent pe\n"
-            + "WHERE pe.player = :player AND pe.result = :result")
+    @NamedQuery(name = "findEventsWonByPlayer", query = "SELECT pe.event FROM PlayerEvent pe WHERE pe.player.id = :playerId AND pe.result = 'Won'")
     ,
-    @NamedQuery(name = "findEventsWonByTeam", query = "SELECT te.event FROM TeamEvent te\n"
-            + "WHERE te.team = :team AND te.result = :result")
+    @NamedQuery(name = "findEventsWonByTeam", query = "SELECT te.event FROM TeamEvent te WHERE te.team = :team AND te.result = :result")
     ,
     @NamedQuery(name = "findEventsByONG", query = "SELECT e FROM Event e WHERE e.ong = :ongName")
     ,
