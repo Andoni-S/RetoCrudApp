@@ -5,13 +5,12 @@
  */
 package entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 import static javax.persistence.CascadeType.ALL;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import static javax.persistence.FetchType.EAGER;
 import javax.persistence.GeneratedValue;
@@ -34,22 +33,13 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "team", schema = "esportsdb")
 @NamedQueries({
-    @NamedQuery(name = "findAllTeams", query = "SELECT t FROM Team t")
+    @NamedQuery(name = "findTeamByPlayerName", query = "SELECT t FROM Team t JOIN t.players tp JOIN tp.teams p WHERE p.name = :playerName")
     ,
-    @NamedQuery(name= "findTeamsByName", query = "SELECT t FROM Team t WHERE t.name = :name")
-    ,
-    /**@NamedQuery(name = "findTeamsByPlayerName", query = "SELECT t FROM Team t JOIN t.playersInTeam tp JOIN tp.teamsOfPlayer p WHERE p.name = :playerName")
-    ,
-    * **/
     @NamedQuery(name = "findTeamsByDate", query = "SELECT t FROM Team t WHERE t.foundation = :date")
     ,
     @NamedQuery(name = "findTeamsByCoach", query = "SELECT t FROM Team t WHERE t.coach = :coach")
     ,
     @NamedQuery(name = "findTeamsWithWins", query = "SELECT t from Team t JOIN t.teamevents te WHERE te.result = :result")
-    ,
-    @NamedQuery(name = "findMyTeams", query = "SELECT t from Team t JOIN t.playersInTeam tp WHERE tp = :player")
-    ,
-    @NamedQuery(name="findTeam", query = "SELECT t FROM Team t WHERE t.id = :teamId")
 })
 @XmlRootElement
 public class Team implements Serializable {
@@ -57,12 +47,11 @@ public class Team implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToMany(cascade = ALL, mappedBy = "team", fetch = EAGER)
-    Set<PlayerTeam> playersInTeam;
+    @Column(name = "team_id")
+    @ManyToMany(mappedBy = "teams", fetch = EAGER)
+    Set<Player> players;
     private String name;
     @Temporal(TemporalType.TIMESTAMP)
-    @JsonSerialize(as=Date.class)
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ssXXX")
     private Date foundation;
     private String coach;
     @OneToMany(cascade = ALL, mappedBy = "team", fetch = EAGER)
@@ -85,8 +74,8 @@ public class Team implements Serializable {
     }
 
     @XmlTransient
-    public Set<PlayerTeam> getPlayersInTeam() {
-        return playersInTeam;
+    public Set<Player> getPlayers() {
+        return players;
     }
 
     @XmlTransient

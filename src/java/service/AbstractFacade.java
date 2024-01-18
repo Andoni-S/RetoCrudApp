@@ -251,7 +251,7 @@ public abstract class AbstractFacade<T> {
      * @throws ReadException If an error occurs while retrieving the teams from
      * the database.
      */
-    public List<Team> findMyTeams(Player player) throws ReadException {
+    /*public List<Team> findMyTeams(Player player) throws ReadException {
         List<Team> teams = null;
         try {
             LOGGER.info("TeamManager: Finding the player's teams.");
@@ -261,7 +261,7 @@ public abstract class AbstractFacade<T> {
             throw new ReadException(e.getMessage());
         }
         return teams;
-    }
+    }*/
 
     /**
     /**

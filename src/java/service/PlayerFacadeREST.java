@@ -95,7 +95,7 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
         return em;
     }
     
-    @GET
+    /*@GET
     @Path("MyTeams/{teamsOfPlayer}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Team> findMyTeams(@PathParam("player") Player player) {
@@ -106,5 +106,5 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
             LOGGER.info("Error fetching all teams of player");
             throw new InternalServerErrorException(ex.getMessage());
         }
-    }
+    }*/
 }
