@@ -313,44 +313,4 @@ public class EventFacadeREST extends AbstractFacade<Event> {
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
-
-    /**
-     * Registers a player for a specific event.
-     *
-     * @param eventId The ID of the event to register the player for.
-     * @param playerId The ID of the player to register for the event.
-     * @throws InternalServerErrorException If an error occurs during the
-     * registration process.
-     */
-    /*
-    @PUT
-    @Path("registerPlayer/{eventId}/{playerId}")
-    public void registerPlayerForEvent(@PathParam("eventId") Long eventId, @PathParam("playerId") Long playerId) {
-        try {
-            LOGGER.info("Registering player with ID " + playerId + " for event with ID " + eventId);
-
-            // Find the event by ID
-            Event event = super.find(eventId);
-
-            if (event == null) {
-                throw new NotFoundException("Event not found with ID: " + eventId);
-            }
-
-            // Find the player by ID
-            Player player = getEntityManager().find(Player.class, playerId);
-
-            if (player == null) {
-                throw new NotFoundException("Player not found with ID: " + playerId);
-            }
-
-            // Register the player for the event
-            event.registerPlayer(player);
-
-            LOGGER.info("Player with ID " + playerId + " registered successfully for event.");
-        } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, "Error registering player for event", ex);
-            throw new InternalServerErrorException(ex.getMessage());
-        }
-    }
-     */
 }

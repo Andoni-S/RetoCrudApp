@@ -9,6 +9,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.hibernate.annotations.OnDelete;
@@ -20,6 +21,7 @@ import org.hibernate.annotations.OnDeleteAction;
  */
 @Entity
 @Table(name = "player_event", schema = "esportsdb")
+@NamedQuery(name = "registerPlayerForEvent", query = "SELECT pe FROM PlayerEvent pe WHERE pe.id.playerId = :playerId AND pe.id.eventId = :eventId")
 @XmlRootElement
 public class PlayerEvent implements Serializable {
 

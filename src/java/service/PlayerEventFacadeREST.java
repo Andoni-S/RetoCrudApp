@@ -8,12 +8,15 @@ package service;
 import entity.PlayerEvent;
 import entity.PlayerEventId;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -32,6 +35,8 @@ public class PlayerEventFacadeREST extends AbstractFacade<PlayerEvent> {
 
     @PersistenceContext(unitName = "RetoCrudAppPU")
     private EntityManager em;
+
+    private static final Logger LOGGER = Logger.getLogger("javafxserverside");
 
     private PlayerEventId getPrimaryKey(PathSegment pathSegment) {
         /*
@@ -112,5 +117,29 @@ public class PlayerEventFacadeREST extends AbstractFacade<PlayerEvent> {
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
+    /**
+     * Registers a player for a specific event using JQL.
+     *
+     * @param playerId The ID of the player to register.
+     * @param eventId The ID of the event for which the player is registering.
+     */
+    @POST
+    @Path("registerPlayerForEvent/{playerId}/{eventId}")
+    public void registerPlayerForEvent(@PathParam("playerId") Long playerId, @PathParam("eventId") Long eventId) {
+        try {
+            LOGGER.log(Level.INFO, "Registering player with ID {0} for event with ID {1}", new Object[]{playerId, eventId});
+
+            // Call the named query to register the player for the event
+            em.createNamedQuery("registerPlayerForEvent")
+                    .setParameter("playerId", playerId)
+                    .setParameter("eventId", eventId)
+                    .executeUpdate();
+
+            LOGGER.info("Player successfully registered for the event.");
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error registering player for event", e);
+            throw new InternalServerErrorException(e.getMessage());
+        }
+    }
 }
