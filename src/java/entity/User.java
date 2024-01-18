@@ -9,6 +9,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -28,10 +30,9 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @Table(name="user",schema="esportsdb")
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-//@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-//@DiscriminatorColumn(name="user_type", 
-//discriminatorType = DiscriminatorType.INTEGER)
+//@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name="user_type", discriminatorType = DiscriminatorType.STRING)
 @NamedQueries({
     @NamedQuery(name = "findAllUsers",
                 query = "SELECT u FROM User u ORDER BY u.username DESC"),
@@ -56,6 +57,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class User implements Serializable{
 
     @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     private String username;

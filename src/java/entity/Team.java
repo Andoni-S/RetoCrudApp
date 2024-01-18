@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 import static javax.persistence.CascadeType.ALL;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import static javax.persistence.FetchType.EAGER;
 import javax.persistence.GeneratedValue;
@@ -32,7 +33,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "team", schema = "esportsdb")
 @NamedQueries({
-    @NamedQuery(name = "findTeamByPlayerName", query = "SELECT t FROM Team t JOIN t.playersInTeam tp JOIN tp.teamsOfPlayer p WHERE p.name = :playerName")
+    @NamedQuery(name = "findTeamByPlayerName", query = "SELECT t FROM Team t JOIN t.players tp JOIN tp.teams p WHERE p.name = :playerName")
     ,
     @NamedQuery(name = "findTeamsByDate", query = "SELECT t FROM Team t WHERE t.foundation = :date")
     ,
@@ -44,10 +45,11 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Team implements Serializable {
 
     @Id
+    @Column(name = "team_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToMany(mappedBy = "teamsOfPlayer")
-    Set<Player> playersInTeam;
+    @ManyToMany(mappedBy = "teams")
+    Set<Player> players;
     private String name;
     @Temporal(TemporalType.TIMESTAMP)
     private Date foundation;
@@ -72,8 +74,8 @@ public class Team implements Serializable {
     }
 
     @XmlTransient
-    public Set<Player> getPlayersInTeam() {
-        return playersInTeam;
+    public Set<Player> getPlayers() {
+        return players;
     }
 
     @XmlTransient

@@ -7,9 +7,12 @@ package entity;
 
 import java.util.Date;
 import java.util.Set;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -19,9 +22,11 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @Table(name = "admin", schema = "esportsdb")
+@DiscriminatorValue("admin")
 @XmlRootElement
 public class Admin extends User {
 
+    @Temporal(TemporalType.TIMESTAMP)
     private Date entryDate;
     
     @OneToMany(mappedBy = "admin")

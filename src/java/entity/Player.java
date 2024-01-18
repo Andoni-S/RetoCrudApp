@@ -8,8 +8,10 @@ package entity;
 import java.util.Objects;
 import java.util.Set;
 import static javax.persistence.CascadeType.ALL;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import static javax.persistence.FetchType.EAGER;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
@@ -26,21 +28,23 @@ import javax.xml.bind.annotation.XmlTransient;
 /*@NamedQueries({
     @NamedQuery(name = "findPlayerByLevel", query = "SELECT p FROM player p WHERE p.level = :level")
 })*/
-//@DiscriminatorValue("1")
+@DiscriminatorValue("player")
 @XmlRootElement
 public class Player extends User {
 
     @ManyToMany
-    @JoinTable(name = "PlayerTeam", schema = "esportsdb")
-    private Set<Team> teamsOfPlayer;
+    @JoinTable(name = "Player_Team", schema = "esportsdb",
+    joinColumns = { @JoinColumn(name = "id") }, 
+    inverseJoinColumns = { @JoinColumn(name = "team_id") })
+    private Set<Team> teams;
 
     @OneToMany(cascade = ALL, mappedBy = "player", fetch = EAGER)
     private Set<PlayerEvent> playerevent;
 
     private Integer level;
 
-    public void setTeamsOfPlayer(Set<Team> teamsOfPlayer) {
-        this.teamsOfPlayer = teamsOfPlayer;
+    public void setTeams(Set<Team> teams) {
+        this.teams = teams;
     }
 
     public void setPlayerevent(Set<PlayerEvent> playerevent) {
@@ -59,8 +63,8 @@ public class Player extends User {
 
 
     @XmlTransient
-    public Set<Team> getTeamsOfPlayer() {
-        return teamsOfPlayer;
+    public Set<Team> getTeams() {
+        return teams;
     }
 
     public Integer getLevel() {
