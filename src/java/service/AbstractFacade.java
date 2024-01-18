@@ -6,14 +6,19 @@
 package service;
 
 import entity.Game;
+import entity.Player;
+import entity.User;
 import exceptions.CreateException;
 import exceptions.DeleteException;
 import exceptions.ReadException;
 import exceptions.UpdateException;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.PathParam;
 
 /**
  *
@@ -161,6 +166,32 @@ public abstract class AbstractFacade<T> {
             throw new ReadException(e.getMessage());
         }
         return games;
+    }
+    
+    public User findUserByEmail(String email) throws ReadException {
+        List<User> user = null;
+        
+        try {
+            user = (List) getEntityManager().createNamedQuery("findUsersByEmail", User.class)
+                    .setParameter("email", email)
+                    .getResultList();
+        } catch (Exception e) {
+            throw new ReadException(e.getMessage());
+        }
+        return user.get(0);
+    }
+    
+    public Player findPlayerById(@PathParam("level") Long id) throws ReadException {
+        List<Player> user = null;
+        
+        try {
+            user = (List) getEntityManager().createNamedQuery("findUsersByEmail", Player.class)
+                    .setParameter("id", id)
+                    .getResultList();
+        } catch (Exception e) {
+            throw new ReadException(e.getMessage());
+        }
+        return user.get(0);
     }
 
     @Transactional

@@ -70,6 +70,7 @@ public class User implements Serializable{
     private String surnames;
     @Temporal(TemporalType.TIMESTAMP)
     private Date birthDate;
+    private String user_type;
   
     public Long getId() {
         return id;
@@ -127,6 +128,14 @@ public class User implements Serializable{
         this.birthDate = birthDate;
     }
 
+    public String getUser_type() {
+        return user_type;
+    }
+
+    public void setUser_type(String user_type) {
+        this.user_type = user_type;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 7;

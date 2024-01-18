@@ -29,15 +29,15 @@ public class ApplicationConfig extends Application {
      * If required, comment out calling this method in getClasses().
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
+        resources.add(service.AdminFacadeREST.class);
         resources.add(service.EventFacadeREST.class);
         resources.add(service.GameFacadeREST.class);
+        resources.add(service.OrganizerFacadeREST.class);
         resources.add(service.PlayerEventFacadeREST.class);
+        resources.add(service.PlayerFacadeREST.class);
         resources.add(service.TeamEventFacadeREST.class);
         resources.add(service.TeamFacadeREST.class);
         resources.add(service.UserFacadeREST.class);
-        resources.add(service.PlayerFacadeREST.class);
-        resources.add(service.OrganizerFacadeREST.class);
-        resources.add(service.AdminFacadeREST.class);
         
     }
     

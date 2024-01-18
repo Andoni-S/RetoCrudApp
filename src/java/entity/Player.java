@@ -14,6 +14,8 @@ import static javax.persistence.FetchType.EAGER;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -25,9 +27,9 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @Table(name = "player", schema = "esportsdb")
-/*@NamedQueries({
-    @NamedQuery(name = "findPlayerByLevel", query = "SELECT p FROM player p WHERE p.level = :level")
-})*/
+@NamedQueries({
+    @NamedQuery(name = "findPlayerById", query = "SELECT p FROM player p WHERE p.id = :id")
+})
 @DiscriminatorValue("player")
 @XmlRootElement
 public class Player extends User {

@@ -5,14 +5,19 @@
  */
 package service;
 
+import entity.Game;
 import entity.Player;
+import exceptions.ReadException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -31,6 +36,11 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
     @PersistenceContext(unitName = "RetoCrudAppPU")
     private EntityManager em;
 
+    /**
+     * Logger for this class.
+     */
+    private Logger LOGGER = Logger.getLogger(AdminFacadeREST.class.getName());
+    
     public PlayerFacadeREST() {
         super(Player.class);
     }
@@ -86,6 +96,19 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
     @Override
     protected EntityManager getEntityManager() {
         return em;
+    }
+    
+    @GET
+    @Path("findPlayerById/{id}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Player findPlayerById(@PathParam("level") Long id) {
+        try {
+            LOGGER.log(Level.INFO, "Fetching games by level: {0}", id);
+            return super.findPlayerById(id);
+        } catch (ReadException ex) {
+            LOGGER.log(Level.SEVERE, "Error fetching games by genre", ex);
+            throw new InternalServerErrorException(ex.getMessage());
+        }
     }
     
 }
