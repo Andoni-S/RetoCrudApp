@@ -17,13 +17,12 @@ import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Jagoba Bartolomé Barroso
+ * @author Jagoba BartolomÃ© Barroso
  */
 @Entity
 //@Table(name = "player", schema = "esportsdb")
@@ -34,18 +33,15 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 public class Player extends User {
 
-    @ManyToMany
-    @JoinTable(name = "Player_Team", schema = "esportsdb",
-    joinColumns = { @JoinColumn(name = "id") }, 
-    inverseJoinColumns = { @JoinColumn(name = "team_id") })
-    private Set<Team> teams;
+    @OneToMany(mappedBy="player", fetch = EAGER)
+    private Set<PlayerTeam> teams;
 
     @OneToMany(cascade = ALL, mappedBy = "player", fetch = EAGER)
     private Set<PlayerEvent> playerevent;
 
     private Integer level;
 
-    public void setTeams(Set<Team> teams) {
+    public void setTeams(Set<PlayerTeam> teams) {
         this.teams = teams;
     }
 
@@ -57,15 +53,13 @@ public class Player extends User {
         this.level = level;
     }
 
-
     @XmlTransient
     public Set<PlayerEvent> getPlayerevent() {
         return playerevent;
     }
 
-
     @XmlTransient
-    public Set<Team> getTeams() {
+    public Set<PlayerTeam> getTeams() {
         return teams;
     }
 

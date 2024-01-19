@@ -35,6 +35,7 @@ public class ApplicationConfig extends Application {
         resources.add(service.OrganizerFacadeREST.class);
         resources.add(service.PlayerEventFacadeREST.class);
         resources.add(service.PlayerFacadeREST.class);
+        resources.add(service.PlayerTeamFacadeREST.class);
         resources.add(service.TeamEventFacadeREST.class);
         resources.add(service.TeamFacadeREST.class);
         resources.add(service.UserFacadeREST.class);

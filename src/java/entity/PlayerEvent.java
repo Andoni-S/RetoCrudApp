@@ -6,31 +6,48 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 /**
  *
  * @author Ander Goirigolzarri Iturburu
  */
 @Entity
-@Table(name="player_event",schema="esportsdb")
+@Table(name = "player_event", schema = "esportsdb")
 @XmlRootElement
 public class PlayerEvent implements Serializable {
 
     @EmbeddedId
     private PlayerEventId id;
+
+    @ManyToOne
     @MapsId("playerId")
-    @ManyToOne
+    @JoinColumn(name = "player_id")
     private Player player;
-    @MapsId("eventId")
+
     @ManyToOne
+    @MapsId("eventId")
+    @JoinColumn(name = "event_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Event event;
+
     @Enumerated(EnumType.STRING)
     private Result result;
 
+    public PlayerEventId getId() {
+        return id;
+    }
+    
+    public void setId(PlayerEventId id){
+        this.id = id;
+    }
+    
     public Player getPlayer() {
         return player;
     }
@@ -85,5 +102,4 @@ public class PlayerEvent implements Serializable {
         }
         return true;
     }
-
 }

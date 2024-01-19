@@ -6,7 +6,11 @@
 package service;
 
 import entity.Organizer;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -19,10 +23,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import security.Hash;
 
 /**
  *
- * @author Ander Goirigolzarri Iturburu
+ * @author Jagoba Bartolomé Barroso
  */
 @Stateless
 @Path("entity.organizer")
@@ -30,6 +35,10 @@ public class OrganizerFacadeREST extends AbstractFacade<Organizer> {
 
     @PersistenceContext(unitName = "RetoCrudAppPU")
     private EntityManager em;
+
+    private static final Logger LOGGER = Logger.getLogger("java");
+
+    private Hash hashUtil = new Hash();
 
     public OrganizerFacadeREST() {
         super(Organizer.class);
@@ -39,6 +48,8 @@ public class OrganizerFacadeREST extends AbstractFacade<Organizer> {
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(Organizer entity) {
+        // Hash the password before persisting the entity
+        entity.setPassword(hashUtil.hashPassword(entity.getPassword()));
         super.create(entity);
     }
 
@@ -46,6 +57,10 @@ public class OrganizerFacadeREST extends AbstractFacade<Organizer> {
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void edit(@PathParam("id") Long id, Organizer entity) {
+        // Check if the password is present before hashing and updating
+        if (entity.getPassword() != null) {
+            entity.setPassword(hashUtil.hashPassword(entity.getPassword()));
+        }
         super.edit(entity);
     }
 
@@ -87,5 +102,4 @@ public class OrganizerFacadeREST extends AbstractFacade<Organizer> {
     protected EntityManager getEntityManager() {
         return em;
     }
-    
 }

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
+import javax.persistence.CascadeType;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -27,17 +28,19 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "event", schema = "esportsdb")
 @NamedQueries({
-    @NamedQuery(name = "findEventsByOrganizer", query = "SELECT e FROM Event e WHERE e.organizer = :organizerName")
+    @NamedQuery(name = "findEventsByOrganizer", query = "SELECT e FROM Event e WHERE e.organizer.id IN (SELECT o.id FROM Organizer o WHERE o.name = :organizerName)")
     ,
-    @NamedQuery(name = "findEventsByGame", query = "SELECT e FROM Event e WHERE e.game = :gameName")
+    @NamedQuery(name = "findEventsByGame", query = "SELECT e FROM Event e WHERE e.game.id IN (SELECT g.id FROM Game g WHERE g.name = :gameName)")
     ,
-    @NamedQuery(name = "findEventsWonByPlayer", query = "SELECT pe.event FROM PlayerEvent pe\n"
-            + "WHERE pe.player = :player AND pe.result = :result")
+    @NamedQuery(name = "findEventsWonByPlayer", query = "SELECT pe.event FROM PlayerEvent pe WHERE pe.player.id = :playerId AND pe.result = 'Won'")
     ,
-    @NamedQuery(name = "findEventsWonByTeam", query = "SELECT te.event FROM TeamEvent te\n"
-            + "WHERE te.team = :team AND te.result = :result")
+    @NamedQuery(name = "findEventsWonByTeam", query = "SELECT te.event FROM TeamEvent te WHERE te.team = :team AND te.result = :result")
     ,
     @NamedQuery(name = "findEventsByONG", query = "SELECT e FROM Event e WHERE e.ong = :ongName")
+    ,
+    @NamedQuery(name = "deletePlayerEventByEventId", query = "DELETE FROM PlayerEvent pe WHERE pe.event.id = :eventId")
+    ,
+    @NamedQuery(name = "deleteTeamEventByEventId", query = "DELETE FROM TeamEvent pe WHERE pe.event.id = :eventId")
 })
 @XmlRootElement
 public class Event implements Serializable {
@@ -48,31 +51,40 @@ public class Event implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     /**
      * Name of the event.
      */
     private String name;
+
     /**
      * Location of the event.
      */
     private String location;
+
     /**
      * Entity that is going to perceive the money from the donations.
      */
     private String ong;
+
     /**
      * Date of the event.
      */
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    @JsonSerialize(as = Date.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     private Date date;
+
     /**
      * Prize of the event for the winner.
      */
     private Float prize;
+
     /**
      * Percentage of the prize perceive by the NGO.
      */
     private Float donation;
+
     /**
      * Number of maximum participants in the event. Participants can be either
      * {@link Player} or {@link Team}.
@@ -84,18 +96,18 @@ public class Event implements Serializable {
      */
     @ManyToOne
     private Game game;
+
     /**
      * {@link Organizer} of the Event.
      */
     @ManyToOne
     private Organizer organizer;
 
-    @OneToMany(mappedBy = "event")
+    @OneToMany(mappedBy = "event", cascade = CascadeType.REMOVE)
     private Set<PlayerEvent> playerevents;
 
     @OneToMany(mappedBy = "event")
     private Set<TeamEvent> teamevents;
-
 
     /**
      * Gets id value of the Event.
@@ -276,7 +288,6 @@ public class Event implements Serializable {
     public void setOrganizer(Organizer organizer) {
         this.organizer = organizer;
     }
-
 
     /**
      * HashCode method implementation of the entity.

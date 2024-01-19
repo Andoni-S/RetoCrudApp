@@ -9,6 +9,10 @@ import java.util.Date;
 import java.util.Set;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import static javax.persistence.FetchType.EAGER;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -29,7 +33,7 @@ public class Admin extends User {
     @Temporal(TemporalType.TIMESTAMP)
     private Date entryDate;
     
-    @OneToMany(mappedBy = "admin")
+    @OneToMany(mappedBy = "admin", fetch = EAGER)
     private Set<Game> games;
     
     @XmlTransient

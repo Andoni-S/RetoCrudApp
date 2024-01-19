@@ -3,6 +3,7 @@ package entity;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Objects;
+import javax.persistence.Column;
 
 /**
  * An embeddable class representing the composite primary key for PlayerEvent
@@ -14,7 +15,10 @@ import java.util.Objects;
 @Embeddable
 public class PlayerEventId implements Serializable {
 
+    @Column(name = "player_id")
     private Long playerId;
+    
+    @Column(name = "event_id")
     private Long eventId;
 
     /**

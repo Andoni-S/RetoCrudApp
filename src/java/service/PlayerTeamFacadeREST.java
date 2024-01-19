@@ -5,11 +5,9 @@
  */
 package service;
 
-import entity.User;
-import exceptions.CreateException;
-import exceptions.ReadException;
+import entity.PlayerTeam;
+import exceptions.DeleteException;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -30,32 +28,29 @@ import javax.ws.rs.core.MediaType;
  * @author Jagoba Bartolomé Barroso
  */
 @Stateless
-@Path("entity.user")
-public class UserFacadeREST extends AbstractFacade<User> {
+@Path("entity.playerteam")
+public class PlayerTeamFacadeREST extends AbstractFacade<PlayerTeam> {
+
+    private static final Logger LOGGER = Logger.getLogger("java");
 
     @PersistenceContext(unitName = "RetoCrudAppPU")
     private EntityManager em;
 
-    /**
-     * Logger for this class.
-     */
-    private Logger LOGGER = Logger.getLogger(AdminFacadeREST.class.getName());
-    
-    public UserFacadeREST() {
-        super(User.class);
+    public PlayerTeamFacadeREST() {
+        super(PlayerTeam.class);
     }
 
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(User entity) {
+    public void create(PlayerTeam entity) {
         super.create(entity);
     }
 
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") Long id, User entity) {
+    public void edit(@PathParam("id") Long id, PlayerTeam entity) {
         super.edit(entity);
     }
 
@@ -68,21 +63,21 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public User find(@PathParam("id") Long id) {
+    public PlayerTeam find(@PathParam("id") Long id) {
         return super.find(id);
     }
 
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<User> findAll() {
+    public List<PlayerTeam> findAll() {
         return super.findAll();
     }
 
     @GET
     @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<User> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
+    public List<PlayerTeam> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
     }
 
@@ -96,31 +91,5 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @Override
     protected EntityManager getEntityManager() {
         return em;
-    }
-    
-    @POST
-    @Path("login")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public User login(User loginUser) {
-        User newUser = new User();
-        try {
-            LOGGER.log(Level.INFO, "Creating a new game");
-            loginUser = super.findUserByEmail(loginUser.getEmail());
-            newUser.setId(loginUser.getId());
-            newUser.setEmail(loginUser.getEmail());
-            newUser.setName(loginUser.getName());
-            newUser.setPassword(loginUser.getPassword());
-            newUser.setSurnames(loginUser.getSurnames());
-            newUser.setUsername(loginUser.getUsername());
-            newUser.setBirthDate(loginUser.getBirthDate());
-            newUser.setUser_type(loginUser.getUser_type());
-            
-                     
-        } catch (ReadException ex) {
-            LOGGER.log(Level.SEVERE, "Error creating a new game", ex);
-            throw new InternalServerErrorException(ex.getMessage());
-        }
-        return newUser;
     }
 }

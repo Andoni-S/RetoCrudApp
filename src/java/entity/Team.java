@@ -33,8 +33,8 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "team", schema = "esportsdb")
 @NamedQueries({
-    @NamedQuery(name = "findTeamByPlayerName", query = "SELECT t FROM Team t JOIN t.players tp JOIN tp.teams p WHERE p.name = :playerName")
-    ,
+    //@NamedQuery(name = "findTeamByPlayerName", query = "SELECT t FROM Team t JOIN t.players tp JOIN tp.teams p WHERE p.name = :playerName")
+    //,
     @NamedQuery(name = "findTeamsByDate", query = "SELECT t FROM Team t WHERE t.foundation = :date")
     ,
     @NamedQuery(name = "findTeamsByCoach", query = "SELECT t FROM Team t WHERE t.coach = :coach")
@@ -48,12 +48,18 @@ public class Team implements Serializable {
     @Column(name = "team_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToMany(mappedBy = "teams")
-    Set<Player> players;
+  
+    @Column(name = "team_id")
+    @OneToMany(mappedBy = "team", fetch = EAGER)
+    Set<PlayerTeam> players;
+
     private String name;
+  
     @Temporal(TemporalType.TIMESTAMP)
     private Date foundation;
+  
     private String coach;
+  
     @OneToMany(cascade = ALL, mappedBy = "team", fetch = EAGER)
     private Set<TeamEvent> teamevents;
 
@@ -74,8 +80,16 @@ public class Team implements Serializable {
     }
 
     @XmlTransient
-    public Set<Player> getPlayers() {
+    public Set<PlayerTeam> getPlayers() {
         return players;
+    }
+
+    public void setPlayers(Set<PlayerTeam> players) {
+        this.players = players;
+    }
+
+    public void setTeamevents(Set<TeamEvent> teamevents) {
+        this.teamevents = teamevents;
     }
 
     @XmlTransient

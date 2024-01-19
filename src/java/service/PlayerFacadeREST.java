@@ -7,7 +7,14 @@ package service;
 
 import entity.Game;
 import entity.Player;
+import entity.PlayerTeam;
+import entity.Team;
+import exceptions.CreateException;
+import exceptions.DeleteException;
 import exceptions.ReadException;
+import exceptions.UpdateException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,23 +31,23 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import security.Hash;
 
 /**
  *
- * @author Ander Goirigolzarri Iturburu
+ * @author Jagoba Bartolomé Barroso
  */
 @Stateless
 @Path("entity.player")
 public class PlayerFacadeREST extends AbstractFacade<Player> {
-
+ 
+    private static final Logger LOGGER = Logger.getLogger("java");
+    
     @PersistenceContext(unitName = "RetoCrudAppPU")
     private EntityManager em;
 
-    /**
-     * Logger for this class.
-     */
-    private Logger LOGGER = Logger.getLogger(AdminFacadeREST.class.getName());
-    
+    private Hash hashUtil = new Hash();
+
     public PlayerFacadeREST() {
         super(Player.class);
     }
@@ -49,6 +56,8 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(Player entity) {
+        // Hash the password before persisting the entity
+        entity.setPassword(hashUtil.hashPassword(entity.getPassword()));
         super.create(entity);
     }
 
@@ -56,6 +65,10 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void edit(@PathParam("id") Long id, Player entity) {
+        // Check if the password is present before hashing and updating
+        if (entity.getPassword() != null) {
+            entity.setPassword(hashUtil.hashPassword(entity.getPassword()));
+        }
         super.edit(entity);
     }
 
@@ -111,5 +124,18 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
-    
+  
+    /*@GET
+    @Path("MyTeams/{teamsOfPlayer}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Team> findMyTeams(@PathParam("player") Player player) {
+        try {
+            LOGGER.info("Fetching all teams of player");
+            return super.findMyTeams(player);
+        } catch (ReadException ex) {
+            LOGGER.info("Error fetching all teams of player");
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }*/
+
 }

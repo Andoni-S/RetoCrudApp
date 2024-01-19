@@ -7,7 +7,9 @@ package service;
 
 import entity.PlayerEvent;
 import entity.PlayerEventId;
+import entity.Result;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -24,7 +26,7 @@ import javax.ws.rs.core.PathSegment;
 
 /**
  *
- * @author Ander Goirigolzarri Iturburu
+ * @author Jagoba Bartolomé Barroso
  */
 @Stateless
 @Path("entity.playerevent")
@@ -32,6 +34,8 @@ public class PlayerEventFacadeREST extends AbstractFacade<PlayerEvent> {
 
     @PersistenceContext(unitName = "RetoCrudAppPU")
     private EntityManager em;
+
+    private static final Logger LOGGER = Logger.getLogger("javafxserverside");
 
     private PlayerEventId getPrimaryKey(PathSegment pathSegment) {
         /*
@@ -62,7 +66,7 @@ public class PlayerEventFacadeREST extends AbstractFacade<PlayerEvent> {
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(PlayerEvent entity) {
-        super.create(entity);
+        super.addPlayerToEvent(entity);
     }
 
     @PUT
@@ -112,5 +116,15 @@ public class PlayerEventFacadeREST extends AbstractFacade<PlayerEvent> {
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
+    @POST
+    @Path("addPlayerToEvent/{playerId}/{eventId}")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public void addPlayerToEvent(@PathParam("playerId") Long playerId, @PathParam("eventId") Long eventId) {
+        PlayerEventId playerEventId = new PlayerEventId(playerId, eventId);
+        PlayerEvent playerEvent = new PlayerEvent();
+        playerEvent.setId(playerEventId);
+        playerEvent.setResult(Result.Draw);
+        em.merge(playerEvent);
+    }
 }
