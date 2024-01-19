@@ -8,6 +8,10 @@ package entity;
 import java.io.Serializable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.NamedQueries;
@@ -26,16 +30,23 @@ import javax.xml.bind.annotation.XmlRootElement;
 })
 @XmlRootElement
 public class PlayerTeam implements Serializable {
-    @EmbeddedId
-    private PlayerTeamId id;
-    @MapsId("playerId")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
     @ManyToOne
+    @JoinColumn(name = "playerId")
     private Player player;
-    @MapsId("teamId")
+    
     @ManyToOne
+    @JoinColumn(name = "teamId")
     private Team team;
 
-    public PlayerTeamId getId() {
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
         return id;
     }
 
@@ -45,10 +56,6 @@ public class PlayerTeam implements Serializable {
 
     public Team getTeam() {
         return team;
-    }
-
-    public void setId(PlayerTeamId id) {
-        this.id = id;
     }
 
     public void setPlayer(Player player) {

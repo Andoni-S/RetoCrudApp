@@ -10,6 +10,7 @@ import entity.Team;
 import exceptions.ReadException;
 import exceptions.UpdateException;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -107,4 +108,23 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
             throw new InternalServerErrorException(ex.getMessage());
         }
     }*/
+
+    /**
+     *
+     * @param playerId
+     * @param teamId
+     */
+
+    
+    @POST
+    @Path("JoinTeam/{playerId}/{teamId}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Override
+    public void joinTeam(@PathParam("playerId") Integer playerId, @PathParam ("teamId") Integer teamId){
+        try {
+            super.joinTeam(playerId, teamId);
+        } catch (UpdateException ex) {
+            Logger.getLogger(PlayerFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

@@ -10,8 +10,6 @@ import entity.Player;
 import entity.Result;
 import entity.Team;
 import entity.Game;
-import entity.PlayerTeam;
-import entity.PlayerTeamId;
 import exceptions.CreateException;
 import exceptions.DeleteException;
 import exceptions.ReadException;
@@ -215,24 +213,12 @@ public abstract class AbstractFacade<T> {
 
     public void joinTeam(Integer playerId, Integer teamId) throws UpdateException {
         try {
-            PlayerTeamId id = new PlayerTeamId(playerId, teamId);
             LOGGER.info("TeamManager: Finding player and team.");
-           /** Player player = getEntityManager().createNamedQuery("findPlayer", Player.class)
-                    .setParameter("playerId", playerId)
-                    .getSingleResult();
-             *
-             * Team team = getEntityManager().createNamedQuery("findTeam",
-             * Team.class) .setParameter("teamId", teamId) .getSingleResult();
-                    *
-             */
-
-            PlayerTeam playerTeam = new PlayerTeam();
-            playerTeam.setId(id);
-
+            Player player = getEntityManager().find(Player.class, playerId);
+            Team team = getEntityManager().find(Team.class, teamId);
+            player.getTeams().add(team);
             // Persist the PlayerTeam entity to the database
-            getEntityManager().persist(playerTeam);
-            //getEntityManager().createNamedQuery("joinTeam", PlayerTeam.class).setParameter("id", id);
-
+            getEntityManager().persist(player);
             LOGGER.info("TeamManager: List of player's teams updated.");
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "TeamManager: Exception finding team player's teams.", e.getMessage());

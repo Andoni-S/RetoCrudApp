@@ -21,10 +21,10 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Jagoba Bartolomé Barroso
+ * @author Jagoba BartolomÃ© Barroso
  */
 @Entity
-@Table(name = "player", schema = "esportsdb")
+//@Table(name = "player", schema = "esportsdb")
 /*@NamedQueries({
     @NamedQuery(name = "findPlayerByLevel", query = "SELECT p FROM player p WHERE p.level = :level")
 })*/
