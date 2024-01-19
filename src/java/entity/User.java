@@ -70,6 +70,8 @@ public class User implements Serializable{
     private String surnames;
     @Temporal(TemporalType.TIMESTAMP)
     private Date birthDate;
+    
+    @Column(name = "user_type", insertable = false, updatable = false)
     private String user_type;
   
     public Long getId() {

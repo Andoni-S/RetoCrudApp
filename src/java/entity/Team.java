@@ -45,7 +45,6 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Team implements Serializable {
 
     @Id
-    @Column(name = "team_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
   
