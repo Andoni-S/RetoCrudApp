@@ -273,15 +273,14 @@ public class EventFacadeREST extends AbstractFacade<Event> {
     @GET
     @Path("findEventsWonByTeam/{teamName}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Event> findEventsWonByTeam(@PathParam("teamName") String teamName) throws Exception {
-        List<Event> events = null;
+    public List<Event> findEventsWonByTeam(@PathParam("teamId") Long teamId) throws Exception {
         try {
-            events = (List) getEntityManager().createNamedQuery("findEventsByOrganizer", Event.class)
-                    .setParameter("name", teamName).getResultList();
+            LOGGER.log(Level.INFO, "Searching for events Won by team with ID: {0}", teamId);
+            return super.findEventsWonByPlayer(teamId);
         } catch (Exception e) {
-            throw new Exception(e.getMessage());
+            LOGGER.log(Level.SEVERE, "Error finding events", e);
+            throw new InternalServerErrorException(e.getMessage());
         }
-        return events;
     }
 
     /**

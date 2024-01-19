@@ -5,6 +5,9 @@
  */
 package service;
 
+import entity.PlayerEvent;
+import entity.PlayerEventId;
+import entity.Result;
 import entity.TeamEvent;
 import entity.TeamEventId;
 import java.util.List;
@@ -62,7 +65,7 @@ public class TeamEventFacadeREST extends AbstractFacade<TeamEvent> {
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(TeamEvent entity) {
-        super.create(entity);
+        super.addTeamToEvent(entity);
     }
 
     @PUT
@@ -112,5 +115,15 @@ public class TeamEventFacadeREST extends AbstractFacade<TeamEvent> {
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
+    @POST
+    @Path("addTeamToEvent/{teamId}/{eventId}")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public void addPlayerToEvent(@PathParam("teamId") Long teamId, @PathParam("eventId") Long eventId) {
+        TeamEventId teamEventId = new TeamEventId(teamId, eventId);
+        TeamEvent teamEvent = new TeamEvent();
+        teamEvent.setId(teamEventId);
+        teamEvent.setResult(Result.Draw);
+        em.merge(teamEvent);
+    }
 }

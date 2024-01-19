@@ -6,12 +6,10 @@
 package service;
 
 import entity.Event;
-import entity.Player;
 import entity.Team;
 import entity.Game;
 import entity.PlayerEvent;
-import entity.PlayerEventId;
-import entity.Result;
+import entity.TeamEvent;
 import exceptions.CreateException;
 import exceptions.DeleteException;
 import exceptions.ReadException;
@@ -22,7 +20,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
@@ -170,15 +167,15 @@ public abstract class AbstractFacade<T> {
         return events;
     }
 
-    public List<Event> findEventsWonByTeam(Team team, String result) throws Exception {
+    public List<Event> findEventsWonByTeam(Long teamId) throws Exception {
         List<Event> events = null;
         try {
             LOGGER.info("EventFacade: Finding events won by team.");
-            TypedQuery<Event> query = getEntityManager().createNamedQuery("findEventsWonByTeam", Event.class);
-            query.setParameter("team", team);
-            query.setParameter("result", result);
-            events = query.getResultList();
-            LOGGER.log(Level.INFO, "EventFacade: Found {0} events won by team {1}", new Object[]{events.size(), team.getName()});
+            events = getEntityManager()
+                    .createNamedQuery("findEventsWonByTeam", Event.class)
+                    .setParameter("teamId", teamId)
+                    .getResultList();
+            LOGGER.log(Level.INFO, "EventFacade: Found {0} events won by team with ID {1}", new Object[]{events.size(), teamId});
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "EventFacade: Exception finding events won by team:", e.getMessage());
             throw new Exception(e.getMessage());
@@ -351,5 +348,9 @@ public abstract class AbstractFacade<T> {
     
     public void addPlayerToEvent(PlayerEvent playerEvent){
         getEntityManager().merge(playerEvent);
+    }
+    
+    public void addTeamToEvent(TeamEvent teamEvent){
+        getEntityManager().merge(teamEvent);
     }
 }

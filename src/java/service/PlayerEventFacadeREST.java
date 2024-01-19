@@ -125,6 +125,6 @@ public class PlayerEventFacadeREST extends AbstractFacade<PlayerEvent> {
         PlayerEvent playerEvent = new PlayerEvent();
         playerEvent.setId(playerEventId);
         playerEvent.setResult(Result.Draw);
-        em.persist(playerEvent);
+        em.merge(playerEvent);
     }
 }
