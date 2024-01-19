@@ -46,8 +46,6 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
     @PersistenceContext(unitName = "RetoCrudAppPU")
     private EntityManager em;
 
-    private static final Logger LOGGER = Logger.getLogger("java");
-
     private Hash hashUtil = new Hash();
 
     public PlayerFacadeREST() {
