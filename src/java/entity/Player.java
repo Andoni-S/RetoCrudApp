@@ -11,6 +11,7 @@ import static javax.persistence.CascadeType.ALL;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import static javax.persistence.FetchType.EAGER;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
@@ -19,7 +20,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Jagoba Bartolomé Barroso
+ * @author Jagoba BartolomÃ© Barroso
  */
 
 @Entity
@@ -27,17 +28,16 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 public class Player extends User {
 
-    @ManyToMany
-    @JoinTable(name = "PlayerTeam", schema = "esportsdb")
-    private Set<Team> teamsOfPlayer;
+    @OneToMany(mappedBy="player", fetch = EAGER)
+    private Set<PlayerTeam> teams;
 
     @OneToMany(cascade = ALL, mappedBy = "player", fetch = EAGER)
     private Set<PlayerEvent> playerevent;
 
     private Integer level;
 
-    public void setTeamsOfPlayer(Set<Team> teamsOfPlayer) {
-        this.teamsOfPlayer = teamsOfPlayer;
+    public void setTeams(Set<PlayerTeam> teams) {
+        this.teams = teams;
     }
 
     public void setPlayerevent(Set<PlayerEvent> playerevent) {
@@ -53,10 +53,9 @@ public class Player extends User {
         return playerevent;
     }
 
-
     @XmlTransient
-    public Set<Team> getTeamsOfPlayer() {
-        return teamsOfPlayer;
+    public Set<PlayerTeam> getTeams() {
+        return teams;
     }
 
     public Integer getLevel() {

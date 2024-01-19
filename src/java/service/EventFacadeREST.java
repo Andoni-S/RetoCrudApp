@@ -33,7 +33,7 @@ import javax.ws.rs.NotFoundException;
  * operations are accessible through HTTP methods and can produce and consume
  * XML or JSON representations.
  *
- * @author Ander Goirigolzarri Iturburu
+ * @author Jagoba Bartolomé Barroso
  */
 @Stateless
 @Path("entity.event")

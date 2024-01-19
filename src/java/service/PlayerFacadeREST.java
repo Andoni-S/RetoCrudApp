@@ -6,6 +6,13 @@
 package service;
 
 import entity.Player;
+
+import entity.PlayerTeam;
+import entity.Team;
+import exceptions.CreateException;
+import exceptions.DeleteException;
+import exceptions.ReadException;
+import exceptions.UpdateException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -17,6 +24,7 @@ import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -27,12 +35,14 @@ import security.Hash;
 
 /**
  *
- * @author Ander Goirigolzarri Iturburu
+ * @author Jagoba Bartolomé Barroso
  */
 @Stateless
 @Path("entity.player")
 public class PlayerFacadeREST extends AbstractFacade<Player> {
-
+ 
+    private static final Logger LOGGER = Logger.getLogger("java");
+    
     @PersistenceContext(unitName = "RetoCrudAppPU")
     private EntityManager em;
 
@@ -102,4 +112,18 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
     protected EntityManager getEntityManager() {
         return em;
     }
+    
+    /*@GET
+    @Path("MyTeams/{teamsOfPlayer}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Team> findMyTeams(@PathParam("player") Player player) {
+        try {
+            LOGGER.info("Fetching all teams of player");
+            return super.findMyTeams(player);
+        } catch (ReadException ex) {
+            LOGGER.info("Error fetching all teams of player");
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }*/
+
 }

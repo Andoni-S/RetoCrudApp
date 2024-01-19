@@ -5,11 +5,9 @@
  */
 package service;
 
-import entity.Organizer;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import entity.PlayerTeam;
+import exceptions.DeleteException;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -17,50 +15,42 @@ import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import security.Hash;
 
 /**
  *
  * @author Jagoba Bartolomé Barroso
  */
 @Stateless
-@Path("entity.organizer")
-public class OrganizerFacadeREST extends AbstractFacade<Organizer> {
+@Path("entity.playerteam")
+public class PlayerTeamFacadeREST extends AbstractFacade<PlayerTeam> {
+
+    private static final Logger LOGGER = Logger.getLogger("java");
 
     @PersistenceContext(unitName = "RetoCrudAppPU")
     private EntityManager em;
 
-    private static final Logger LOGGER = Logger.getLogger("java");
-
-    private Hash hashUtil = new Hash();
-
-    public OrganizerFacadeREST() {
-        super(Organizer.class);
+    public PlayerTeamFacadeREST() {
+        super(PlayerTeam.class);
     }
 
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(Organizer entity) {
-        // Hash the password before persisting the entity
-        entity.setPassword(hashUtil.hashPassword(entity.getPassword()));
+    public void create(PlayerTeam entity) {
         super.create(entity);
     }
 
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") Long id, Organizer entity) {
-        // Check if the password is present before hashing and updating
-        if (entity.getPassword() != null) {
-            entity.setPassword(hashUtil.hashPassword(entity.getPassword()));
-        }
+    public void edit(@PathParam("id") Long id, PlayerTeam entity) {
         super.edit(entity);
     }
 
@@ -73,21 +63,21 @@ public class OrganizerFacadeREST extends AbstractFacade<Organizer> {
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Organizer find(@PathParam("id") Long id) {
+    public PlayerTeam find(@PathParam("id") Long id) {
         return super.find(id);
     }
 
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Organizer> findAll() {
+    public List<PlayerTeam> findAll() {
         return super.findAll();
     }
 
     @GET
     @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Organizer> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
+    public List<PlayerTeam> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
     }
 
