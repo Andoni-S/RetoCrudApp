@@ -6,7 +6,10 @@
 package service;
 
 import entity.Player;
+import entity.PlayerTeam;
 import entity.Team;
+import exceptions.CreateException;
+import exceptions.DeleteException;
 import exceptions.ReadException;
 import exceptions.UpdateException;
 import java.util.List;
@@ -109,22 +112,4 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
         }
     }*/
 
-    /**
-     *
-     * @param playerId
-     * @param teamId
-     */
-
-    
-    @POST
-    @Path("JoinTeam/{playerId}/{teamId}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Override
-    public void joinTeam(@PathParam("playerId") Integer playerId, @PathParam ("teamId") Integer teamId){
-        try {
-            super.joinTeam(playerId, teamId);
-        } catch (UpdateException ex) {
-            Logger.getLogger(PlayerFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
 }

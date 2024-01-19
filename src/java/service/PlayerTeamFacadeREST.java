@@ -6,13 +6,16 @@
 package service;
 
 import entity.PlayerTeam;
+import exceptions.DeleteException;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -27,6 +30,8 @@ import javax.ws.rs.core.MediaType;
 @Stateless
 @Path("entity.playerteam")
 public class PlayerTeamFacadeREST extends AbstractFacade<PlayerTeam> {
+
+    private static final Logger LOGGER = Logger.getLogger("java");
 
     @PersistenceContext(unitName = "RetoCrudAppPU")
     private EntityManager em;
@@ -87,5 +92,4 @@ public class PlayerTeamFacadeREST extends AbstractFacade<PlayerTeam> {
     protected EntityManager getEntityManager() {
         return em;
     }
-    
 }
