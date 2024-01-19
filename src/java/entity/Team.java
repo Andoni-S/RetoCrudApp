@@ -48,7 +48,6 @@ public class Team implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
   
-    @Column(name = "team_id")
     @OneToMany(mappedBy = "team", fetch = EAGER)
     Set<PlayerTeam> players;
 
