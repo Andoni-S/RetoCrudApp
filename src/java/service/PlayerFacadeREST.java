@@ -5,8 +5,8 @@
  */
 package service;
 
+import entity.Game;
 import entity.Player;
-
 import entity.PlayerTeam;
 import entity.Team;
 import exceptions.CreateException;
@@ -111,6 +111,20 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
         return em;
     }
     
+    @GET
+    @Path("findPlayerLevelById/{id}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Integer findPlayerLevelById(@PathParam("id") Long id) {
+        try {
+            LOGGER.log(Level.INFO, "Fetching player by id: {0}", id);
+            return super.findPlayerById(id).getLevel();
+
+        } catch (ReadException ex) {
+            LOGGER.log(Level.SEVERE, "Error fetching player by id", ex);
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
+  
     /*@GET
     @Path("MyTeams/{teamsOfPlayer}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})

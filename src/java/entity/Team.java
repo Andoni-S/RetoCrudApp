@@ -45,15 +45,21 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Team implements Serializable {
 
     @Id
+    @Column(name = "team_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+  
     @Column(name = "team_id")
     @OneToMany(mappedBy = "team", fetch = EAGER)
     Set<PlayerTeam> players;
+
     private String name;
+  
     @Temporal(TemporalType.TIMESTAMP)
     private Date foundation;
+  
     private String coach;
+  
     @OneToMany(cascade = ALL, mappedBy = "team", fetch = EAGER)
     private Set<TeamEvent> teamevents;
 

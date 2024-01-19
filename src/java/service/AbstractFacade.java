@@ -9,6 +9,7 @@ import entity.Player;
 import entity.Result;
 import entity.Team;
 import entity.Game;
+import entity.User;
 import entity.PlayerTeam;
 import entity.Event;
 import entity.PlayerEvent;
@@ -21,13 +22,14 @@ import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
-import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
+import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.PathParam;
 
 /**
  *
@@ -545,6 +547,32 @@ public abstract class AbstractFacade<T> {
             throw new ReadException(e.getMessage());
         }
         return games;
+    }
+    
+    public User findUserByEmail(String email) throws ReadException {
+        List<User> user = null;
+        
+        try {
+            user = (List) getEntityManager().createNamedQuery("findUsersByEmail", User.class)
+                    .setParameter("email", email)
+                    .getResultList();
+        } catch (Exception e) {
+            throw new ReadException(e.getMessage());
+        }
+        return user.get(0);
+    }
+    
+    public Player findPlayerById(@PathParam("id") Long id) throws ReadException {
+        List<Player> user = null;
+        
+        try {
+            user = (List) getEntityManager().createNamedQuery("findPlayerById", Player.class)
+                    .setParameter("id", id)
+                    .getResultList();
+        } catch (Exception e) {
+            throw new ReadException(e.getMessage());
+        }
+        return user.get(0);
     }
 
     @Transactional

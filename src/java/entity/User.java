@@ -5,8 +5,6 @@
  */
 package entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
@@ -32,9 +30,9 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @Table(name="user",schema="esportsdb")
-//@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)*/
+//@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "user_type",discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorColumn(name="user_type", discriminatorType = DiscriminatorType.STRING)
 @NamedQueries({
     @NamedQuery(name = "findAllUsers",
                 query = "SELECT u FROM User u ORDER BY u.username DESC"),
@@ -59,6 +57,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class User implements Serializable{
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
@@ -70,9 +69,8 @@ public class User implements Serializable{
     private String name;
     private String surnames;
     @Temporal(TemporalType.TIMESTAMP)
-    @JsonSerialize(as=Date.class)
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ssXXX")
     private Date birthDate;
+    private String user_type;
   
     public Long getId() {
         return id;
@@ -130,6 +128,14 @@ public class User implements Serializable{
         this.birthDate = birthDate;
     }
 
+    public String getUser_type() {
+        return user_type;
+    }
+
+    public void setUser_type(String user_type) {
+        this.user_type = user_type;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 7;

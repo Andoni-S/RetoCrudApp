@@ -14,6 +14,8 @@ import static javax.persistence.FetchType.EAGER;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -22,9 +24,12 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author Jagoba BartolomÃ© Barroso
  */
-
 @Entity
-@DiscriminatorValue("Player")
+//@Table(name = "player", schema = "esportsdb")
+@NamedQueries({
+    @NamedQuery(name = "findPlayerById", query = "SELECT p FROM User p WHERE p.id = :id")
+})
+@DiscriminatorValue("player")
 @XmlRootElement
 public class Player extends User {
 

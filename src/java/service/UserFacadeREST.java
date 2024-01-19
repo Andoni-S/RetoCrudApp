@@ -6,13 +6,18 @@
 package service;
 
 import entity.User;
+import exceptions.CreateException;
+import exceptions.ReadException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -31,6 +36,11 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @PersistenceContext(unitName = "RetoCrudAppPU")
     private EntityManager em;
 
+    /**
+     * Logger for this class.
+     */
+    private Logger LOGGER = Logger.getLogger(AdminFacadeREST.class.getName());
+    
     public UserFacadeREST() {
         super(User.class);
     }
@@ -38,9 +48,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(User entity) 
-    {
-        //entity.getPassword()
+    public void create(User entity) {
         super.create(entity);
     }
 
@@ -90,4 +98,29 @@ public class UserFacadeREST extends AbstractFacade<User> {
         return em;
     }
     
+    @POST
+    @Path("login")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public User login(User loginUser) {
+        User newUser = new User();
+        try {
+            LOGGER.log(Level.INFO, "Creating a new game");
+            loginUser = super.findUserByEmail(loginUser.getEmail());
+            newUser.setId(loginUser.getId());
+            newUser.setEmail(loginUser.getEmail());
+            newUser.setName(loginUser.getName());
+            newUser.setPassword(loginUser.getPassword());
+            newUser.setSurnames(loginUser.getSurnames());
+            newUser.setUsername(loginUser.getUsername());
+            newUser.setBirthDate(loginUser.getBirthDate());
+            newUser.setUser_type(loginUser.getUser_type());
+            
+                     
+        } catch (ReadException ex) {
+            LOGGER.log(Level.SEVERE, "Error creating a new game", ex);
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+        return newUser;
+    }
 }

@@ -16,10 +16,9 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author Ander Goirigolzarri Iturburu
  */
-
-//@Table(name = "organizer", schema = "esportsdb")
 @Entity
-@DiscriminatorValue("Organizer")
+//@Table(name = "organizer", schema = "esportsdb")
+@DiscriminatorValue("organizer")
 @XmlRootElement
 public class Organizer extends User {
 
