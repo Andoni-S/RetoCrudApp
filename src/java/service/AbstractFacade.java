@@ -205,12 +205,12 @@ public abstract class AbstractFacade<T> {
      * @throws ReadException If there is any exception during the retrieval
      * process. Check the log for details.
      */
-    public List<Team> findTeamsWithWins() throws ReadException {
+    public List<Team> findTeamsWithWins(Long teamId) throws ReadException {
         Result result = null;
         List<Team> teams = null;
         try {
             LOGGER.info("TeamManager: Finding team wins by id.");
-            teams = (List) getEntityManager().createNamedQuery("findTeamsWithWins", Team.class).setParameter("result", result.Won).getResultList();
+            teams = (List) getEntityManager().createNamedQuery("findTeamsWithWins", Team.class).setParameter("team_id", teamId).setParameter("result", result.Won).getResultList();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "TeamManager: Exception finding team with wins by id.", e.getMessage());
             throw new ReadException(e.getMessage());
@@ -250,17 +250,17 @@ public abstract class AbstractFacade<T> {
      * @throws ReadException If an error occurs while retrieving the teams from
      * the database.
      */
-    /*public List<Team> findMyTeams(Player player) throws ReadException {
+    public List<Team> findMyTeams(Long player_id) throws ReadException {
         List<Team> teams = null;
         try {
             LOGGER.info("TeamManager: Finding the player's teams.");
-            teams = (List) getEntityManager().createNamedQuery("findMyTeams", Team.class).setParameter("player", player).getResultList();
+            teams = (List) getEntityManager().createNamedQuery("findMyTeams", Team.class).setParameter("player_id", player_id).getResultList();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "TeamManager: Exception finding the player's teams.", e.getMessage());
             throw new ReadException(e.getMessage());
         }
         return teams;
-    }*/
+    }
 
     /**
     /**
@@ -562,7 +562,7 @@ public abstract class AbstractFacade<T> {
         return user.get(0);
     }
     
-    public Player findPlayerById(@PathParam("id") Long id) throws ReadException {
+    public Player findPlayerById(@PathParam("id")Long id) throws ReadException {
         List<Player> user = null;
         
         try {

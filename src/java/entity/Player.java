@@ -28,6 +28,8 @@ import javax.xml.bind.annotation.XmlTransient;
 //@Table(name = "player", schema = "esportsdb")
 @NamedQueries({
     @NamedQuery(name = "findPlayerById", query = "SELECT p FROM User p WHERE p.id = :id")
+        ,
+    @NamedQuery(name = "findMyTeams", query = "SELECT pt.team FROM PlayerTeam pt WHERE pt.player.id = :player_id")
 })
 @DiscriminatorValue("player")
 @XmlRootElement

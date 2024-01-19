@@ -175,13 +175,12 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
     }
 **/
     @GET
-    @Override
-    @Path("Won/teamevents")
+    @Path("Won/{team_id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Team> findTeamsWithWins() {
+    public List<Team> findTeamsWithWins(@PathParam("team_id") Long teamId) {
          try {
             LOGGER.info("Fetching all teams that won");
-            return super.findTeamsWithWins();
+            return super.findTeamsWithWins(teamId);
         } catch (ReadException ex) {
             LOGGER.info("Error fetching all teams that won");
             throw new InternalServerErrorException(ex.getMessage());

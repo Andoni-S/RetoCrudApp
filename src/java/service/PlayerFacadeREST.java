@@ -125,17 +125,17 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
         }
     }
   
-    /*@GET
-    @Path("MyTeams/{teamsOfPlayer}")
+    @GET
+    @Path("MyTeams/{player_id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Team> findMyTeams(@PathParam("player") Player player) {
+    public List<Team> findMyTeams(@PathParam("player_id") Long player_id) {
         try {
             LOGGER.info("Fetching all teams of player");
-            return super.findMyTeams(player);
+            return super.findMyTeams(player_id);
         } catch (ReadException ex) {
             LOGGER.info("Error fetching all teams of player");
             throw new InternalServerErrorException(ex.getMessage());
         }
-    }*/
+    }
 
 }
