@@ -26,9 +26,9 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Jagoba Bartolomé Barroso
  */
 @Entity
-@Table(name = "player", schema = "esportsdb")
+//@Table(name = "player", schema = "esportsdb")
 @NamedQueries({
-    @NamedQuery(name = "findPlayerById", query = "SELECT p FROM player p WHERE p.id = :id")
+    @NamedQuery(name = "findPlayerById", query = "SELECT p FROM User p WHERE p.id = :id")
 })
 @DiscriminatorValue("player")
 @XmlRootElement

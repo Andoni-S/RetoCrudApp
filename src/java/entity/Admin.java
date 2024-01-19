@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Andoni Sanz
  */
 @Entity
-@Table(name = "admin", schema = "esportsdb")
+//@Table(name = "admin", schema = "esportsdb")
 @DiscriminatorValue("admin")
 @XmlRootElement
 public class Admin extends User {

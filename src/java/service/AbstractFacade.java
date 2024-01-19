@@ -181,11 +181,11 @@ public abstract class AbstractFacade<T> {
         return user.get(0);
     }
     
-    public Player findPlayerById(@PathParam("level") Long id) throws ReadException {
+    public Player findPlayerById(@PathParam("id") Long id) throws ReadException {
         List<Player> user = null;
         
         try {
-            user = (List) getEntityManager().createNamedQuery("findUsersByEmail", Player.class)
+            user = (List) getEntityManager().createNamedQuery("findPlayerById", Player.class)
                     .setParameter("id", id)
                     .getResultList();
         } catch (Exception e) {
