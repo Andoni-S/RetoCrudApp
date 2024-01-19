@@ -41,6 +41,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "findEventsByONG", query = "SELECT e FROM Event e WHERE e.ong = :ongName")
     ,
     @NamedQuery(name = "deletePlayerEventByEventId", query = "DELETE FROM PlayerEvent pe WHERE pe.event.id = :eventId")
+    ,
+    @NamedQuery(name = "deleteTeamEventByEventId", query = "DELETE FROM TeamEvent pe WHERE pe.event.id = :eventId")
 })
 @XmlRootElement
 public class Event implements Serializable {

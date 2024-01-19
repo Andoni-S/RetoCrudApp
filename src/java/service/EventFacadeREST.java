@@ -99,7 +99,6 @@ public class EventFacadeREST extends AbstractFacade<Event> {
      * Deletes an existing Event entity.
      *
      * @param id The ID of the Event entity to be updated.
-     * @param entity The updated Event entity.
      * @throws InternalServerErrorException If an error occurs during the update
      * process.
      */
@@ -109,6 +108,7 @@ public class EventFacadeREST extends AbstractFacade<Event> {
         try {
             LOGGER.info("Removing event...");
             deletePlayerEventsByEventId(id);
+            deleteTeamEventsByEventId(id);
             super.remove(super.find(id));
             LOGGER.info("Event removed.");
         } catch (Exception ex) {
@@ -306,6 +306,17 @@ public class EventFacadeREST extends AbstractFacade<Event> {
     private void deletePlayerEventsByEventId(Long eventId) {
         try {
             Query query = em.createNamedQuery("deletePlayerEventByEventId");
+            query.setParameter("eventId", eventId);
+            query.executeUpdate();
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "Error deleting player events", ex);
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
+
+    private void deleteTeamEventsByEventId(Long eventId) {
+        try {
+            Query query = em.createNamedQuery("deleteTeamEventByEventId");
             query.setParameter("eventId", eventId);
             query.executeUpdate();
         } catch (Exception ex) {
