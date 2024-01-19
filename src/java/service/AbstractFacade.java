@@ -15,6 +15,7 @@ import exceptions.DeleteException;
 import exceptions.ReadException;
 import exceptions.UpdateException;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -343,6 +344,46 @@ public abstract class AbstractFacade<T> {
             getEntityManager().flush();
         } catch (Exception e) {
             throw new DeleteException(e.getMessage());
+        }
+    }
+
+    /**
+     * Signs the provided data with the private key and sends it to the client.
+     *
+     * @param entity The entity containing the data to be signed.
+     */
+    public void signAndSendDataToClient(T entity) {
+        try {
+            // Assuming your entity has a method to get the relevant data (adjust as needed)
+            String dataToSign = getDataToSign(entity);
+
+            // Sign the data using the private key
+            byte[] signature = SecurityService.signData(dataToSign.getBytes());
+
+            // Send data and signature to the client (this is a placeholder, replace with your logic)
+            sendToClient(dataToSign, signature);
+
+            LOGGER.log(Level.INFO, "Data signed and sent to the client successfully.");
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error signing and sending data to client:", e);
+            // Handle the exception appropriately
+        }
+    }
+
+    // Placeholder method, replace with your actual communication logic
+    private void sendToClient(String data, byte[] signature) {
+        LOGGER.log(Level.INFO, "Sending data to the client: {0}", data);
+        LOGGER.log(Level.INFO, "Sending signature to the client: {0}", Base64.getEncoder().encodeToString(signature));
+    }
+
+    // Placeholder method, replace with your actual logic to extract data from the entity
+    private String getDataToSign(T entity) {
+        // Example: assuming your entity has a getName method (adjust as needed)
+        if (entity instanceof Event) {
+            return ((Event) entity).getName();
+        } else {
+            // Handle other entity types if needed
+            return "Unknown Data";
         }
     }
     

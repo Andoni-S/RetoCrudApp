@@ -6,7 +6,11 @@
 package service;
 
 import entity.Player;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -19,6 +23,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import security.Hash;
 
 /**
  *
@@ -31,6 +36,10 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
     @PersistenceContext(unitName = "RetoCrudAppPU")
     private EntityManager em;
 
+    private static final Logger LOGGER = Logger.getLogger("java");
+
+    private Hash hashUtil = new Hash();
+
     public PlayerFacadeREST() {
         super(Player.class);
     }
@@ -39,6 +48,8 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(Player entity) {
+        // Hash the password before persisting the entity
+        entity.setPassword(hashUtil.hashPassword(entity.getPassword()));
         super.create(entity);
     }
 
@@ -46,6 +57,10 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void edit(@PathParam("id") Long id, Player entity) {
+        // Check if the password is present before hashing and updating
+        if (entity.getPassword() != null) {
+            entity.setPassword(hashUtil.hashPassword(entity.getPassword()));
+        }
         super.edit(entity);
     }
 
@@ -87,5 +102,4 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
     protected EntityManager getEntityManager() {
         return em;
     }
-    
 }
