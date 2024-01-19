@@ -114,10 +114,12 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
     @GET
     @Path("findPlayerLevelById/{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Integer findPlayerLevelById(@PathParam("id") Long id) {
+    public String findPlayerLevelById(@PathParam("id") Long id) {
         try {
             LOGGER.log(Level.INFO, "Fetching player by id: {0}", id);
-            return super.findPlayerById(id).getLevel();
+            Integer lvl = super.findPlayerById(id).getLevel();
+            String lvlstr = String.valueOf(lvl);
+            return lvlstr;
 
         } catch (ReadException ex) {
             LOGGER.log(Level.SEVERE, "Error fetching player by id", ex);

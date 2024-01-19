@@ -16,6 +16,7 @@ import static javax.persistence.FetchType.EAGER;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -48,7 +49,7 @@ public class Team implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
   
-    @Column(name = "team_id")
+    //@JoinColumn(name = "team_id")
     @OneToMany(mappedBy = "team", fetch = EAGER)
     Set<PlayerTeam> players;
 
