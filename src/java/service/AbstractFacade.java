@@ -9,6 +9,9 @@ import entity.Event;
 import entity.Player;
 import entity.Team;
 import entity.Game;
+import entity.PlayerEvent;
+import entity.PlayerEventId;
+import entity.Result;
 import exceptions.CreateException;
 import exceptions.DeleteException;
 import exceptions.ReadException;
@@ -19,6 +22,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
@@ -343,5 +347,9 @@ public abstract class AbstractFacade<T> {
         } catch (Exception e) {
             throw new DeleteException(e.getMessage());
         }
+    }
+    
+    public void addPlayerToEvent(PlayerEvent playerEvent){
+        getEntityManager().merge(playerEvent);
     }
 }

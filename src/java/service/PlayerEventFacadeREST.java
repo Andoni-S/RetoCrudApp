@@ -7,8 +7,8 @@ package service;
 
 import entity.PlayerEvent;
 import entity.PlayerEventId;
+import entity.Result;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -16,7 +16,6 @@ import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -67,7 +66,7 @@ public class PlayerEventFacadeREST extends AbstractFacade<PlayerEvent> {
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(PlayerEvent entity) {
-        super.create(entity);
+        super.addPlayerToEvent(entity);
     }
 
     @PUT
@@ -118,28 +117,14 @@ public class PlayerEventFacadeREST extends AbstractFacade<PlayerEvent> {
         return em;
     }
 
-    /**
-     * Registers a player for a specific event using JQL.
-     *
-     * @param playerId The ID of the player to register.
-     * @param eventId The ID of the event for which the player is registering.
-     */
     @POST
-    @Path("registerPlayerForEvent/{playerId}/{eventId}")
-    public void registerPlayerForEvent(@PathParam("playerId") Long playerId, @PathParam("eventId") Long eventId) {
-        try {
-            LOGGER.log(Level.INFO, "Registering player with ID {0} for event with ID {1}", new Object[]{playerId, eventId});
-
-            // Call the named query to register the player for the event
-            em.createNamedQuery("registerPlayerForEvent")
-                    .setParameter("playerId", playerId)
-                    .setParameter("eventId", eventId)
-                    .executeUpdate();
-
-            LOGGER.info("Player successfully registered for the event.");
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error registering player for event", e);
-            throw new InternalServerErrorException(e.getMessage());
-        }
+    @Path("addPlayerToEvent/{playerId}/{eventId}")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public void addPlayerToEvent(@PathParam("playerId") Long playerId, @PathParam("eventId") Long eventId) {
+        PlayerEventId playerEventId = new PlayerEventId(playerId, eventId);
+        PlayerEvent playerEvent = new PlayerEvent();
+        playerEvent.setId(playerEventId);
+        playerEvent.setResult(Result.Draw);
+        em.persist(playerEvent);
     }
 }

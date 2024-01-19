@@ -48,7 +48,6 @@ public class Player extends User {
         this.level = level;
     }
 
-
     @XmlTransient
     public Set<PlayerEvent> getPlayerevent() {
         return playerevent;

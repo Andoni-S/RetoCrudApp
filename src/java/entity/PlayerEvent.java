@@ -21,7 +21,6 @@ import org.hibernate.annotations.OnDeleteAction;
  */
 @Entity
 @Table(name = "player_event", schema = "esportsdb")
-@NamedQuery(name = "registerPlayerForEvent", query = "SELECT pe FROM PlayerEvent pe WHERE pe.id.playerId = :playerId AND pe.id.eventId = :eventId")
 @XmlRootElement
 public class PlayerEvent implements Serializable {
 
@@ -42,6 +41,14 @@ public class PlayerEvent implements Serializable {
     @Enumerated(EnumType.STRING)
     private Result result;
 
+    public PlayerEventId getId() {
+        return id;
+    }
+    
+    public void setId(PlayerEventId id){
+        this.id = id;
+    }
+    
     public Player getPlayer() {
         return player;
     }
