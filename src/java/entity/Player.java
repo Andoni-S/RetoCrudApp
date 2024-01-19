@@ -15,7 +15,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -23,12 +22,9 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author Jagoba BartolomÃ© Barroso
  */
+
 @Entity
-//@Table(name = "player", schema = "esportsdb")
-/*@NamedQueries({
-    @NamedQuery(name = "findPlayerByLevel", query = "SELECT p FROM player p WHERE p.level = :level")
-})*/
-@DiscriminatorValue("player")
+@DiscriminatorValue("Player")
 @XmlRootElement
 public class Player extends User {
 
@@ -51,7 +47,6 @@ public class Player extends User {
     public void setLevel(Integer level) {
         this.level = level;
     }
-
 
     @XmlTransient
     public Set<PlayerEvent> getPlayerevent() {

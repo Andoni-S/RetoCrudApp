@@ -37,7 +37,7 @@ public class Admin extends User {
     @OneToMany(mappedBy = "admin", fetch = EAGER)
     private Set<Game> games;
     
-    //@XmlTransient
+    @XmlTransient
     public Set<Game> getGames() {
         return games;
     }

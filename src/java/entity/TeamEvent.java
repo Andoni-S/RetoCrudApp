@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,6 +15,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 /**
  *
@@ -26,12 +29,16 @@ public class TeamEvent implements Serializable {
 
     @EmbeddedId
     private TeamEventId Id;
+
+    @ManyToOne
     @MapsId("teamId")
-    @ManyToOne
     private Team team;
-    @MapsId("eventId")
+
     @ManyToOne
+    @MapsId("eventId")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Event event;
+
     @Enumerated(EnumType.STRING)
     private Result result;
 
@@ -65,5 +72,30 @@ public class TeamEvent implements Serializable {
 
     public void setResult(Result result) {
         this.result = result;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 29 * hash + Objects.hashCode(this.Id);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final TeamEvent other = (TeamEvent) obj;
+        if (!Objects.equals(this.Id, other.Id)) {
+            return false;
+        }
+        return true;
     }
 }
