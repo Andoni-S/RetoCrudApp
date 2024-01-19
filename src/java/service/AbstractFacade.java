@@ -10,6 +10,7 @@ import entity.Player;
 import entity.Result;
 import entity.Team;
 import entity.Game;
+import entity.PlayerTeam;
 import exceptions.CreateException;
 import exceptions.DeleteException;
 import exceptions.ReadException;
@@ -114,7 +115,7 @@ public abstract class AbstractFacade<T> {
      * @throws ReadException If there is any exception during the retrieval
      * process. Check the log for details.
      */
-    public List<Team> findTeamsByName(String name) throws ReadException {
+    /*public List<Team> findTeamsByName(String name) throws ReadException {
         List<Team> teams = null;
         try {
             LOGGER.info("TeamManager: Finding team by name.");
@@ -124,7 +125,7 @@ public abstract class AbstractFacade<T> {
             throw new ReadException(e.getMessage());
         }
         return teams;
-    }
+    }*/
 
     /**
      * Finds a List of {@link Team} entities based on the provided foundation
@@ -216,9 +217,15 @@ public abstract class AbstractFacade<T> {
             LOGGER.info("TeamManager: Finding player and team.");
             Player player = getEntityManager().find(Player.class, playerId);
             Team team = getEntityManager().find(Team.class, teamId);
-            player.getTeams().add(team);
+            
+            Set<PlayerTeam> pt = player.getTeams();
+            PlayerTeam newPTeam = new PlayerTeam();
+            newPTeam.setPlayer(player);
+            newPTeam.setTeam(team);
+                    
+            pt.add(newPTeam);
             // Persist the PlayerTeam entity to the database
-            getEntityManager().persist(player);
+            getEntityManager().persist(pt);
             LOGGER.info("TeamManager: List of player's teams updated.");
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "TeamManager: Exception finding team player's teams.", e.getMessage());

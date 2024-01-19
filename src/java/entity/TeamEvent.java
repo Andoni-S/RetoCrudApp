@@ -5,6 +5,7 @@
  */
 package entity;
 
+import java.io.Serializable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -21,7 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @Table(name = "team_event", schema = "esportsdb")
 @XmlRootElement
-public class TeamEvent {
+public class TeamEvent implements Serializable {
 
     @EmbeddedId
     private TeamEventId Id;

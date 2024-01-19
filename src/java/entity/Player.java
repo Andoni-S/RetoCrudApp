@@ -32,18 +32,15 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 public class Player extends User {
 
-    @ManyToMany(fetch = EAGER)
-    @JoinTable(name = "Player_Team", schema = "esportsdb",
-    joinColumns = { @JoinColumn(name = "id") }, 
-    inverseJoinColumns = { @JoinColumn(name = "team_id") })
-    private Set<Team> teams;
+    @OneToMany(mappedBy="player", fetch = EAGER)
+    private Set<PlayerTeam> teams;
 
     @OneToMany(cascade = ALL, mappedBy = "player", fetch = EAGER)
     private Set<PlayerEvent> playerevent;
 
     private Integer level;
 
-    public void setTeams(Set<Team> teams) {
+    public void setTeams(Set<PlayerTeam> teams) {
         this.teams = teams;
     }
 
@@ -61,7 +58,8 @@ public class Player extends User {
         return playerevent;
     }
 
-    public Set<Team> getTeams() {
+    @XmlTransient
+    public Set<PlayerTeam> getTeams() {
         return teams;
     }
 

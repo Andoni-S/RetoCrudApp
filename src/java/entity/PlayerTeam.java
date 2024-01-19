@@ -35,11 +35,9 @@ public class PlayerTeam implements Serializable {
     private Long id;
     
     @ManyToOne
-    @JoinColumn(name = "playerId")
     private Player player;
     
     @ManyToOne
-    @JoinColumn(name = "teamId")
     private Team team;
 
     public void setId(Long id) {

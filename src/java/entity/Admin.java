@@ -11,6 +11,7 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import static javax.persistence.FetchType.EAGER;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -33,7 +34,7 @@ public class Admin extends User {
 
     private Date entryDate;
     
-    @OneToMany(mappedBy = "admin")
+    @OneToMany(mappedBy = "admin", fetch = EAGER)
     private Set<Game> games;
     
     //@XmlTransient

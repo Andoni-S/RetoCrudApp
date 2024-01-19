@@ -117,7 +117,7 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
         }
     }
     
-    @GET
+   /* @GET
     @Override
     @Path("byName/{name}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -129,7 +129,7 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
             LOGGER.info("Error fetching by name");
             throw new InternalServerErrorException(ex.getMessage());
         }
-    }
+    }*/
     
     @GET
     @Path("byDate/{date}")
