@@ -36,10 +36,6 @@ import javax.transaction.Transactional;
  * @author Andoni Sanz Alcalde
  */
 public abstract class AbstractFacade<T> {
-    /**
-     * Logger for the class.
-     */
-    private static final Logger LOGGER = Logger.getLogger("java");
     
     private Class<T> entityClass;
 
