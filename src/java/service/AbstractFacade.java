@@ -6,9 +6,10 @@
 package service;
 
 import entity.Event;
-import entity.Player;
 import entity.Team;
 import entity.Game;
+import entity.PlayerEvent;
+import entity.TeamEvent;
 import exceptions.CreateException;
 import exceptions.DeleteException;
 import exceptions.ReadException;
@@ -139,15 +140,27 @@ public abstract class AbstractFacade<T> {
         return events;
     }
 
-    public List<Event> findEventsWonByPlayer(Player player, String result) throws Exception {
+    /**
+     * Retrieves a list of events won by a specific player.
+     *
+     * This method queries the database to find events that have been won by the
+     * specified player. The search is based on the player's ID.
+     *
+     * @param playerId The ID of the player for whom to retrieve events won.
+     * @return A list of {@link Event} objects won by the specified player.
+     * @throws Exception If an error occurs while retrieving events from the
+     * database. The exception message provides details about the error.
+     * @see Event
+     */
+    public List<Event> findEventsWonByPlayer(Long playerId) throws Exception {
         List<Event> events = null;
         try {
             LOGGER.info("EventFacade: Finding events won by player.");
-            TypedQuery<Event> query = getEntityManager().createNamedQuery("findEventsWonByPlayer", Event.class);
-            query.setParameter("player", player);
-            query.setParameter("result", result);
-            events = query.getResultList();
-            LOGGER.log(Level.INFO, "EventFacade: Found {0} events won by player {1}", new Object[]{events.size(), player.getName()});
+            events = getEntityManager()
+                    .createNamedQuery("findEventsWonByPlayer", Event.class)
+                    .setParameter("playerId", playerId)
+                    .getResultList();
+            LOGGER.log(Level.INFO, "EventFacade: Found {0} events won by player with ID {1}", new Object[]{events.size(), playerId});
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "EventFacade: Exception finding events won by player:", e.getMessage());
             throw new Exception(e.getMessage());
@@ -155,15 +168,15 @@ public abstract class AbstractFacade<T> {
         return events;
     }
 
-    public List<Event> findEventsWonByTeam(Team team, String result) throws Exception {
+    public List<Event> findEventsWonByTeam(Long teamId) throws Exception {
         List<Event> events = null;
         try {
             LOGGER.info("EventFacade: Finding events won by team.");
-            TypedQuery<Event> query = getEntityManager().createNamedQuery("findEventsWonByTeam", Event.class);
-            query.setParameter("team", team);
-            query.setParameter("result", result);
-            events = query.getResultList();
-            LOGGER.log(Level.INFO, "EventFacade: Found {0} events won by team {1}", new Object[]{events.size(), team.getName()});
+            events = getEntityManager()
+                    .createNamedQuery("findEventsWonByTeam", Event.class)
+                    .setParameter("teamId", teamId)
+                    .getResultList();
+            LOGGER.log(Level.INFO, "EventFacade: Found {0} events won by team with ID {1}", new Object[]{events.size(), teamId});
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "EventFacade: Exception finding events won by team:", e.getMessage());
             throw new Exception(e.getMessage());
@@ -373,5 +386,12 @@ public abstract class AbstractFacade<T> {
             return "Unknown Data";
         }
     }
-
+    
+    public void addPlayerToEvent(PlayerEvent playerEvent){
+        getEntityManager().merge(playerEvent);
+    }
+    
+    public void addTeamToEvent(TeamEvent teamEvent){
+        getEntityManager().merge(teamEvent);
+    }
 }

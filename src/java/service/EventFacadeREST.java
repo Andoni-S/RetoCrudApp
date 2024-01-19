@@ -6,6 +6,7 @@
 package service;
 
 import entity.Event;
+import entity.Player;
 import java.util.List;
 import java.util.logging.Level;
 import javax.ejb.Stateless;
@@ -21,6 +22,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.logging.Logger;
+import javax.persistence.Query;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotFoundException;
 
@@ -97,7 +99,6 @@ public class EventFacadeREST extends AbstractFacade<Event> {
      * Deletes an existing Event entity.
      *
      * @param id The ID of the Event entity to be updated.
-     * @param entity The updated Event entity.
      * @throws InternalServerErrorException If an error occurs during the update
      * process.
      */
@@ -106,6 +107,8 @@ public class EventFacadeREST extends AbstractFacade<Event> {
     public void remove(@PathParam("id") Long id) {
         try {
             LOGGER.info("Removing event...");
+            deletePlayerEventsByEventId(id);
+            deleteTeamEventsByEventId(id);
             super.remove(super.find(id));
             LOGGER.info("Event removed.");
         } catch (Exception ex) {
@@ -237,22 +240,27 @@ public class EventFacadeREST extends AbstractFacade<Event> {
     /**
      * Retrieves a list of events won by a specific player.
      *
-     * @param playerName The name of the player.
-     * @return A List of Event entities won by the specified player.
-     * @throws Exception If an error occurs during the retrieval process.
+     * This method queries the database to find events that have been won by the
+     * specified player. The search is based on the player's ID.
+     *
+     * @param playerId The ID of the player for whom to retrieve events won.
+     * @return A List of {@link Event} entities won by the specified player.
+     * @throws InternalServerErrorException If an error occurs during the
+     * retrieval process. The exception message provides details about the
+     * error.
+     * @see Event
      */
     @GET
-    @Path("findEventsWonByPlayer/{playerName}")
+    @Path("findEventsWonByPlayer/{playerId}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Event> findEventsWonByPlayer(@PathParam("playerName") String playerName) throws Exception {
-        List<Event> events = null;
+    public List<Event> findEventsWonByPlayer(@PathParam("playerId") Long playerId) throws Exception {
         try {
-            events = (List) getEntityManager().createNamedQuery("findEventsByOrganizer", Event.class)
-                    .setParameter("name", playerName).getResultList();
+            LOGGER.log(Level.INFO, "Searching for events Won by player with ID: {0}", playerId);
+            return super.findEventsWonByPlayer(playerId);
         } catch (Exception e) {
-            throw new Exception(e.getMessage());
+            LOGGER.log(Level.SEVERE, "Error finding events", e);
+            throw new InternalServerErrorException(e.getMessage());
         }
-        return events;
     }
 
     /**
@@ -265,15 +273,14 @@ public class EventFacadeREST extends AbstractFacade<Event> {
     @GET
     @Path("findEventsWonByTeam/{teamName}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Event> findEventsWonByTeam(@PathParam("teamName") String teamName) throws Exception {
-        List<Event> events = null;
+    public List<Event> findEventsWonByTeam(@PathParam("teamId") Long teamId) throws Exception {
         try {
-            events = (List) getEntityManager().createNamedQuery("findEventsByOrganizer", Event.class)
-                    .setParameter("name", teamName).getResultList();
+            LOGGER.log(Level.INFO, "Searching for events Won by team with ID: {0}", teamId);
+            return super.findEventsWonByPlayer(teamId);
         } catch (Exception e) {
-            throw new Exception(e.getMessage());
+            LOGGER.log(Level.SEVERE, "Error finding events", e);
+            throw new InternalServerErrorException(e.getMessage());
         }
-        return events;
     }
 
     /**
@@ -292,6 +299,28 @@ public class EventFacadeREST extends AbstractFacade<Event> {
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error finding events", e);
             throw new InternalServerErrorException(e.getMessage());
+        }
+    }
+
+    private void deletePlayerEventsByEventId(Long eventId) {
+        try {
+            Query query = em.createNamedQuery("deletePlayerEventByEventId");
+            query.setParameter("eventId", eventId);
+            query.executeUpdate();
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "Error deleting player events", ex);
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
+
+    private void deleteTeamEventsByEventId(Long eventId) {
+        try {
+            Query query = em.createNamedQuery("deleteTeamEventByEventId");
+            query.setParameter("eventId", eventId);
+            query.executeUpdate();
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "Error deleting player events", ex);
+            throw new InternalServerErrorException(ex.getMessage());
         }
     }
 }

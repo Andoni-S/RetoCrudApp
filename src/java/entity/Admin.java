@@ -36,7 +36,7 @@ public class Admin extends User {
     @OneToMany(mappedBy = "admin")
     private Set<Game> games;
     
-    //@XmlTransient
+    @XmlTransient
     public Set<Game> getGames() {
         return games;
     }
