@@ -15,6 +15,7 @@ import javax.persistence.Embeddable;
  */
 @Embeddable
 public class TeamEventId implements Serializable {
+    
     private Long teamId;
     private Long eventId;
     

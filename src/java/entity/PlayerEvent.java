@@ -9,7 +9,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.hibernate.annotations.OnDelete;
@@ -103,5 +102,4 @@ public class PlayerEvent implements Serializable {
         }
         return true;
     }
-
 }
