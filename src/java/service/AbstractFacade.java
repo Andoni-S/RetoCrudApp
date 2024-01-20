@@ -43,8 +43,6 @@ public abstract class AbstractFacade<T> {
     
     private Class<T> entityClass;
 
-    private static final Logger LOGGER = Logger.getLogger("javafxserverside");
-
     public AbstractFacade(Class<T> entityClass) {
         this.entityClass = entityClass;
     }
