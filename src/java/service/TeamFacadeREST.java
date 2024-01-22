@@ -17,6 +17,7 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -40,7 +41,7 @@ import javax.ws.rs.core.MediaType;
 @Path("entity.team")
 public class TeamFacadeREST extends AbstractFacade<Team> {
 
-     private static final Logger LOGGER = Logger.getLogger("java");
+    private static final Logger LOGGER = Logger.getLogger("java");
     
     @PersistenceContext(unitName = "RetoCrudAppPU")
     private EntityManager em;
@@ -186,7 +187,33 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
-    
+      
+    @GET
+    @Path("findPlayerLevelById/{id}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Integer findPlayerLevelById(@PathParam("id") Long id) {
+        try {
+            LOGGER.log(Level.INFO, "Fetching player by id: {0}", id);
+            return super.findPlayerById(id).getLevel();
+
+        } catch (ReadException ex) {
+            LOGGER.log(Level.SEVERE, "Error fetching player by id", ex);
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
+  
+    @GET
+    @Path("MyTeams/{player_id}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Team> findMyTeams(@PathParam("player_id") Long player_id) {
+        try {
+            LOGGER.info("Fetching all teams of player");
+            return super.findMyTeams(player_id);
+        } catch (ReadException ex) {
+            LOGGER.info("Error fetching all teams of player");
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
     @POST
     @Override
     @Path("createTeam")
