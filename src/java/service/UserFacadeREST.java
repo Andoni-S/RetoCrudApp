@@ -109,7 +109,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
             loginUser = super.findUserByEmail(loginUser.getEmail());
             newUser.setId(loginUser.getId());
             newUser.setEmail(loginUser.getEmail());
-            newUser.setName(loginUser.getName());
+            newUser.setName(loginUser.getName());  
             newUser.setPassword(loginUser.getPassword());
             newUser.setSurnames(loginUser.getSurnames());
             newUser.setUsername(loginUser.getUsername());
