@@ -20,7 +20,7 @@ import exceptions.ReadException;
 import exceptions.UpdateException;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -508,22 +508,22 @@ public abstract class AbstractFacade<T> {
         return games;
     }
 
-    /*public Set<Game> findGamesByPVPType(Enum pvpType) throws ReadException {
-        Set<Game> games = null;
+    public List<Game> findGamesByPVPType(Enum pvpType) throws ReadException {
+        List<Game> games = null;
         try {
-            games = (Set) em.createNamedQuery("findGamesByPVPType", Game.class)
-                    .setParameter("pvpType", pvpType.ordinal())
+            games = (List) getEntityManager().createNamedQuery("findGamesByPVPType", Game.class)
+                    .setParameter("pvpType", pvpType)
                     .getResultList();
         } catch (Exception e) {
             throw new ReadException(e.getMessage());
         }
         return games;
-    }*/
+    }
     public List<Game> findGamesByReleaseDate(Date releaseDate) throws ReadException {
         List<Game> games = null;
         try {
             // Format the Date to a String with the desired pattern
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             String formattedReleaseDate = dateFormat.format(releaseDate);
 
             // Use the formatted date in the query
@@ -654,5 +654,16 @@ public abstract class AbstractFacade<T> {
     
     public void addTeamToEvent(TeamEvent teamEvent){
         getEntityManager().merge(teamEvent);
+    }
+    
+    public User findUsersByEmail(String email) throws ReadException {
+        User u= new User();
+        try {
+            u = (User) getEntityManager().createNamedQuery("findUsersByEmail", User.class)
+                    .setParameter("email", email).getSingleResult();
+        } catch (Exception e) {
+            throw new ReadException(e.getMessage());
+        }
+        return u;
     }
 }

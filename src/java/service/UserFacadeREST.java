@@ -5,9 +5,11 @@
  */
 package service;
 
+import entity.Game;
 import entity.User;
 import exceptions.CreateException;
 import exceptions.ReadException;
+import exceptions.UpdateException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,6 +26,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import mail.SendMail;
 
 /**
  *
@@ -98,6 +101,20 @@ public class UserFacadeREST extends AbstractFacade<User> {
         return em;
     }
     
+    @GET
+    @Override
+    @Path("findUsersByEmail/{mail}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public User findUsersByEmail(@PathParam("mail") String mail) {
+        try {
+            LOGGER.log(Level.INFO, "Fetching user by mail");
+            return super.findUsersByEmail(mail);
+        } catch (ReadException ex) {
+            LOGGER.log(Level.SEVERE, "Error fetching all games created by admin", ex);
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
+    
     @POST
     @Path("login")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -107,6 +124,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
         try {
             LOGGER.log(Level.INFO, "Creating a new game");
             loginUser = super.findUserByEmail(loginUser.getEmail());
+            
             newUser.setId(loginUser.getId());
             newUser.setEmail(loginUser.getEmail());
             newUser.setName(loginUser.getName());
@@ -123,4 +141,28 @@ public class UserFacadeREST extends AbstractFacade<User> {
         }
         return newUser;
     }
+    
+    @PUT
+    @Path("passwordRecovery")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public void passwordRecovery(User user) {
+        User newUser = new User();
+        try {
+            LOGGER.log(Level.INFO, "Creating a new password");
+            //send email and get the generated password
+            String newPassword = SendMail.sendPasswordRecovery(user.getEmail());
+            //get the user of the generated password
+            newUser = super.findUserByEmail(user.getEmail());
+            //set the new password and change it on the database
+            newUser.setPassword(newPassword);
+            edit(newUser.getId(),newUser);
+          
+            //return newUser;
+        } catch (ReadException ex) {
+            Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        //return null;
+    }
+    
 }

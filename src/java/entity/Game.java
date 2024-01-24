@@ -73,10 +73,10 @@ public class Game implements Serializable {
     private String genre;
     private String platform;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private PVPType PVPType;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date releaseDate;
 
     public Long getId() {

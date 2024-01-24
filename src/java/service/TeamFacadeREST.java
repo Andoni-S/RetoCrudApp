@@ -15,7 +15,7 @@ import exceptions.UpdateException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.OffsetDateTime;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
@@ -138,7 +138,7 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
         try {
             LOGGER.info("Fetching teams by date");
             OffsetDateTime offsetDateTime = OffsetDateTime.parse(date);
-            Date newDate = Date.from(offsetDateTime.toInstant());
+            Date newDate = (Date) Date.from(offsetDateTime.toInstant());
             return super.findTeamsByDate(newDate);
         } catch (ReadException ex) {
             LOGGER.info("Error fetching teams by date");
