@@ -15,6 +15,10 @@ import org.bouncycastle.jce.spec.ECParameterSpec;
 import javax.crypto.Cipher;
 import java.util.Base64;
 
+/**
+ *
+ * @author Ander Goirigolzarri Iturburu
+ */
 public class Decrypt {
 
     public String decrypt(String encryptedPassword) {
