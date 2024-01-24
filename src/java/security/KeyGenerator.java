@@ -68,9 +68,8 @@ public class KeyGenerator {
      * @throws Exception if an error occurs during the file operation.
      */
     private static void storeKey(Key key, String fileName) throws Exception {
-        Path path = Paths.get(System.getProperty("user.dir"), "src\\java", "security", fileName);
+        Path path = Paths.get(System.getProperty("user.home"), "\\esporsthub\\security", fileName);
         Files.createDirectories(path.getParent());
-
         try (ObjectOutputStream out = new ObjectOutputStream(Files.newOutputStream(path))) {
             out.writeObject(key);
         }
