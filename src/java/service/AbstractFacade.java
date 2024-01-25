@@ -121,7 +121,7 @@ public abstract class AbstractFacade<T> {
      * @throws ReadException If there is any exception during the retrieval
      * process. Check the log for details.
      */
-    /*public List<Team> findTeamsByName(String name) throws ReadException {
+    public List<Team> findTeamsByName(String name) throws ReadException {
         List<Team> teams = null;
         try {
             LOGGER.info("TeamManager: Finding team by name.");
@@ -131,7 +131,7 @@ public abstract class AbstractFacade<T> {
             throw new ReadException(e.getMessage());
         }
         return teams;
-    }*/
+    }
 
     /**
      * Finds a List of {@link Team} entities based on the provided foundation
