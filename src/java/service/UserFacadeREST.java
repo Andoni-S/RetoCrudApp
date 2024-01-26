@@ -121,9 +121,11 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public User login(User loginUser) {
         User newUser = new User();
+        
         try {
             LOGGER.log(Level.INFO, "Creating a new game");
             loginUser = super.findUserByEmail(loginUser.getEmail());
+                    
             
             newUser.setId(loginUser.getId());
             newUser.setEmail(loginUser.getEmail());
