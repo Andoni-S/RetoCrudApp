@@ -10,14 +10,11 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 import static javax.persistence.CascadeType.ALL;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import static javax.persistence.FetchType.EAGER;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -49,7 +46,6 @@ public class Team implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
   
-    //@JoinColumn(name = "team_id")
     @OneToMany(mappedBy = "team", fetch = EAGER)
     Set<PlayerTeam> players;
 

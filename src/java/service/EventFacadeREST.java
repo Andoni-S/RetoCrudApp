@@ -156,7 +156,13 @@ public class EventFacadeREST extends AbstractFacade<Event> {
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Event> findAll() {
-        return super.findAll();
+        try {
+            LOGGER.info("Searching all events");
+            return super.findAll();
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "Error finding events", ex);
+            throw new InternalServerErrorException("Internal Server Error");
+        }
     }
 
     /**
