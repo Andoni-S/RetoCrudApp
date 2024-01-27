@@ -24,6 +24,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import security.Decrypt;
 
 /**
  *
@@ -40,7 +41,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
      * Logger for this class.
      */
     private Logger LOGGER = Logger.getLogger(AdminFacadeREST.class.getName());
-    
+
     public UserFacadeREST() {
         super(User.class);
     }
@@ -97,28 +98,28 @@ public class UserFacadeREST extends AbstractFacade<User> {
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
     @POST
     @Path("login")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public User login(User loginUser) {
         User newUser = new User();
-        String password = loginUser.getPassword();
+        String password = new Decrypt().decrypt(loginUser.getPassword());
         String passwordDB = null;
         try {
             LOGGER.log(Level.INFO, "Log In User");
             loginUser = super.findUserByEmail(loginUser.getEmail());
             passwordDB = loginUser.getPassword();
-            if(passwordDB.equals(password)){
+            if (passwordDB.equals(password)) {
                 newUser.setId(loginUser.getId());
                 newUser.setEmail(loginUser.getEmail());
-                newUser.setName(loginUser.getName());                
+                newUser.setName(loginUser.getName());
                 newUser.setPassword(loginUser.getPassword());
                 newUser.setSurnames(loginUser.getSurnames());
                 newUser.setUsername(loginUser.getUsername());
                 newUser.setBirthDate(loginUser.getBirthDate());
-                newUser.setUser_type(loginUser.getUser_type());                
+                newUser.setUser_type(loginUser.getUser_type());
             } else {
                 throw new InternalServerErrorException();
             }
