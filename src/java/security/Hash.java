@@ -11,12 +11,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Provides a method to hash a password using SHA-256 algorithm. If hashing
+ * fails, logs error using standard Java logger.
  *
  * @author Ander Goirigolzarri Iturburu
  */
 public class Hash {
-
-    private static final Logger LOGGER = Logger.getLogger("java");
+    private static final Logger LOGGER = Logger.getLogger(Hash.class.getName());
 
     /**
      * Hashes the given password using the SHA-256 algorithm.
