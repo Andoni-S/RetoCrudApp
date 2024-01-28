@@ -6,15 +6,12 @@
 package entity;
 
 import java.util.Date;
+import java.util.Objects;
 import java.util.Set;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import static javax.persistence.FetchType.EAGER;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -25,7 +22,6 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Andoni Sanz
  */
 @Entity
-//@Table(name = "admin", schema = "esportsdb")
 @DiscriminatorValue("admin")
 @XmlRootElement
 public class Admin extends User {
@@ -43,5 +39,47 @@ public class Admin extends User {
 
     public void setGames(Set<Game> games) {
         this.games = games;
+    }
+
+    public Date getEntryDate() {
+        return entryDate;
+    }
+
+    public void setEntryDate(Date entryDate) {
+        this.entryDate = entryDate;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 43 * hash + Objects.hashCode(this.entryDate);
+        hash = 43 * hash + Objects.hashCode(this.games);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Admin other = (Admin) obj;
+        if (!Objects.equals(this.entryDate, other.entryDate)) {
+            return false;
+        }
+        if (!Objects.equals(this.games, other.games)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Admin{" + "entryDate=" + entryDate + ", games=" + games + '}';
     }
 }

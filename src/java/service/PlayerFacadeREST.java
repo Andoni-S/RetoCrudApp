@@ -110,5 +110,34 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
     protected EntityManager getEntityManager() {
         return em;
     }
+    
+    @GET
+    @Path("findPlayerLevelById/{id}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public String findPlayerLevelById(@PathParam("id") Long id) {
+        try {
+            LOGGER.log(Level.INFO, "Fetching player by id: {0}", id);
+            Integer lvl = super.findPlayerById(id).getLevel();
+            String lvlstr = String.valueOf(lvl);
+            return lvlstr;
+
+        } catch (ReadException ex) {
+            LOGGER.log(Level.SEVERE, "Error fetching player by id", ex);
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
+  
+    /*@GET
+    @Path("MyTeams/{teamsOfPlayer}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Team> findMyTeams(@PathParam("player") Player player) {
+        try {
+            LOGGER.info("Fetching all teams of player");
+            return super.findMyTeams(player);
+        } catch (ReadException ex) {
+            LOGGER.info("Error fetching all teams of player");
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }*/
 
 }
