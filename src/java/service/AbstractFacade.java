@@ -218,7 +218,7 @@ public abstract class AbstractFacade<T> {
         return teams;
     }
 
-    public void joinTeam(Integer playerId, Integer teamId) throws UpdateException {
+    public void joinTeam(Long playerId, Long teamId) throws UpdateException {
         try {
             LOGGER.info("TeamManager: Finding player and team.");
             Player player = getEntityManager().find(Player.class, playerId);

@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import static javax.persistence.CascadeType.ALL;
 import javax.persistence.Entity;
 import static javax.persistence.FetchType.EAGER;
@@ -40,6 +41,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "findTeamsWithWins", query = "SELECT te.team FROM TeamEvent te WHERE te.team.id = :team_id AND te.result = :result")
     ,
     @NamedQuery(name = "findAllTeams", query = "SELECT t FROM Team t")
+    ,
+    @NamedQuery(name = "deletePlayerTeamByTeamId", query = "DELETE FROM PlayerTeam pt WHERE pt.team.id = :teamId")
 })
 @XmlRootElement
 public class Team implements Serializable {
@@ -48,7 +51,7 @@ public class Team implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
   
-    @OneToMany(mappedBy = "team", fetch = EAGER)
+    @OneToMany(mappedBy = "team", fetch = EAGER, cascade = CascadeType.REMOVE)
     Set<PlayerTeam> players;
 
     private String name;

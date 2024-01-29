@@ -8,6 +8,7 @@ package service;
 
 import entity.Result;
 import entity.Team;
+import entity.User;
 import exceptions.CreateException;
 import exceptions.DeleteException;
 import exceptions.ReadException;
@@ -22,6 +23,7 @@ import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -67,6 +69,7 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") Long id) {
+        deletePlayerTeamByTeamId(id);
         super.remove(super.find(id));
     }
 
@@ -214,6 +217,31 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
+    
+    @PUT
+    @Path("joinTeam/{team_id}/{player_id}")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public void joinTeam (@PathParam("Team id")Long team_id, @PathParam("Player id")Long player_id){
+         try {
+            LOGGER.info("Joining player to team");
+            super.joinTeam(player_id, team_id);
+        } catch (UpdateException ex) {
+            Logger.getLogger(TeamFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private void deletePlayerTeamByTeamId(Long teamId) {
+        try {
+            Query query = em.createNamedQuery("deletePlayerTeamByTeamId");
+            query.setParameter("teamId", teamId);
+            query.executeUpdate();
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "Error deleting player teams", ex);
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
+    
     @POST
     @Override
     @Path("createTeam")
@@ -244,7 +272,7 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
         }
     }
 
-    @DELETE
+    /*@DELETE
     @Override
     @Path("deleteTeam")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -252,11 +280,14 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
     public void deleteTeam(Team teamToDelete) {
         try {
             LOGGER.info("Deleting a team");
+            
             super.deleteTeam(teamToDelete);
         } catch (DeleteException ex) {
             LOGGER.info("Error deleting a team");
             throw new InternalServerErrorException(ex.getMessage());
         }
-    }
+    }*/
+    
+    
 }
 

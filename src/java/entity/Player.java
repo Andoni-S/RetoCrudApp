@@ -7,6 +7,7 @@ package entity;
 
 import java.util.Objects;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import static javax.persistence.CascadeType.ALL;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -35,7 +36,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 public class Player extends User {
 
-    @OneToMany(mappedBy="player", fetch = EAGER)
+    @OneToMany(mappedBy="player", fetch = EAGER, cascade = CascadeType.PERSIST)
     private Set<PlayerTeam> teams;
 
     @OneToMany(cascade = ALL, mappedBy = "player", fetch = EAGER)
