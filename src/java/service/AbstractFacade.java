@@ -217,25 +217,15 @@ public abstract class AbstractFacade<T> {
         }
         return teams;
     }
-
-    public void joinTeam(Long playerId, Long teamId) throws UpdateException {
+    
+    @Transactional
+    public PlayerTeam createPlayerTeam(PlayerTeam pt) throws CreateException{
         try {
-            LOGGER.info("TeamManager: Finding player and team.");
-            Player player = getEntityManager().find(Player.class, playerId);
-            Team team = getEntityManager().find(Team.class, teamId);
-            
-            Set<PlayerTeam> pt = player.getTeams();
-            PlayerTeam newPTeam = new PlayerTeam();
-            newPTeam.setPlayer(player);
-            newPTeam.setTeam(team);
-                    
-            pt.add(newPTeam);
-            // Persist the PlayerTeam entity to the database
             getEntityManager().persist(pt);
-            LOGGER.info("TeamManager: List of player's teams updated.");
+            getEntityManager().flush();
+            return pt;
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "TeamManager: Exception finding team player's teams.", e.getMessage());
-            throw new UpdateException(e.getMessage());
+            throw new CreateException(e.getMessage());
         }
     }
     

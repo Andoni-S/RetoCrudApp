@@ -6,6 +6,8 @@
  */
 package service;
 
+import entity.Player;
+import entity.PlayerTeam;
 import entity.Result;
 import entity.Team;
 import entity.User;
@@ -18,6 +20,7 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
@@ -218,19 +221,35 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
         }
     }
     
-    @PUT
-    @Path("joinTeam/{teamId}{playerId}")
+    @POST
+    @Path("joinTeam/{teamId}/{playerId}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void joinTeam (@PathParam("teamId")Long teamId, @PathParam("userId")Long playerId){
-         try {
+    public void joinTeam (@PathParam("teamId")Long teamId,@PathParam("playerId") Long playerId){
+        try {
             LOGGER.info("Joining player to team");
-            super.joinTeam(playerId, teamId);
-        } catch (UpdateException ex) {
+            Player player = getEntityManager().find(Player.class, playerId);
+            Team team = getEntityManager().find(Team.class, teamId);
+            
+            PlayerTeam pt = new PlayerTeam();
+            pt.setPlayer(player);
+            pt.setTeam(team);
+
+            // Add the new PlayerTeam to the player's set of teams
+            Set<PlayerTeam> playerTeams = player.getTeams();
+            playerTeams.add(pt);
+            player.setTeams(playerTeams);
+
+            // Add the new PlayerTeam to the team's set of players
+            Set<PlayerTeam> teamPlayers = team.getPlayers();
+            teamPlayers.add(pt);
+            team.setPlayers(teamPlayers);
+            
+            super.createPlayerTeam(pt);
+        } catch (CreateException ex) {
             Logger.getLogger(TeamFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     private void deletePlayerTeamByTeamId(Long teamId) {
         try {
             Query query = em.createNamedQuery("deletePlayerTeamByTeamId");
