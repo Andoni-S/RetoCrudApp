@@ -219,13 +219,13 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
     }
     
     @PUT
-    @Path("joinTeam/{team_id}/{player_id}")
+    @Path("joinTeam/{teamId}{playerId}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void joinTeam (@PathParam("Team id")Long team_id, @PathParam("Player id")Long player_id){
+    public void joinTeam (@PathParam("teamId")Long teamId, @PathParam("userId")Long playerId){
          try {
             LOGGER.info("Joining player to team");
-            super.joinTeam(player_id, team_id);
+            super.joinTeam(playerId, teamId);
         } catch (UpdateException ex) {
             Logger.getLogger(TeamFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
