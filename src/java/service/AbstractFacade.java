@@ -41,8 +41,8 @@ public abstract class AbstractFacade<T> {
     
     private Class<T> entityClass;
 
-    private static final Logger LOGGER = Logger.getLogger("javafxserverside");
-
+    private static final Logger LOGGER = Logger.getLogger("java");
+    
     public AbstractFacade(Class<T> entityClass) {
         this.entityClass = entityClass;
     }
@@ -121,7 +121,7 @@ public abstract class AbstractFacade<T> {
      * @throws ReadException If there is any exception during the retrieval
      * process. Check the log for details.
      */
-    /*public List<Team> findTeamsByName(String name) throws ReadException {
+    public List<Team> findTeamsByName(String name) throws ReadException {
         List<Team> teams = null;
         try {
             LOGGER.info("TeamManager: Finding team by name.");
@@ -131,7 +131,7 @@ public abstract class AbstractFacade<T> {
             throw new ReadException(e.getMessage());
         }
         return teams;
-    }*/
+    }
 
     /**
      * Finds a List of {@link Team} entities based on the provided foundation
@@ -205,37 +205,27 @@ public abstract class AbstractFacade<T> {
      * @throws ReadException If there is any exception during the retrieval
      * process. Check the log for details.
      */
-    public List<Team> findTeamsWithWins() throws ReadException {
+    public List<Team> findTeamsWithWins(Long teamId) throws ReadException {
         Result result = null;
         List<Team> teams = null;
         try {
             LOGGER.info("TeamManager: Finding team wins by id.");
-            teams = (List) getEntityManager().createNamedQuery("findTeamsWithWins", Team.class).setParameter("result", result.Won).getResultList();
+            teams = (List) getEntityManager().createNamedQuery("findTeamsWithWins", Team.class).setParameter("team_id", teamId).setParameter("result", result.Won).getResultList();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "TeamManager: Exception finding team with wins by id.", e.getMessage());
             throw new ReadException(e.getMessage());
         }
         return teams;
     }
-
-    public void joinTeam(Integer playerId, Integer teamId) throws UpdateException {
+    
+    @Transactional
+    public PlayerTeam createPlayerTeam(PlayerTeam pt) throws CreateException{
         try {
-            LOGGER.info("TeamManager: Finding player and team.");
-            Player player = getEntityManager().find(Player.class, playerId);
-            Team team = getEntityManager().find(Team.class, teamId);
-            
-            Set<PlayerTeam> pt = player.getTeams();
-            PlayerTeam newPTeam = new PlayerTeam();
-            newPTeam.setPlayer(player);
-            newPTeam.setTeam(team);
-                    
-            pt.add(newPTeam);
-            // Persist the PlayerTeam entity to the database
             getEntityManager().persist(pt);
-            LOGGER.info("TeamManager: List of player's teams updated.");
+            getEntityManager().flush();
+            return pt;
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "TeamManager: Exception finding team player's teams.", e.getMessage());
-            throw new UpdateException(e.getMessage());
+            throw new CreateException(e.getMessage());
         }
     }
     
@@ -250,17 +240,17 @@ public abstract class AbstractFacade<T> {
      * @throws ReadException If an error occurs while retrieving the teams from
      * the database.
      */
-    /*public List<Team> findMyTeams(Player player) throws ReadException {
+    public List<Team> findMyTeams(Long player_id) throws ReadException {
         List<Team> teams = null;
         try {
             LOGGER.info("TeamManager: Finding the player's teams.");
-            teams = (List) getEntityManager().createNamedQuery("findMyTeams", Team.class).setParameter("player", player).getResultList();
+            teams = (List) getEntityManager().createNamedQuery("findMyTeams", Team.class).setParameter("player_id", player_id).getResultList();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "TeamManager: Exception finding the player's teams.", e.getMessage());
             throw new ReadException(e.getMessage());
         }
         return teams;
-    }*/
+    }
 
     /**
     /**
@@ -562,7 +552,7 @@ public abstract class AbstractFacade<T> {
         return user.get(0);
     }
     
-    public Player findPlayerById(@PathParam("id") Long id) throws ReadException {
+    public Player findPlayerById(@PathParam("id")Long id) throws ReadException {
         List<Player> user = null;
         
         try {

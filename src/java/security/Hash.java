@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package security;
 
 import java.security.MessageDigest;
@@ -11,12 +6,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Provides a method to hash a password using SHA-256 algorithm. If hashing
+ * fails, logs error using standard Java logger.
  *
  * @author Ander Goirigolzarri Iturburu
  */
 public class Hash {
-
-    private static final Logger LOGGER = Logger.getLogger("java");
+    private static final Logger LOGGER = Logger.getLogger(Hash.class.getName());
 
     /**
      * Hashes the given password using the SHA-256 algorithm.

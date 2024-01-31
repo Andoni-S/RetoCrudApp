@@ -27,6 +27,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import mail.SendMail;
+import security.Decrypt;
+
 
 /**
  *
@@ -43,7 +45,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
      * Logger for this class.
      */
     private Logger LOGGER = Logger.getLogger(AdminFacadeREST.class.getName());
-    
+
     public UserFacadeREST() {
         super(User.class);
     }
@@ -114,29 +116,34 @@ public class UserFacadeREST extends AbstractFacade<User> {
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
-    
+ 
     @POST
     @Path("login")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public User login(User loginUser) {
         User newUser = new User();
-        
+
+        String password = new Decrypt().decrypt(loginUser.getPassword());
+        String passwordDB = null;
         try {
-            LOGGER.log(Level.INFO, "Creating a new game");
+            LOGGER.log(Level.INFO, "Log In User");
             loginUser = super.findUserByEmail(loginUser.getEmail());
-                    
-            
-            newUser.setId(loginUser.getId());
-            newUser.setEmail(loginUser.getEmail());
-            newUser.setName(loginUser.getName());
-            newUser.setPassword(loginUser.getPassword());
-            newUser.setSurnames(loginUser.getSurnames());
-            newUser.setUsername(loginUser.getUsername());
-            newUser.setBirthDate(loginUser.getBirthDate());
-            newUser.setUser_type(loginUser.getUser_type());
-            
-                     
+
+            passwordDB = loginUser.getPassword();
+            if (passwordDB.equals(password)) {
+                newUser.setId(loginUser.getId());
+                newUser.setEmail(loginUser.getEmail());
+                newUser.setName(loginUser.getName());
+                newUser.setPassword(loginUser.getPassword());
+                newUser.setSurnames(loginUser.getSurnames());
+                newUser.setUsername(loginUser.getUsername());
+                newUser.setBirthDate(loginUser.getBirthDate());
+                newUser.setUser_type(loginUser.getUser_type());
+            } else {
+                throw new InternalServerErrorException();
+            }
+
         } catch (ReadException ex) {
             LOGGER.log(Level.SEVERE, "Error creating a new game", ex);
             throw new InternalServerErrorException(ex.getMessage());

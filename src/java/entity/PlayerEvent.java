@@ -34,6 +34,7 @@ public class PlayerEvent implements Serializable {
     @ManyToOne
     @MapsId("eventId")
     @JoinColumn(name = "event_id")
+    //TODO Revisar cascade
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Event event;
 

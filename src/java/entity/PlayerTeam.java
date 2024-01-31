@@ -8,6 +8,7 @@ package entity;
 import java.io.Serializable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import static javax.persistence.FetchType.EAGER;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,6 +19,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 /**
  *
@@ -38,6 +41,7 @@ public class PlayerTeam implements Serializable {
     private Player player;
     
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Team team;
 
     public void setId(Long id) {

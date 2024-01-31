@@ -6,8 +6,11 @@
  */
 package service;
 
+import entity.Player;
+import entity.PlayerTeam;
 import entity.Result;
 import entity.Team;
+import entity.User;
 import exceptions.CreateException;
 import exceptions.DeleteException;
 import exceptions.ReadException;
@@ -17,10 +20,13 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.sql.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -40,7 +46,7 @@ import javax.ws.rs.core.MediaType;
 @Path("entity.team")
 public class TeamFacadeREST extends AbstractFacade<Team> {
 
-     private static final Logger LOGGER = Logger.getLogger("java");
+    private static final Logger LOGGER = Logger.getLogger("java");
     
     @PersistenceContext(unitName = "RetoCrudAppPU")
     private EntityManager em;
@@ -66,6 +72,7 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") Long id) {
+        deletePlayerTeamByTeamId(id);
         super.remove(super.find(id));
     }
 
@@ -117,7 +124,7 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
         }
     }
     
-   /* @GET
+    @GET
     @Override
     @Path("byName/{name}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -129,7 +136,7 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
             LOGGER.info("Error fetching by name");
             throw new InternalServerErrorException(ex.getMessage());
         }
-    }*/
+    }
     
     @GET
     @Path("byDate/{date}")
@@ -175,15 +182,81 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
     }
 **/
     @GET
-    @Override
-    @Path("Won/teamevents")
+    @Path("Won/{team_id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Team> findTeamsWithWins() {
+    public List<Team> findTeamsWithWins(@PathParam("team_id") Long teamId) {
          try {
             LOGGER.info("Fetching all teams that won");
-            return super.findTeamsWithWins();
+            return super.findTeamsWithWins(teamId);
         } catch (ReadException ex) {
             LOGGER.info("Error fetching all teams that won");
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
+      
+    @GET
+    @Path("findPlayerLevelById/{id}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Integer findPlayerLevelById(@PathParam("id") Long id) {
+        try {
+            LOGGER.log(Level.INFO, "Fetching player by id: {0}", id);
+            return super.findPlayerById(id).getLevel();
+
+        } catch (ReadException ex) {
+            LOGGER.log(Level.SEVERE, "Error fetching player by id", ex);
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
+  
+    @GET
+    @Path("MyTeams/{player_id}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Team> findMyTeams(@PathParam("player_id") Long player_id) {
+        try {
+            LOGGER.info("Fetching all teams of player");
+            return super.findMyTeams(player_id);
+        } catch (ReadException ex) {
+            LOGGER.info("Error fetching all teams of player");
+            throw new InternalServerErrorException(ex.getMessage());
+        }
+    }
+    
+    @POST
+    @Path("joinTeam/{teamId}/{playerId}")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public void joinTeam (@PathParam("teamId")Long teamId,@PathParam("playerId") Long playerId){
+        try {
+            LOGGER.info("Joining player to team");
+            Player player = getEntityManager().find(Player.class, playerId);
+            Team team = getEntityManager().find(Team.class, teamId);
+            
+            PlayerTeam pt = new PlayerTeam();
+            pt.setPlayer(player);
+            pt.setTeam(team);
+
+            // Add the new PlayerTeam to the player's set of teams
+            Set<PlayerTeam> playerTeams = player.getTeams();
+            playerTeams.add(pt);
+            player.setTeams(playerTeams);
+
+            // Add the new PlayerTeam to the team's set of players
+            Set<PlayerTeam> teamPlayers = team.getPlayers();
+            teamPlayers.add(pt);
+            team.setPlayers(teamPlayers);
+            
+            super.createPlayerTeam(pt);
+        } catch (CreateException ex) {
+            Logger.getLogger(TeamFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void deletePlayerTeamByTeamId(Long teamId) {
+        try {
+            Query query = em.createNamedQuery("deletePlayerTeamByTeamId");
+            query.setParameter("teamId", teamId);
+            query.executeUpdate();
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "Error deleting player teams", ex);
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
@@ -218,7 +291,7 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
         }
     }
 
-    @DELETE
+    /*@DELETE
     @Override
     @Path("deleteTeam")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -226,11 +299,14 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
     public void deleteTeam(Team teamToDelete) {
         try {
             LOGGER.info("Deleting a team");
+            
             super.deleteTeam(teamToDelete);
         } catch (DeleteException ex) {
             LOGGER.info("Error deleting a team");
             throw new InternalServerErrorException(ex.getMessage());
         }
-    }
+    }*/
+    
+    
 }
 

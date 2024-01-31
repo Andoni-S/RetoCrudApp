@@ -1,6 +1,6 @@
 package security;
 
-import java.io.ObjectOutputStream;
+import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -14,10 +14,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * The KeyGenerator class generates ECDH public and private keys and stores them in files.
- * The generated keys are stored in the "security" directory relative to the application's working directory.
- * The elliptic curve used is "secp256r1".
- * 
+ * The KeyGenerator class generates ECDH public and private keys and stores them
+ * in files. The generated keys are stored in the "security" directory relative
+ * to the application's working directory. The elliptic curve used is
+ * "secp256r1".
+ *
  * @author Ander Goirigolzarri Iturburu
  */
 public class KeyGenerator {
@@ -47,11 +48,14 @@ public class KeyGenerator {
     }
 
     /**
-     * Generates a KeyPair using the ECDH algorithm with the "secp256r1" elliptic curve.
+     * Generates a KeyPair using the ECDH algorithm with the "secp256r1"
+     * elliptic curve.
      *
      * @return The generated KeyPair.
-     * @throws NoSuchAlgorithmException if the specified algorithm is not available.
-     * @throws InvalidAlgorithmParameterException if the specified algorithm parameters are invalid.
+     * @throws NoSuchAlgorithmException if the specified algorithm is not
+     * available.
+     * @throws InvalidAlgorithmParameterException if the specified algorithm
+     * parameters are invalid.
      */
     private static KeyPair generateKeyPair() throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("EC");
@@ -61,18 +65,18 @@ public class KeyGenerator {
     }
 
     /**
-     * Stores the provided Key in a file with the given file name in the "security" package.
+     * Stores the provided Key in a file with the given file name in the
+     * "security" package.
      *
      * @param key The Key to be stored.
      * @param fileName The name of the file to store the key.
      * @throws Exception if an error occurs during the file operation.
      */
     private static void storeKey(Key key, String fileName) throws Exception {
-        Path path = Paths.get(System.getProperty("user.dir"), "src\\java", "security", fileName);
+        Path path = Paths.get(System.getProperty("user.home"), "\\esportshub\\security", fileName);
         Files.createDirectories(path.getParent());
-
-        try (ObjectOutputStream out = new ObjectOutputStream(Files.newOutputStream(path))) {
-            out.writeObject(key);
+        try (FileOutputStream out = new FileOutputStream(path.toFile())) {
+            out.write(key.getEncoded());
         }
     }
 }
