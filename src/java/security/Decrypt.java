@@ -76,6 +76,7 @@ public class Decrypt {
             byte[] decryptedBytes = cipher.doFinal(encryptedPasswordBytes);
 
             // Convert the decrypted bytes to String
+            //decryptedPassword = Base64.getEncoder().encodeToString(decryptedBytes);
             decryptedPassword = new String(decryptedBytes);
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Error reading private key file", e);
