@@ -123,7 +123,6 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public User login(User loginUser) {
         User newUser = new User();
-
         String password = new Decrypt().decrypt(loginUser.getPassword());
         String passwordDB = null;
         try {
