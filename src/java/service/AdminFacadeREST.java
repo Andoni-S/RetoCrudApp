@@ -2,22 +2,24 @@ package service;
 
 import entity.Admin;
 import entity.Game;
+import entity.PVPType;
 import exceptions.CreateException;
 import exceptions.DeleteException;
 import exceptions.ReadException;
 import exceptions.UpdateException;
+import java.time.OffsetDateTime;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
+import java.sql.Date;
 
 @Stateless
 @Path("entity.admin")
@@ -158,28 +160,28 @@ public class AdminFacadeREST extends AbstractFacade<Admin> {
         }
     }
 
-    /*@GET
+    @GET
     @Path("gamesByPVPType/{pvpType}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Override
-    public Set<Game> findGamesByPVPType(@PathParam("pvpType") String pvpType) {
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Game> findGamesByPVPType(@PathParam("pvpType") String pvpType) {
         try {
             LOGGER.log(Level.INFO, "Fetching games by PVPType: {0}", pvpType);
-            return super.findGamesByPVPType(pvpType);
+            return super.findGamesByPVPType(PVPType.valueOf(pvpType));
         } catch (ReadException ex) {
             LOGGER.log(Level.SEVERE, "Error fetching games by PVPType", ex);
             throw new InternalServerErrorException(ex.getMessage());
         }
-    }*/
+    }
 
     @GET
-    @Override
     @Path("gamesByReleaseDate/{releaseDate}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})  
-    public List<Game> findGamesByReleaseDate(@PathParam("releaseDate") Date releaseDate) {
+    public List<Game> findGamesByReleaseDate(@PathParam("releaseDate") String releaseDate) {
         try {
-            LOGGER.log(Level.INFO, "Fetching games by release date: {0}", releaseDate);
-            return super.findGamesByReleaseDate(releaseDate);
+            LOGGER.info("Fetching all games");
+            OffsetDateTime offsetDateTime = OffsetDateTime.parse(releaseDate);
+            Date newDate = (Date)Date.from(offsetDateTime.toInstant());
+            return super.findGamesByReleaseDate(newDate);
         } catch (ReadException ex) {
             LOGGER.log(Level.SEVERE, "Error fetching games by release date", ex);
             throw new InternalServerErrorException(ex.getMessage());
@@ -187,7 +189,6 @@ public class AdminFacadeREST extends AbstractFacade<Admin> {
     }
 
     @GET
-    @Override
     @Path("gamesByGenreAndReleaseDate/{genre}/{releaseDate}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Game> findGamesByGenreAndReleaseDate(

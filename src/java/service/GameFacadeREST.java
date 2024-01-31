@@ -39,7 +39,12 @@ public class GameFacadeREST extends AbstractFacade<Game> {
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(Game entity) {
-        super.create(entity);
+        //super.create(entity);
+        if(getEntityManager().contains(entity)){
+            entity = getEntityManager().merge(entity);
+            
+        }
+        getEntityManager().merge(entity);
     }
 
     @PUT
