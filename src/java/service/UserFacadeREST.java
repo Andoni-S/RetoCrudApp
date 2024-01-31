@@ -28,6 +28,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import mail.SendMail;
 import security.Decrypt;
+import security.Hash;
 
 
 /**
@@ -41,12 +42,15 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @PersistenceContext(unitName = "RetoCrudAppPU")
     private EntityManager em;
 
+    private Hash hashUtil = new Hash();
+    
     /**
      * Logger for this class.
      */
     private Logger LOGGER = Logger.getLogger(AdminFacadeREST.class.getName());
 
     public UserFacadeREST() {
+        
         super(User.class);
     }
 
@@ -54,6 +58,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(User entity) {
+        entity.setPassword(hashUtil.hashPassword(entity.getPassword()));
         super.create(entity);
     }
 

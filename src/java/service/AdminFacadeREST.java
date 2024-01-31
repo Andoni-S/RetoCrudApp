@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import java.sql.Date;
+import security.Hash;
 
 @Stateless
 @Path("entity.admin")
@@ -28,12 +29,15 @@ public class AdminFacadeREST extends AbstractFacade<Admin> {
     @PersistenceContext(unitName = "RetoCrudAppPU")
     private EntityManager em;
 
+    private Hash hashUtil = new Hash();
     /**
      * Logger for this class.
      */
     private Logger LOGGER = Logger.getLogger(AdminFacadeREST.class.getName());
 
     public AdminFacadeREST() {
+        // Hash the password before persisting the entity
+        
         super(Admin.class);
     }
 
@@ -41,6 +45,7 @@ public class AdminFacadeREST extends AbstractFacade<Admin> {
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(Admin entity) {
+        entity.setPassword(hashUtil.hashPassword(entity.getPassword()));
         super.create(entity);
     }
 
