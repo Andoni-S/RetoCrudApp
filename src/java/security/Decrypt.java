@@ -3,6 +3,8 @@ package security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
@@ -14,6 +16,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import javax.crypto.Cipher;
 import java.util.Base64;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
@@ -47,13 +50,12 @@ public class Decrypt {
 
             // Retrieve the private key
             byte[] privateKeyBytes;
-            try (FileInputStream fis = new FileInputStream(
-                    Paths.get(System.getProperty("user.home"),
-                            "\\esportshub\\security", "privateKey.der")
-                            .toString()
-            )) {
+            try {
+                InputStream fis = getClass().getClassLoader().getResourceAsStream("security/privateKey.der");
                 privateKeyBytes = new byte[fis.available()];
                 fis.read(privateKeyBytes);
+            } catch (Exception e) {
+                throw e;
             }
 
             // Generate private key from the DER encoded bytes
@@ -74,6 +76,7 @@ public class Decrypt {
             byte[] decryptedBytes = cipher.doFinal(encryptedPasswordBytes);
 
             // Convert the decrypted bytes to String
+            //decryptedPassword = Base64.getEncoder().encodeToString(decryptedBytes);
             decryptedPassword = new String(decryptedBytes);
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Error reading private key file", e);

@@ -14,20 +14,4 @@ public enum PVPType {
     TEAM_BASED_3V3,
     SOLO_BASED_1V1,
     BATTLE_ROYALE;
-
-    /*private final String displayName;
-    private final int maxPlayers;
-
-    PVPType(String displayName, int maxPlayers) {
-        this.displayName = displayName;
-        this.maxPlayers = maxPlayers;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public int getMaxPlayers() {
-        return maxPlayers;
-    }*/
 }
