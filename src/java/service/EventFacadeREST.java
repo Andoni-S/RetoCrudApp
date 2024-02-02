@@ -272,7 +272,6 @@ public class EventFacadeREST extends AbstractFacade<Event> {
     /**
      * Retrieves a list of events won by a specific team.
      *
-     * @param teamName The name of the team.
      * @return A List of Event entities won by the specified team.
      * @throws Exception If an error occurs during the retrieval process.
      */

@@ -206,7 +206,6 @@ public abstract class AbstractFacade<T> {
      * Finds a List of {@link Team} entities based on the provided result
      * indicating wins.
      *
-     * @param result The result associated with the teams to be found.
      * @return A {@link List} of {@link Team} entities with the specified result
      * indicating wins. If no teams are found, the List will be empty.
      * @throws ReadException If there is any exception during the retrieval
@@ -242,7 +241,6 @@ public abstract class AbstractFacade<T> {
      * This method queries the database to find teams associated with a player
      * based on the provided player name.
      *
-     * @param name The name of the player for whom teams are to be retrieved.
      * @return A list of teams associated with the specified player.
      * @throws ReadException If an error occurs while retrieving the teams from
      * the database.

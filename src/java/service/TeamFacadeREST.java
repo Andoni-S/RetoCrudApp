@@ -164,11 +164,7 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
         }
     }
     
-   /** @GET
-    @Override
-    @Path("byPlayerName/playersInTeam/{playerId}/player/{name}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Team> findTeamsByPlayerName(@PathParam("name") String name) {
+    /*public List<Team> findTeamsByPlayerName(@PathParam("name") String name) {
         try {
             LOGGER.info("Fetching teams by player name");
             return super.findTeamsByPlayerName(name);
@@ -176,8 +172,8 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
             LOGGER.info("Error fetching by player name");
             throw new InternalServerErrorException(ex.getMessage());
         }
-    }
-**/
+    }*/
+
     @GET
     @Path("Won/{team_id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
