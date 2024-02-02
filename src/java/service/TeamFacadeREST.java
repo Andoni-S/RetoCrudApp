@@ -1,9 +1,3 @@
-/*
-
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package service;
 
 import entity.Player;
@@ -39,6 +33,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 /**
+ * This class represents a RESTful web service for managing Team entities.
+ * It extends the AbstractFacade class and provides CRUD operations for Team entities.
+ * Additionally, it includes methods for handling specific operations related to teams.
  *
  * @author Jagoba Bartolomé Barroso
  */

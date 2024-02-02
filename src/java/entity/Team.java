@@ -1,8 +1,3 @@
-/*
-     * To change this license header, choose License Headers in Project Properties.
-     * To change this template file, choose Tools | Templates
-     * and open the template in the editor.
- */
 package entity;
 
 import java.io.Serializable;
@@ -26,6 +21,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
+ * Represents a Team entity in the esports system.
+ *
+ * The Team class is an entity class representing a team in the system.
+ * It includes attributes such as id, players, name, foundation, coach, and teamevents.
  *
  * @author Jagoba Bartolomé Barroso
  */

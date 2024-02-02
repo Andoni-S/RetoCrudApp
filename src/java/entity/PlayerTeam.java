@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package entity;
 
 import java.io.Serializable;
@@ -23,6 +18,11 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 /**
+ * Represents an association entity between Player and Team entities.
+ *
+ * The PlayerTeam class is an entity class representing the association
+ * between a Player and a Team in the esports system.
+ * It includes attributes such as id, player, and team.
  *
  * @author Jagoba Bartolomé Barroso
  */

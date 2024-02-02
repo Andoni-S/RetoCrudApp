@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package entity;
 
 import java.io.Serializable;
@@ -19,8 +14,14 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 /**
+ * Represents the participation of a Team in an Event with the associated result.
+ *
+ * The TeamEvent class is an entity class representing the participation
+ * of a Team in an Event with the associated result in the esports system.
+ * It includes attributes such as Id, team, event, and result.
  *
  * @author Jagoba Bartolomé Barroso
+ * @author Ander Goirigolzarri Iturburu
  */
 @Entity
 @Table(name = "team_event", schema = "esportsdb")

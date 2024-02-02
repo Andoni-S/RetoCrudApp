@@ -32,7 +32,14 @@ import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.PathParam;
 
 /**
+ * An abstract class serving as a base for implementing facade classes for
+ * various entities.
  *
+ * The AbstractFacade class provides generic CRUD (Create, Read, Update,
+ * Delete) operations for entities. It also includes additional methods for
+ * specific business logic related to different entities.
+ *
+ * @param <T> The type of entity for which the facade is implemented.
  * @author Jaboba Bartolomé Barroso
  * @author Ander Goirigolzarri Iturburu
  * @author Andoni Sanz Alcalde

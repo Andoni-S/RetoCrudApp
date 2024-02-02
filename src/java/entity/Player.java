@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package entity;
 
 import java.util.Objects;
@@ -22,8 +17,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
+ * Represents a Player entity, extending the User class.
  *
- * @author Jagoba BartolomÃ© Barroso
+ * The Player class is an entity class representing a player in the system.
+ * It includes additional attributes such as teams, playerevents, and level.
+ *
+ * @author Jagoba Bartolomé Barroso
  */
 @Entity
 //@Table(name = "player", schema = "esportsdb")

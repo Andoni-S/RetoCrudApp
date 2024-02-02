@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package service;
 
 import entity.PlayerEvent;
@@ -26,6 +21,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.PathSegment;
 
 /**
+ * This class represents a RESTful web service for managing TeamEvent entities.
+ * It extends the AbstractFacade class and provides CRUD operations for TeamEvent entities.
+ * Additionally, it includes methods for handling specific operations related to team events.
+ *
+ * The URI path for this resource is expected to be in the form 'entity.teamevent'.
+ * It supports operations such as creating, editing, removing, finding, and retrieving lists of TeamEvent entities.
+ * The primary key for TeamEvent entities is a composite key of teamId and eventId.
  *
  * @author Jagoba Bartolomé Barroso
  */
