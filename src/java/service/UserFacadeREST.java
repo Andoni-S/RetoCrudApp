@@ -5,9 +5,9 @@
  */
 package service;
 
-import entity.Game;
 import entity.User;
 import exceptions.CreateException;
+import exceptions.DeleteException;
 import exceptions.ReadException;
 import exceptions.UpdateException;
 import java.util.List;
@@ -30,7 +30,6 @@ import mail.SendMail;
 import security.Decrypt;
 import security.Hash;
 
-
 /**
  *
  * @author Jagoba Bartolomé Barroso
@@ -43,21 +42,21 @@ public class UserFacadeREST extends AbstractFacade<User> {
     private EntityManager em;
 
     private Hash hashUtil = new Hash();
-    
+
     /**
      * Logger for this class.
      */
     private Logger LOGGER = Logger.getLogger(AdminFacadeREST.class.getName());
 
     public UserFacadeREST() {
-        
+
         super(User.class);
     }
 
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(User entity) {
+    public void create(User entity) throws CreateException {
         entity.setPassword(hashUtil.hashPassword(entity.getPassword()));
         super.create(entity);
     }
@@ -65,27 +64,31 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") Long id, User entity) {
+    public void edit(@PathParam("id") Long id, User entity) throws UpdateException {
         super.edit(entity);
     }
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") Long id) {
-        super.remove(super.find(id));
+    public void remove(@PathParam("id") Long id) throws DeleteException {
+        try {
+            super.remove(super.find(id));
+        } catch (ReadException e) {
+            LOGGER.log(Level.SEVERE, "Error finding user:{0}", e.getMessage());
+        }
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public User find(@PathParam("id") Long id) {
+    public User find(@PathParam("id") Long id) throws ReadException {
         return super.find(id);
     }
 
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<User> findAll() {
+    public List<User> findAll() throws ReadException {
         return super.findAll();
     }
 
@@ -107,7 +110,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
     @GET
     @Override
     @Path("findUsersByEmail/{mail}")
@@ -121,7 +124,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
- 
+
     @POST
     @Path("login")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -154,12 +157,12 @@ public class UserFacadeREST extends AbstractFacade<User> {
         }
         return newUser;
     }
-    
+
     @PUT
     @Path("passwordRecovery")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void passwordRecovery(User user) {
+    public void passwordRecovery(User user) throws UpdateException {
         User newUser = new User();
         try {
             LOGGER.log(Level.INFO, "Creating a new password");
@@ -169,13 +172,13 @@ public class UserFacadeREST extends AbstractFacade<User> {
             newUser = super.findUserByEmail(user.getEmail());
             //set the new password and change it on the database
             newUser.setPassword(newPassword);
-            edit(newUser.getId(),newUser);
-          
+            edit(newUser.getId(), newUser);
+
             //return newUser;
         } catch (ReadException ex) {
             Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
         //return null;
     }
-    
+
 }

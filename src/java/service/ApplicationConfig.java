@@ -39,7 +39,6 @@ public class ApplicationConfig extends Application {
         resources.add(service.TeamEventFacadeREST.class);
         resources.add(service.TeamFacadeREST.class);
         resources.add(service.UserFacadeREST.class);
-        
     }
     
 }

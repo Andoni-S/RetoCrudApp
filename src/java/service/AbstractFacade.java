@@ -22,22 +22,19 @@ import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.sql.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
-import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.PathParam;
 
 /**
  * An abstract class serving as a base for implementing facade classes for
  * various entities.
  *
- * The AbstractFacade class provides generic CRUD (Create, Read, Update,
- * Delete) operations for entities. It also includes additional methods for
- * specific business logic related to different entities.
+ * The AbstractFacade class provides generic CRUD (Create, Read, Update, Delete)
+ * operations for entities. It also includes additional methods for specific
+ * business logic related to different entities.
  *
  * @param <T> The type of entity for which the facade is implemented.
  * @author Jaboba Bartolomé Barroso
@@ -45,37 +42,57 @@ import javax.ws.rs.PathParam;
  * @author Andoni Sanz Alcalde
  */
 public abstract class AbstractFacade<T> {
-    
+
     private Class<T> entityClass;
 
-    private static final Logger LOGGER = Logger.getLogger("java");
-    
+    private static final Logger LOGGER = Logger.getLogger(AbstractFacade.class.getName());
+
     public AbstractFacade(Class<T> entityClass) {
         this.entityClass = entityClass;
     }
 
     protected abstract EntityManager getEntityManager();
 
-    public void create(T entity) {
-        getEntityManager().persist(entity);
+    public void create(T entity) throws CreateException {
+        try {
+            getEntityManager().persist(entity);
+        } catch (Exception e) {
+            throw new CreateException();
+        }
     }
 
-    public void edit(T entity) {
-        getEntityManager().merge(entity);
+    public void edit(T entity) throws UpdateException {
+        try {
+            getEntityManager().merge(entity);
+        } catch (Exception e) {
+            throw new UpdateException(e.getMessage());
+        }
     }
 
-    public void remove(T entity) {
-        getEntityManager().remove(getEntityManager().merge(entity));
+    public void remove(T entity) throws DeleteException {
+        try {
+            getEntityManager().remove(getEntityManager().merge(entity));
+        } catch (Exception e) {
+            throw new DeleteException(e.getMessage());
+        }
     }
 
-    public T find(Object id) {
-        return getEntityManager().find(entityClass, id);
+    public T find(Object id) throws ReadException {
+        try {
+            return getEntityManager().find(entityClass, id);
+        } catch (Exception e) {
+            throw new ReadException(e.getMessage());
+        }
     }
 
-    public List<T> findAll() {
-        javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
-        cq.select(cq.from(entityClass));
-        return getEntityManager().createQuery(cq).getResultList();
+    public List<T> findAll() throws ReadException {
+        try {
+            javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
+            cq.select(cq.from(entityClass));
+            return getEntityManager().createQuery(cq).getResultList();
+        } catch (Exception e) {
+            throw new ReadException(e.getMessage());
+        }
     }
 
     public List<T> findRange(int[] range) {
@@ -112,13 +129,13 @@ public abstract class AbstractFacade<T> {
         try {
             LOGGER.info("TeamManager: Finding all teams.");
             teams = (List) getEntityManager().createNamedQuery("findAllTeams", Team.class).getResultList();
-        } catch (Exception e){
+        } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "TeamManager: Exception finding all teams.", e.getMessage());
             throw new ReadException(e.getMessage());
         }
         return teams;
     }
-    
+
     /**
      * Finds a List of {@link Team} entities based on the provided team name.
      *
@@ -190,18 +207,17 @@ public abstract class AbstractFacade<T> {
      * @param id The ID of the team to be found.
      * @return The {@link Team} object containing team data.
      */
-    /**public List<Team> findTeamsByPlayerName(String name) throws ReadException {
-        List<Team> teams = null;
-        try {
-            LOGGER.info("TeamManager: Finding team by name.");
-            teams = (List) getEntityManager().createNamedQuery("findTeamsByPlayerName", Team.class).setParameter("name", name).getResultList();
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "TeamManager: Exception finding team by player name.", e.getMessage());
-            throw new ReadException(e.getMessage());
-        }
-        return teams;
-    }
-**/
+    /**
+     * public List<Team> findTeamsByPlayerName(String name) throws ReadException
+     * { List<Team> teams = null; try { LOGGER.info("TeamManager: Finding team
+     * by name."); teams = (List)
+     * getEntityManager().createNamedQuery("findTeamsByPlayerName",
+     * Team.class).setParameter("name", name).getResultList(); } catch
+     * (Exception e) { LOGGER.log(Level.SEVERE, "TeamManager: Exception finding
+     * team by player name.", e.getMessage()); throw new
+     * ReadException(e.getMessage()); } return teams; }
+     *
+     */
     /**
      * Finds a List of {@link Team} entities based on the provided result
      * indicating wins.
@@ -223,9 +239,9 @@ public abstract class AbstractFacade<T> {
         }
         return teams;
     }
-    
+
     @Transactional
-    public PlayerTeam createPlayerTeam(PlayerTeam pt) throws CreateException{
+    public PlayerTeam createPlayerTeam(PlayerTeam pt) throws CreateException {
         try {
             getEntityManager().persist(pt);
             getEntityManager().flush();
@@ -234,7 +250,7 @@ public abstract class AbstractFacade<T> {
             throw new CreateException(e.getMessage());
         }
     }
-    
+
     /**
      * Retrieves a list of teams associated with a player by their name.
      *
@@ -258,7 +274,7 @@ public abstract class AbstractFacade<T> {
     }
 
     /**
-    /**
+     * /**
      * Creates a new Team.
      *
      * @param newTeam The Team entity to be created.
@@ -275,7 +291,7 @@ public abstract class AbstractFacade<T> {
             throw new CreateException(e.getMessage());
         }
     }
-    
+
     /**
      * Updates an existing Team.
      *
@@ -293,7 +309,7 @@ public abstract class AbstractFacade<T> {
             throw new UpdateException(e.getMessage());
         }
     }
-    
+
     /**
      * Deletes an existing Team.
      *
@@ -311,7 +327,7 @@ public abstract class AbstractFacade<T> {
         }
     }
 
-  /**
+    /**
      * Retrieves a list of events associated with a specific organizer.
      *
      * This method queries the database to find events that are organized by the
@@ -321,11 +337,11 @@ public abstract class AbstractFacade<T> {
      * events.
      * @return A list of {@link Event} objects associated with the specified
      * organizer.
-     * @throws Exception If an error occurs while retrieving events from the
+     * @throws ReadException If an error occurs while retrieving events from the
      * database. The exception message provides details about the error.
      * @see Event
      */
-    public List<Event> findEventsByOrganizer(String organizerName) throws Exception {
+    public List<Event> findEventsByOrganizer(String organizerName) throws ReadException {
         List<Event> events = null;
         try {
             LOGGER.info("EventFacade: Finding events by organizer.");
@@ -336,7 +352,7 @@ public abstract class AbstractFacade<T> {
             LOGGER.log(Level.INFO, "EventFacade: Found {0} events by organizer {1}", new Object[]{events.size(), organizerName});
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "EventFacade: Exception finding events by organizer:", e.getMessage());
-            throw new Exception(e.getMessage());
+            throw new ReadException(e.getMessage());
         }
         return events;
     }
@@ -350,11 +366,11 @@ public abstract class AbstractFacade<T> {
      * @param gameName The name of the game for which to retrieve events.
      * @return A list of {@link Event} objects associated with the specified
      * game.
-     * @throws Exception If an error occurs while retrieving events from the
+     * @throws ReadException If an error occurs while retrieving events from the
      * database. The exception message provides details about the error.
      * @see Event
      */
-    public List<Event> findEventsByGame(String gameName) throws Exception {
+    public List<Event> findEventsByGame(String gameName) throws ReadException {
         List<Event> events = null;
         try {
             LOGGER.info("EventFacade: Finding events by game.");
@@ -365,7 +381,7 @@ public abstract class AbstractFacade<T> {
             LOGGER.log(Level.INFO, "EventFacade: Found {0} events by game {1}", new Object[]{events.size(), gameName});
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "EventFacade: Exception finding events by game:", e.getMessage());
-            throw new Exception(e.getMessage());
+            throw new ReadException(e.getMessage());
         }
         return events;
     }
@@ -378,11 +394,11 @@ public abstract class AbstractFacade<T> {
      *
      * @param playerId The ID of the player for whom to retrieve events won.
      * @return A list of {@link Event} objects won by the specified player.
-     * @throws Exception If an error occurs while retrieving events from the
+     * @throws ReadException If an error occurs while retrieving events from the
      * database. The exception message provides details about the error.
      * @see Event
      */
-    public List<Event> findEventsWonByPlayer(Long playerId) throws Exception {
+    public List<Event> findEventsWonByPlayer(Long playerId) throws ReadException {
         List<Event> events = null;
         try {
             LOGGER.info("EventFacade: Finding events won by player.");
@@ -393,12 +409,24 @@ public abstract class AbstractFacade<T> {
             LOGGER.log(Level.INFO, "EventFacade: Found {0} events won by player with ID {1}", new Object[]{events.size(), playerId});
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "EventFacade: Exception finding events won by player:", e.getMessage());
-            throw new Exception(e.getMessage());
+            throw new ReadException(e.getMessage());
         }
         return events;
     }
 
-    public List<Event> findEventsWonByTeam(Long teamId) throws Exception {
+    /**
+     * Retrieves a list of events won by a specific team.
+     *
+     * This method queries the database to find events that were won by the
+     * specified team. The search is based on the team ID.
+     *
+     * @param teamId The ID of the team for which to retrieve events.
+     * @return A list of {@link Event} objects won by the specified team.
+     * @throws ReadException If an error occurs while retrieving events from the
+     * database. The exception message provides details about the error.
+     * @see Event
+     */
+    public List<Event> findEventsWonByTeam(Long teamId) throws ReadException {
         List<Event> events = null;
         try {
             LOGGER.info("EventFacade: Finding events won by team.");
@@ -409,7 +437,7 @@ public abstract class AbstractFacade<T> {
             LOGGER.log(Level.INFO, "EventFacade: Found {0} events won by team with ID {1}", new Object[]{events.size(), teamId});
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "EventFacade: Exception finding events won by team:", e.getMessage());
-            throw new Exception(e.getMessage());
+            throw new ReadException(e.getMessage());
         }
         return events;
     }
@@ -425,11 +453,11 @@ public abstract class AbstractFacade<T> {
      * which to retrieve events.
      * @return A list of {@link Event} objects associated with the specified
      * ONG.
-     * @throws Exception If an error occurs while retrieving events from the
+     * @throws ReadException If an error occurs while retrieving events from the
      * database. The exception message provides details about the error.
      * @see Event
      */
-    public List<Event> findEventsByONG(String ongName) throws Exception {
+    public List<Event> findEventsByONG(String ongName) throws ReadException {
         List<Event> events = null;
         try {
             LOGGER.info("EventFacade: Finding events by ONG.");
@@ -440,7 +468,7 @@ public abstract class AbstractFacade<T> {
             LOGGER.log(Level.INFO, "EventFacade: Found {0} events associated with ONG {1}", new Object[]{events.size(), ongName});
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "EventFacade: Exception finding events by ONG:", e.getMessage());
-            throw new Exception(e.getMessage());
+            throw new ReadException(e.getMessage());
         }
         return events;
     }
@@ -514,6 +542,7 @@ public abstract class AbstractFacade<T> {
         }
         return games;
     }
+
     public List<Game> findGamesByReleaseDate(Date releaseDate) throws ReadException {
         List<Game> games = null;
         try {
@@ -543,10 +572,10 @@ public abstract class AbstractFacade<T> {
         }
         return games;
     }
-    
+
     public User findUserByEmail(String email) throws ReadException {
         List<User> user = null;
-        
+
         try {
             user = (List) getEntityManager().createNamedQuery("findUsersByEmail", User.class)
                     .setParameter("email", email)
@@ -556,10 +585,10 @@ public abstract class AbstractFacade<T> {
         }
         return user.get(0);
     }
-    
-    public Player findPlayerById(@PathParam("id")Long id) throws ReadException {
+
+    public Player findPlayerById(@PathParam("id") Long id) throws ReadException {
         List<Player> user = null;
-        
+
         try {
             user = (List) getEntityManager().createNamedQuery("findPlayerById", Player.class)
                     .setParameter("id", id)
@@ -642,17 +671,17 @@ public abstract class AbstractFacade<T> {
             return "Unknown Data";
         }
     }
-    
-    public void addPlayerToEvent(PlayerEvent playerEvent){
+
+    public void addPlayerToEvent(PlayerEvent playerEvent) {
         getEntityManager().merge(playerEvent);
     }
-    
-    public void addTeamToEvent(TeamEvent teamEvent){
+
+    public void addTeamToEvent(TeamEvent teamEvent) {
         getEntityManager().merge(teamEvent);
     }
-    
+
     public User findUsersByEmail(String email) throws ReadException {
-        User u= new User();
+        User u = new User();
         try {
             u = (User) getEntityManager().createNamedQuery("findUsersByEmail", User.class)
                     .setParameter("email", email).getSingleResult();

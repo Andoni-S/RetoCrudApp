@@ -8,7 +8,11 @@ package service;
 import entity.PlayerEvent;
 import entity.PlayerEventId;
 import entity.Result;
+import exceptions.DeleteException;
+import exceptions.ReadException;
+import exceptions.UpdateException;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -72,21 +76,25 @@ public class PlayerEventFacadeREST extends AbstractFacade<PlayerEvent> {
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") PathSegment id, PlayerEvent entity) {
+    public void edit(@PathParam("id") PathSegment id, PlayerEvent entity) throws UpdateException {
         super.edit(entity);
     }
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") PathSegment id) {
-        entity.PlayerEventId key = getPrimaryKey(id);
-        super.remove(super.find(key));
+    public void remove(@PathParam("id") PathSegment id) throws DeleteException {
+        try {
+            entity.PlayerEventId key = getPrimaryKey(id);
+            super.remove(super.find(key));
+        } catch (ReadException e) {
+            LOGGER.log(Level.SEVERE, "Error finding key:{0}", e.getMessage());
+        }
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public PlayerEvent find(@PathParam("id") PathSegment id) {
+    public PlayerEvent find(@PathParam("id") PathSegment id) throws ReadException {
         entity.PlayerEventId key = getPrimaryKey(id);
         return super.find(key);
     }
@@ -94,7 +102,7 @@ public class PlayerEventFacadeREST extends AbstractFacade<PlayerEvent> {
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<PlayerEvent> findAll() {
+    public List<PlayerEvent> findAll() throws ReadException {
         return super.findAll();
     }
 

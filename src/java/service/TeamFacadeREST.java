@@ -2,15 +2,11 @@ package service;
 
 import entity.Player;
 import entity.PlayerTeam;
-import entity.Result;
 import entity.Team;
-import entity.User;
 import exceptions.CreateException;
 import exceptions.DeleteException;
 import exceptions.ReadException;
 import exceptions.UpdateException;
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.sql.Date;
 import java.util.List;
@@ -33,9 +29,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 /**
- * This class represents a RESTful web service for managing Team entities.
- * It extends the AbstractFacade class and provides CRUD operations for Team entities.
- * Additionally, it includes methods for handling specific operations related to teams.
+ * This class represents a RESTful web service for managing Team entities. It
+ * extends the AbstractFacade class and provides CRUD operations for Team
+ * entities. Additionally, it includes methods for handling specific operations
+ * related to teams.
  *
  * @author Jagoba Bartolomé Barroso
  */
@@ -44,7 +41,7 @@ import javax.ws.rs.core.MediaType;
 public class TeamFacadeREST extends AbstractFacade<Team> {
 
     private static final Logger LOGGER = Logger.getLogger("java");
-    
+
     @PersistenceContext(unitName = "RetoCrudAppPU")
     private EntityManager em;
 
@@ -55,35 +52,39 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(Team entity) {
+    public void create(Team entity) throws CreateException {
         super.create(entity);
     }
 
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") Long id, Team entity) {
+    public void edit(@PathParam("id") Long id, Team entity) throws UpdateException {
         super.edit(entity);
     }
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") Long id) {
-        deletePlayerTeamByTeamId(id);
-        super.remove(super.find(id));
+    public void remove(@PathParam("id") Long id) throws DeleteException {
+        try {
+            deletePlayerTeamByTeamId(id);
+            super.remove(super.find(id));
+        } catch (ReadException e) {
+            LOGGER.log(Level.SEVERE, "Error finding team:{0}", e.getMessage());
+        }
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Team find(@PathParam("id") Long id) {
+    public Team find(@PathParam("id") Long id) throws ReadException {
         return super.find(id);
     }
 
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Team> findAll() {
+    public List<Team> findAll() throws ReadException {
         return super.findAll();
     }
 
@@ -105,8 +106,7 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
     protected EntityManager getEntityManager() {
         return em;
     }
-    
-     
+
     @GET
     @Override
     @Path("allTeams")
@@ -120,7 +120,7 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
-    
+
     @GET
     @Override
     @Path("byName/{name}")
@@ -134,7 +134,7 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
-    
+
     @GET
     @Path("byDate/{date}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -147,7 +147,7 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
         } catch (ReadException ex) {
             LOGGER.info("Error fetching teams by date");
             throw new InternalServerErrorException(ex.getMessage());
-        }  
+        }
     }
 
     @GET
@@ -163,7 +163,7 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
-    
+
     /*public List<Team> findTeamsByPlayerName(@PathParam("name") String name) {
         try {
             LOGGER.info("Fetching teams by player name");
@@ -173,12 +173,11 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
             throw new InternalServerErrorException(ex.getMessage());
         }
     }*/
-
     @GET
     @Path("Won/{team_id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Team> findTeamsWithWins(@PathParam("team_id") Long teamId) {
-         try {
+        try {
             LOGGER.info("Fetching all teams that won");
             return super.findTeamsWithWins(teamId);
         } catch (ReadException ex) {
@@ -186,7 +185,7 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
-      
+
     @GET
     @Path("findPlayerLevelById/{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -200,7 +199,7 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
-  
+
     @GET
     @Path("MyTeams/{player_id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -213,16 +212,16 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
-    
+
     @POST
     @Path("joinTeam/{teamId}/{playerId}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void joinTeam (@PathParam("teamId")Long teamId,@PathParam("playerId") Long playerId){
+    public void joinTeam(@PathParam("teamId") Long teamId, @PathParam("playerId") Long playerId) {
         try {
             LOGGER.info("Joining player to team");
             Player player = getEntityManager().find(Player.class, playerId);
             Team team = getEntityManager().find(Team.class, teamId);
-            
+
             PlayerTeam pt = new PlayerTeam();
             pt.setPlayer(player);
             pt.setTeam(team);
@@ -236,7 +235,7 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
             Set<PlayerTeam> teamPlayers = team.getPlayers();
             teamPlayers.add(pt);
             team.setPlayers(teamPlayers);
-            
+
             super.createPlayerTeam(pt);
         } catch (CreateException ex) {
             Logger.getLogger(TeamFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
@@ -253,13 +252,13 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
             throw new InternalServerErrorException(ex.getMessage());
         }
     }
-    
+
     @POST
     @Override
     @Path("createTeam")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Team createTeam (Team newTeam) {
+    public Team createTeam(Team newTeam) {
         try {
             LOGGER.info("Creating a new team");
             return super.createTeam(newTeam);
@@ -299,7 +298,4 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
             throw new InternalServerErrorException(ex.getMessage());
         }
     }*/
-    
-    
 }
-

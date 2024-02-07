@@ -6,7 +6,12 @@
 package service;
 
 import entity.Game;
+import exceptions.DeleteException;
+import exceptions.ReadException;
+import exceptions.UpdateException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -31,6 +36,8 @@ public class GameFacadeREST extends AbstractFacade<Game> {
     @PersistenceContext(unitName = "RetoCrudAppPU")
     private EntityManager em;
 
+    private static final Logger LOGGER = Logger.getLogger(GameFacadeREST.class.getName());
+
     public GameFacadeREST() {
         super(Game.class);
     }
@@ -40,9 +47,9 @@ public class GameFacadeREST extends AbstractFacade<Game> {
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(Game entity) {
         //super.create(entity);
-        if(getEntityManager().contains(entity)){
+        if (getEntityManager().contains(entity)) {
             entity = getEntityManager().merge(entity);
-            
+
         }
         getEntityManager().merge(entity);
     }
@@ -50,27 +57,31 @@ public class GameFacadeREST extends AbstractFacade<Game> {
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") Long id, Game entity) {
+    public void edit(@PathParam("id") Long id, Game entity) throws UpdateException {
         super.edit(entity);
     }
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") Long id) {
-        super.remove(super.find(id));
+    public void remove(@PathParam("id") Long id) throws DeleteException {
+        try {
+            super.remove(super.find(id));
+        } catch (ReadException e) {
+            LOGGER.log(Level.SEVERE, "Error finding organizer:{0}", e.getMessage());
+        }
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Game find(@PathParam("id") Long id) {
+    public Game find(@PathParam("id") Long id) throws ReadException {
         return super.find(id);
     }
 
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Game> findAll() {
+    public List<Game> findAll() throws ReadException {
         return super.findAll();
     }
 
@@ -92,5 +103,5 @@ public class GameFacadeREST extends AbstractFacade<Game> {
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }

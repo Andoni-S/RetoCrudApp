@@ -14,8 +14,6 @@ import javax.persistence.PersistenceContext;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
-import java.util.Set;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
@@ -37,14 +35,14 @@ public class AdminFacadeREST extends AbstractFacade<Admin> {
 
     public AdminFacadeREST() {
         // Hash the password before persisting the entity
-        
+
         super(Admin.class);
     }
 
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(Admin entity) {
+    public void create(Admin entity) throws CreateException {
         entity.setPassword(hashUtil.hashPassword(entity.getPassword()));
         super.create(entity);
     }
@@ -52,27 +50,31 @@ public class AdminFacadeREST extends AbstractFacade<Admin> {
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") Long id, Admin entity) {
+    public void edit(@PathParam("id") Long id, Admin entity) throws UpdateException {
         super.edit(entity);
     }
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") Long id) {
-        super.remove(super.find(id));
+    public void remove(@PathParam("id") Long id) throws DeleteException {
+        try {
+            super.remove(super.find(id));
+        } catch (ReadException e) {
+            LOGGER.log(Level.SEVERE, "Error finding admin:{0}", e.getMessage());
+        }
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Admin find(@PathParam("id") Long id) {
+    public Admin find(@PathParam("id") Long id) throws ReadException {
         return super.find(id);
     }
 
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Admin> findAll() {
+    public List<Admin> findAll() throws ReadException {
         return super.findAll();
     }
 
@@ -180,12 +182,12 @@ public class AdminFacadeREST extends AbstractFacade<Admin> {
 
     @GET
     @Path("gamesByReleaseDate/{releaseDate}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})  
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Game> findGamesByReleaseDate(@PathParam("releaseDate") String releaseDate) {
         try {
             LOGGER.info("Fetching all games");
             OffsetDateTime offsetDateTime = OffsetDateTime.parse(releaseDate);
-            Date newDate = (Date)Date.from(offsetDateTime.toInstant());
+            Date newDate = (Date) Date.from(offsetDateTime.toInstant());
             return super.findGamesByReleaseDate(newDate);
         } catch (ReadException ex) {
             LOGGER.log(Level.SEVERE, "Error fetching games by release date", ex);

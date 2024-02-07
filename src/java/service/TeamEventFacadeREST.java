@@ -1,11 +1,14 @@
 package service;
 
-import entity.PlayerEvent;
-import entity.PlayerEventId;
 import entity.Result;
 import entity.TeamEvent;
 import entity.TeamEventId;
+import exceptions.DeleteException;
+import exceptions.ReadException;
+import exceptions.UpdateException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -22,12 +25,14 @@ import javax.ws.rs.core.PathSegment;
 
 /**
  * This class represents a RESTful web service for managing TeamEvent entities.
- * It extends the AbstractFacade class and provides CRUD operations for TeamEvent entities.
- * Additionally, it includes methods for handling specific operations related to team events.
+ * It extends the AbstractFacade class and provides CRUD operations for
+ * TeamEvent entities. Additionally, it includes methods for handling specific
+ * operations related to team events.
  *
- * The URI path for this resource is expected to be in the form 'entity.teamevent'.
- * It supports operations such as creating, editing, removing, finding, and retrieving lists of TeamEvent entities.
- * The primary key for TeamEvent entities is a composite key of teamId and eventId.
+ * The URI path for this resource is expected to be in the form
+ * 'entity.teamevent'. It supports operations such as creating, editing,
+ * removing, finding, and retrieving lists of TeamEvent entities. The primary
+ * key for TeamEvent entities is a composite key of teamId and eventId.
  *
  * @author Jagoba Bartolomé Barroso
  */
@@ -37,6 +42,8 @@ public class TeamEventFacadeREST extends AbstractFacade<TeamEvent> {
 
     @PersistenceContext(unitName = "RetoCrudAppPU")
     private EntityManager em;
+
+    private static final Logger LOGGER = Logger.getLogger(TeamEventFacadeREST.class.getName());
 
     private TeamEventId getPrimaryKey(PathSegment pathSegment) {
         /*
@@ -73,21 +80,26 @@ public class TeamEventFacadeREST extends AbstractFacade<TeamEvent> {
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") PathSegment id, TeamEvent entity) {
+    public void edit(@PathParam("id") PathSegment id, TeamEvent entity) throws UpdateException {
         super.edit(entity);
     }
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") PathSegment id) {
-        entity.TeamEventId key = getPrimaryKey(id);
-        super.remove(super.find(key));
+    public void remove(@PathParam("id") PathSegment id) throws DeleteException {
+        try {
+            entity.TeamEventId key = getPrimaryKey(id);
+            super.remove(super.find(key));
+        } catch (ReadException e) {
+            LOGGER.log(Level.SEVERE, "Error finding organizer:{0}", e.getMessage());
+        }
+
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public TeamEvent find(@PathParam("id") PathSegment id) {
+    public TeamEvent find(@PathParam("id") PathSegment id) throws ReadException {
         entity.TeamEventId key = getPrimaryKey(id);
         return super.find(key);
     }
@@ -95,7 +107,7 @@ public class TeamEventFacadeREST extends AbstractFacade<TeamEvent> {
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<TeamEvent> findAll() {
+    public List<TeamEvent> findAll() throws ReadException {
         return super.findAll();
     }
 

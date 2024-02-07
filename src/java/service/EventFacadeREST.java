@@ -6,7 +6,8 @@
 package service;
 
 import entity.Event;
-import entity.Player;
+import exceptions.CreateException;
+import exceptions.ReadException;
 import java.util.List;
 import java.util.logging.Level;
 import javax.ejb.Stateless;
@@ -56,20 +57,19 @@ public class EventFacadeREST extends AbstractFacade<Event> {
      * Creates a new Event entity.
      *
      * @param entity The Event entity to be created.
-     * @throws InternalServerErrorException If an error occurs during the
-     * creation process.
+     * @throws CreateException If an error occurs during the creation process.
      */
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(Event entity) {
+    public void create(Event entity) throws CreateException {
         try {
             LOGGER.info("Creating event...");
             super.create(entity);
             LOGGER.info("Event created");
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, "Error creating the event", ex);
-            throw new InternalServerErrorException(ex.getMessage());
+            throw new CreateException(ex.getMessage());
         }
     }
 
@@ -251,15 +251,14 @@ public class EventFacadeREST extends AbstractFacade<Event> {
      *
      * @param playerId The ID of the player for whom to retrieve events won.
      * @return A List of {@link Event} entities won by the specified player.
-     * @throws InternalServerErrorException If an error occurs during the
-     * retrieval process. The exception message provides details about the
-     * error.
+     * @throws ReadException If an error occurs during the retrieval process.
+     * The exception message provides details about the error.
      * @see Event
      */
     @GET
     @Path("findEventsWonByPlayer/{playerId}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Event> findEventsWonByPlayer(@PathParam("playerId") Long playerId) throws Exception {
+    public List<Event> findEventsWonByPlayer(@PathParam("playerId") Long playerId) throws ReadException {
         try {
             LOGGER.log(Level.INFO, "Searching for events Won by player with ID: {0}", playerId);
             return super.findEventsWonByPlayer(playerId);
@@ -273,12 +272,12 @@ public class EventFacadeREST extends AbstractFacade<Event> {
      * Retrieves a list of events won by a specific team.
      *
      * @return A List of Event entities won by the specified team.
-     * @throws Exception If an error occurs during the retrieval process.
+     * @throws ReadException If an error occurs during the retrieval process.
      */
     @GET
     @Path("findEventsWonByTeam/{teamName}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Event> findEventsWonByTeam(@PathParam("teamId") Long teamId) throws Exception {
+    public List<Event> findEventsWonByTeam(@PathParam("teamId") Long teamId) throws ReadException {
         try {
             LOGGER.log(Level.INFO, "Searching for events Won by team with ID: {0}", teamId);
             return super.findEventsWonByPlayer(teamId);
