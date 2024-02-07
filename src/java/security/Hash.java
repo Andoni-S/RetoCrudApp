@@ -33,7 +33,8 @@ public class Hash {
             return sb.toString();
         } catch (NoSuchAlgorithmException e) {
             // Log the exception using LOGGER
-            LOGGER.log(Level.SEVERE, "Error occurred while hashing password.", e);
+            LOGGER.log(Level.SEVERE,
+                    "Error occurred while hashing password.", e);
             return null;
         }
     }

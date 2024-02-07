@@ -57,7 +57,8 @@ public class KeyGenerator {
      * @throws InvalidAlgorithmParameterException if the specified algorithm
      * parameters are invalid.
      */
-    private static KeyPair generateKeyPair() throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+    private static KeyPair generateKeyPair() 
+            throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("EC");
         ECGenParameterSpec ecGenParameterSpec = new ECGenParameterSpec("secp256r1");
         keyPairGenerator.initialize(ecGenParameterSpec);
@@ -73,7 +74,8 @@ public class KeyGenerator {
      * @throws Exception if an error occurs during the file operation.
      */
     private static void storeKey(Key key, String fileName) throws Exception {
-        Path path = Paths.get(System.getProperty("user.home"), "\\esportshub\\security", fileName);
+        Path path = Paths.get(System.getProperty("user.home")
+                , "\\esportshub\\security", fileName);
         Files.createDirectories(path.getParent());
         try (FileOutputStream out = new FileOutputStream(path.toFile())) {
             out.write(key.getEncoded());

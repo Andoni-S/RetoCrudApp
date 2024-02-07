@@ -60,7 +60,7 @@ public class Decrypt {
 
             // Generate private key from the DER encoded bytes
             PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
-            KeyFactory keyFactory = KeyFactory.getInstance("EC", "BC"); // "BC" indica el uso del proveedor Bouncy Castle
+            KeyFactory keyFactory = KeyFactory.getInstance("EC", "BC");
             PrivateKey privateKey = keyFactory.generatePrivate(privateKeySpec);
 
             // Configure the ECIES algorithm
