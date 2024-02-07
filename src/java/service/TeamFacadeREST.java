@@ -52,47 +52,73 @@ public class TeamFacadeREST extends AbstractFacade<Team> {
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(Team entity) throws CreateException {
-        super.create(entity);
+    public void create(Team entity) {
+        try {
+            super.create(entity);
+        } catch (CreateException e) {
+            LOGGER.log(Level.SEVERE, "Exception creating a team: {0}", e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") Long id, Team entity) throws UpdateException {
-        super.edit(entity);
+    public void edit(@PathParam("id") Long id, Team entity) {
+        try {
+            super.edit(entity);
+        } catch (UpdateException e) {
+            LOGGER.log(Level.SEVERE, "Exception editing team with ID {0}: {1}", new Object[]{id, e.getMessage()});
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") Long id) throws DeleteException {
+    public void remove(@PathParam("id") Long id) {
         try {
             deletePlayerTeamByTeamId(id);
             super.remove(super.find(id));
-        } catch (ReadException e) {
-            LOGGER.log(Level.SEVERE, "Error finding team:{0}", e.getMessage());
+        } catch (ReadException | DeleteException e) {
+            LOGGER.log(Level.SEVERE, "Exception removing team with ID {0}: {1}", new Object[]{id, e.getMessage()});
+            throw new InternalServerErrorException(e.getMessage());
         }
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Team find(@PathParam("id") Long id) throws ReadException {
-        return super.find(id);
+    public Team find(@PathParam("id") Long id) {
+        try {
+            return super.find(id);
+        } catch (ReadException e) {
+            LOGGER.log(Level.SEVERE, "Exception finding team with ID {0}: {1}", new Object[]{id, e.getMessage()});
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Team> findAll() throws ReadException {
-        return super.findAll();
+    public List<Team> findAll() {
+        try {
+            return super.findAll();
+        } catch (ReadException e) {
+            LOGGER.log(Level.SEVERE, "Exception finding all teams: {0}", e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @GET
     @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Team> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        return super.findRange(new int[]{from, to});
+        try {
+            return super.findRange(new int[]{from, to});
+        } catch (ReadException e) {
+            LOGGER.log(Level.SEVERE, "Exception finding teams in range [{0}, {1}]: {2}", new Object[]{from, to, e.getMessage()});
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @GET

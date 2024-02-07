@@ -56,47 +56,73 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(User entity) throws CreateException {
-        entity.setPassword(hashUtil.hashPassword(entity.getPassword()));
-        super.create(entity);
+    public void create(User entity) {
+        try {
+            entity.setPassword(hashUtil.hashPassword(entity.getPassword()));
+            super.create(entity);
+        } catch (CreateException e) {
+            LOGGER.log(Level.SEVERE, "Exception creating a user: {0}", e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") Long id, User entity) throws UpdateException {
-        super.edit(entity);
+    public void edit(@PathParam("id") Long id, User entity) {
+        try {
+            super.edit(entity);
+        } catch (UpdateException e) {
+            LOGGER.log(Level.SEVERE, "Exception editing user with ID {0}: {1}", new Object[]{id, e.getMessage()});
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") Long id) throws DeleteException {
+    public void remove(@PathParam("id") Long id) {
         try {
             super.remove(super.find(id));
-        } catch (ReadException e) {
-            LOGGER.log(Level.SEVERE, "Error finding user:{0}", e.getMessage());
+        } catch (ReadException | DeleteException e) {
+            LOGGER.log(Level.SEVERE, "Exception removing user with ID {0}: {1}", new Object[]{id, e.getMessage()});
+            throw new InternalServerErrorException(e.getMessage());
         }
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public User find(@PathParam("id") Long id) throws ReadException {
-        return super.find(id);
+    public User find(@PathParam("id") Long id) {
+        try {
+            return super.find(id);
+        } catch (ReadException e) {
+            LOGGER.log(Level.SEVERE, "Exception finding user with ID {0}: {1}", new Object[]{id, e.getMessage()});
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<User> findAll() throws ReadException {
-        return super.findAll();
+    public List<User> findAll() {
+        try {
+            return super.findAll();
+        } catch (ReadException e) {
+            LOGGER.log(Level.SEVERE, "Exception finding all users: {0}", e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @GET
     @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<User> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        return super.findRange(new int[]{from, to});
+        try {
+            return super.findRange(new int[]{from, to});
+        } catch (ReadException e) {
+            LOGGER.log(Level.SEVERE, "Exception finding users in range [{0}, {1}]: {2}", new Object[]{from, to, e.getMessage()});
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @GET

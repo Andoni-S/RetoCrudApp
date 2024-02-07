@@ -6,6 +6,7 @@
 package service;
 
 import entity.Game;
+import exceptions.CreateException;
 import exceptions.DeleteException;
 import exceptions.ReadException;
 import exceptions.UpdateException;
@@ -18,6 +19,7 @@ import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -46,19 +48,27 @@ public class GameFacadeREST extends AbstractFacade<Game> {
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(Game entity) {
-        //super.create(entity);
-        if (getEntityManager().contains(entity)) {
-            entity = getEntityManager().merge(entity);
-
+        try {
+            if (getEntityManager().contains(entity)) {
+                entity = getEntityManager().merge(entity);
+            }
+            getEntityManager().merge(entity);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Exception creating a game: {0}", e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
         }
-        getEntityManager().merge(entity);
     }
 
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void edit(@PathParam("id") Long id, Game entity) throws UpdateException {
-        super.edit(entity);
+        try {
+            super.edit(entity);
+        } catch (UpdateException e) {
+            LOGGER.log(Level.SEVERE, "Exception editing game with ID {0}: {1}", new Object[]{id, e.getMessage()});
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @DELETE
@@ -66,8 +76,9 @@ public class GameFacadeREST extends AbstractFacade<Game> {
     public void remove(@PathParam("id") Long id) throws DeleteException {
         try {
             super.remove(super.find(id));
-        } catch (ReadException e) {
-            LOGGER.log(Level.SEVERE, "Error finding organizer:{0}", e.getMessage());
+        } catch (DeleteException | ReadException e) {
+            LOGGER.log(Level.SEVERE, "Exception removing game with ID {0}: {1}", new Object[]{id, e.getMessage()});
+            throw new InternalServerErrorException(e.getMessage());
         }
     }
 
@@ -75,21 +86,36 @@ public class GameFacadeREST extends AbstractFacade<Game> {
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Game find(@PathParam("id") Long id) throws ReadException {
-        return super.find(id);
+        try {
+            return super.find(id);
+        } catch (ReadException e) {
+            LOGGER.log(Level.SEVERE, "Exception finding game with ID {0}: {1}", new Object[]{id, e.getMessage()});
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Game> findAll() throws ReadException {
-        return super.findAll();
+        try {
+            return super.findAll();
+        } catch (ReadException e) {
+            LOGGER.log(Level.SEVERE, "Exception finding all games: {0}", e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @GET
     @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Game> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        return super.findRange(new int[]{from, to});
+        try {
+            return super.findRange(new int[]{from, to});
+        } catch (ReadException e) {
+            LOGGER.log(Level.SEVERE, "Exception finding games in range [{0}, {1}]: {2}", new Object[]{from, to, e.getMessage()});
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @GET
@@ -103,5 +129,4 @@ public class GameFacadeREST extends AbstractFacade<Game> {
     protected EntityManager getEntityManager() {
         return em;
     }
-
 }

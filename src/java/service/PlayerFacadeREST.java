@@ -48,52 +48,78 @@ public class PlayerFacadeREST extends AbstractFacade<Player> {
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(Player entity) throws CreateException {
-        // Hash the password before persisting the entity
-        entity.setPassword(hashUtil.hashPassword(entity.getPassword()));
-        super.create(entity);
+    public void create(Player entity) {
+        try {
+            // Hash the password before persisting the entity
+            entity.setPassword(hashUtil.hashPassword(entity.getPassword()));
+            super.create(entity);
+        } catch (CreateException e) {
+            LOGGER.log(Level.SEVERE, "Exception creating a player: {0}", e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") Long id, Player entity) throws UpdateException {
-        // Check if the password is present before hashing and updating
-        if (entity.getPassword() != null) {
-            entity.setPassword(hashUtil.hashPassword(entity.getPassword()));
+    public void edit(@PathParam("id") Long id, Player entity) {
+        try {
+            // Check if the password is present before hashing and updating
+            if (entity.getPassword() != null) {
+                entity.setPassword(hashUtil.hashPassword(entity.getPassword()));
+            }
+            super.edit(entity);
+        } catch (UpdateException e) {
+            LOGGER.log(Level.SEVERE, "Exception editing player with ID {0}: {1}", new Object[]{id, e.getMessage()});
+            throw new InternalServerErrorException(e.getMessage());
         }
-        super.edit(entity);
     }
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") Long id) throws DeleteException {
+    public void remove(@PathParam("id") Long id) {
         try {
             super.remove(super.find(id));
-        } catch (ReadException e) {
-            LOGGER.log(Level.SEVERE, "Error finding player:{0}", e.getMessage());
+        } catch (ReadException | DeleteException e) {
+            LOGGER.log(Level.SEVERE, "Exception removing player with ID {0}: {1}", new Object[]{id, e.getMessage()});
+            throw new InternalServerErrorException(e.getMessage());
         }
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Player find(@PathParam("id") Long id) throws ReadException {
-        return super.find(id);
+    public Player find(@PathParam("id") Long id) {
+        try {
+            return super.find(id);
+        } catch (ReadException e) {
+            LOGGER.log(Level.SEVERE, "Exception finding player with ID {0}: {1}", new Object[]{id, e.getMessage()});
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Player> findAll() throws ReadException {
-        return super.findAll();
+    public List<Player> findAll() {
+        try {
+            return super.findAll();
+        } catch (ReadException e) {
+            LOGGER.log(Level.SEVERE, "Exception finding all players: {0}", e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @GET
     @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Player> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        return super.findRange(new int[]{from, to});
+        try {
+            return super.findRange(new int[]{from, to});
+        } catch (ReadException e) {
+            LOGGER.log(Level.SEVERE, "Exception finding players in range [{0}, {1}]: {2}", new Object[]{from, to, e.getMessage()});
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @GET

@@ -15,6 +15,7 @@ import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -74,48 +75,73 @@ public class TeamEventFacadeREST extends AbstractFacade<TeamEvent> {
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(TeamEvent entity) {
-        super.addTeamToEvent(entity);
+        try {
+            super.addTeamToEvent(entity);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Exception creating a team event: {0}", e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") PathSegment id, TeamEvent entity) throws UpdateException {
-        super.edit(entity);
+    public void edit(@PathParam("id") PathSegment id, TeamEvent entity) {
+        try {
+            super.edit(entity);
+        } catch (UpdateException e) {
+            LOGGER.log(Level.SEVERE, "Exception editing team event with ID {0}: {1}", new Object[]{id, e.getMessage()});
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") PathSegment id) throws DeleteException {
+    public void remove(@PathParam("id") PathSegment id) {
         try {
             entity.TeamEventId key = getPrimaryKey(id);
             super.remove(super.find(key));
-        } catch (ReadException e) {
-            LOGGER.log(Level.SEVERE, "Error finding organizer:{0}", e.getMessage());
+        } catch (ReadException | DeleteException e) {
+            LOGGER.log(Level.SEVERE, "Exception removing team event with ID {0}: {1}", new Object[]{id, e.getMessage()});
+            throw new InternalServerErrorException(e.getMessage());
         }
-
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public TeamEvent find(@PathParam("id") PathSegment id) throws ReadException {
-        entity.TeamEventId key = getPrimaryKey(id);
-        return super.find(key);
+    public TeamEvent find(@PathParam("id") PathSegment id) {
+        try {
+            entity.TeamEventId key = getPrimaryKey(id);
+            return super.find(key);
+        } catch (ReadException e) {
+            LOGGER.log(Level.SEVERE, "Exception finding team event with ID {0}: {1}", new Object[]{id, e.getMessage()});
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<TeamEvent> findAll() throws ReadException {
-        return super.findAll();
+    public List<TeamEvent> findAll() {
+        try {
+            return super.findAll();
+        } catch (ReadException e) {
+            LOGGER.log(Level.SEVERE, "Exception finding all team events: {0}", e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @GET
     @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<TeamEvent> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        return super.findRange(new int[]{from, to});
+        try {
+            return super.findRange(new int[]{from, to});
+        } catch (ReadException e) {
+            LOGGER.log(Level.SEVERE, "Exception finding team events in range [{0}, {1}]: {2}", new Object[]{from, to, e.getMessage()});
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @GET

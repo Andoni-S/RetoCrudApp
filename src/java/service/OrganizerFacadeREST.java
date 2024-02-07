@@ -19,6 +19,7 @@ import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -49,58 +50,84 @@ public class OrganizerFacadeREST extends AbstractFacade<Organizer> {
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(Organizer entity) throws CreateException {
-        LOGGER.log(Level.INFO, "Creating organizer: {0}", entity.toString());
-        // Hash the password before persisting the entity
-        entity.setPassword(hashUtil.hashPassword(entity.getPassword()));
-        super.create(entity);
-        LOGGER.log(Level.INFO, "Organizer created successfully: {0}", entity.toString());
+    public void create(Organizer entity) {
+        try {
+            LOGGER.log(Level.INFO, "Creating organizer: {0}", entity.toString());
+            // Hash the password before persisting the entity
+            entity.setPassword(hashUtil.hashPassword(entity.getPassword()));
+            super.create(entity);
+            LOGGER.log(Level.INFO, "Organizer created successfully: {0}", entity.toString());
+        } catch (CreateException e) {
+            LOGGER.log(Level.SEVERE, "Exception creating an organizer:{0}", e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") Long id, Organizer entity) throws UpdateException {
-        LOGGER.log(Level.INFO, "Editing organizer with ID {0}", id);
-        // Check if the password is present before hashing and updating
-        if (entity.getPassword() != null) {
-            entity.setPassword(hashUtil.hashPassword(entity.getPassword()));
+    public void edit(@PathParam("id") Long id, Organizer entity) {
+        try {
+            LOGGER.log(Level.INFO, "Editing organizer with ID {0}", id);
+            // Check if the password is present before hashing and updating
+            if (entity.getPassword() != null) {
+                entity.setPassword(hashUtil.hashPassword(entity.getPassword()));
+            }
+            super.edit(entity);
+            LOGGER.log(Level.INFO, "Organizer edited successfully: {0}", entity.toString());
+        } catch (UpdateException e) {
+            LOGGER.log(Level.SEVERE, "Exception editing organizer with ID {0}: {1}", new Object[]{id, e.getMessage()});
+            throw new InternalServerErrorException(e.getMessage());
         }
-        super.edit(entity);
-        LOGGER.log(Level.INFO, "Organizer edited successfully: {0}", entity.toString());
     }
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") Long id) throws DeleteException {
+    public void remove(@PathParam("id") Long id) {
         try {
             LOGGER.log(Level.INFO, "Removing organizer with ID {0}", id);
             super.remove(super.find(id));
             LOGGER.log(Level.INFO, "Organizer removed successfully");
-        } catch (ReadException e) {
-            LOGGER.log(Level.SEVERE, "Error finding organizer:{0}", e.getMessage());
+        } catch (DeleteException | ReadException e) {
+            LOGGER.log(Level.SEVERE, "Exception removing organizer with ID {0}: {1}", new Object[]{id, e.getMessage()});
+            throw new InternalServerErrorException(e.getMessage());
         }
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Organizer find(@PathParam("id") Long id) throws ReadException {
-        return super.find(id);
+    public Organizer find(@PathParam("id") Long id) {
+        try {
+            return super.find(id);
+        } catch (ReadException e) {
+            LOGGER.log(Level.SEVERE, "Exception finding organizer with ID {0}: {1}", new Object[]{id, e.getMessage()});
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Organizer> findAll() throws ReadException {
-        return super.findAll();
+    public List<Organizer> findAll() {
+        try {
+            return super.findAll();
+        } catch (ReadException e) {
+            LOGGER.log(Level.SEVERE, "Exception finding all organizers: {0}", e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @GET
     @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Organizer> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) throws ReadException {
-        return super.findRange(new int[]{from, to});
+    public List<Organizer> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
+        try {
+            return super.findRange(new int[]{from, to});
+        } catch (ReadException e) {
+            LOGGER.log(Level.SEVERE, "Exception finding organizers in range [{0}, {1}]: {2}", new Object[]{from, to, e.getMessage()});
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @GET

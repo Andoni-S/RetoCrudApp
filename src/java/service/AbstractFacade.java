@@ -54,48 +54,28 @@ public abstract class AbstractFacade<T> {
     protected abstract EntityManager getEntityManager();
 
     public void create(T entity) throws CreateException {
-        try {
-            getEntityManager().persist(entity);
-        } catch (Exception e) {
-            throw new CreateException();
-        }
+        getEntityManager().persist(entity);
     }
 
     public void edit(T entity) throws UpdateException {
-        try {
-            getEntityManager().merge(entity);
-        } catch (Exception e) {
-            throw new UpdateException(e.getMessage());
-        }
+        getEntityManager().merge(entity);
     }
 
     public void remove(T entity) throws DeleteException {
-        try {
-            getEntityManager().remove(getEntityManager().merge(entity));
-        } catch (Exception e) {
-            throw new DeleteException(e.getMessage());
-        }
+        getEntityManager().remove(getEntityManager().merge(entity));
     }
 
     public T find(Object id) throws ReadException {
-        try {
-            return getEntityManager().find(entityClass, id);
-        } catch (Exception e) {
-            throw new ReadException(e.getMessage());
-        }
+        return getEntityManager().find(entityClass, id);
     }
 
     public List<T> findAll() throws ReadException {
-        try {
-            javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
-            cq.select(cq.from(entityClass));
-            return getEntityManager().createQuery(cq).getResultList();
-        } catch (Exception e) {
-            throw new ReadException(e.getMessage());
-        }
+        javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
+        cq.select(cq.from(entityClass));
+        return getEntityManager().createQuery(cq).getResultList();
     }
 
-    public List<T> findRange(int[] range) {
+    public List<T> findRange(int[] range) throws ReadException {
         javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
         cq.select(cq.from(entityClass));
         javax.persistence.Query q = getEntityManager().createQuery(cq);
@@ -342,18 +322,13 @@ public abstract class AbstractFacade<T> {
      * @see Event
      */
     public List<Event> findEventsByOrganizer(String organizerName) throws ReadException {
-        List<Event> events = null;
-        try {
-            LOGGER.info("EventFacade: Finding events by organizer.");
-            events = getEntityManager()
-                    .createNamedQuery("findEventsByOrganizer", Event.class)
-                    .setParameter("organizerName", organizerName)
-                    .getResultList();
-            LOGGER.log(Level.INFO, "EventFacade: Found {0} events by organizer {1}", new Object[]{events.size(), organizerName});
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "EventFacade: Exception finding events by organizer:", e.getMessage());
-            throw new ReadException(e.getMessage());
-        }
+        List<Event> events;
+        LOGGER.info("EventFacade: Finding events by organizer.");
+        events = getEntityManager()
+                .createNamedQuery("findEventsByOrganizer", Event.class)
+                .setParameter("organizerName", organizerName)
+                .getResultList();
+        LOGGER.log(Level.INFO, "EventFacade: Found {0} events by organizer {1}", new Object[]{events.size(), organizerName});
         return events;
     }
 
@@ -372,17 +347,12 @@ public abstract class AbstractFacade<T> {
      */
     public List<Event> findEventsByGame(String gameName) throws ReadException {
         List<Event> events = null;
-        try {
-            LOGGER.info("EventFacade: Finding events by game.");
-            events = getEntityManager()
-                    .createNamedQuery("findEventsByGame", Event.class)
-                    .setParameter("gameName", gameName)
-                    .getResultList();
-            LOGGER.log(Level.INFO, "EventFacade: Found {0} events by game {1}", new Object[]{events.size(), gameName});
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "EventFacade: Exception finding events by game:", e.getMessage());
-            throw new ReadException(e.getMessage());
-        }
+        LOGGER.info("EventFacade: Finding events by game.");
+        events = getEntityManager()
+                .createNamedQuery("findEventsByGame", Event.class)
+                .setParameter("gameName", gameName)
+                .getResultList();
+        LOGGER.log(Level.INFO, "EventFacade: Found {0} events by game {1}", new Object[]{events.size(), gameName});
         return events;
     }
 
@@ -399,18 +369,13 @@ public abstract class AbstractFacade<T> {
      * @see Event
      */
     public List<Event> findEventsWonByPlayer(Long playerId) throws ReadException {
-        List<Event> events = null;
-        try {
-            LOGGER.info("EventFacade: Finding events won by player.");
-            events = getEntityManager()
-                    .createNamedQuery("findEventsWonByPlayer", Event.class)
-                    .setParameter("playerId", playerId)
-                    .getResultList();
-            LOGGER.log(Level.INFO, "EventFacade: Found {0} events won by player with ID {1}", new Object[]{events.size(), playerId});
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "EventFacade: Exception finding events won by player:", e.getMessage());
-            throw new ReadException(e.getMessage());
-        }
+        List<Event> events;
+        LOGGER.info("EventFacade: Finding events won by player.");
+        events = getEntityManager()
+                .createNamedQuery("findEventsWonByPlayer", Event.class)
+                .setParameter("playerId", playerId)
+                .getResultList();
+        LOGGER.log(Level.INFO, "EventFacade: Found {0} events won by player with ID {1}", new Object[]{events.size(), playerId});
         return events;
     }
 
@@ -459,17 +424,12 @@ public abstract class AbstractFacade<T> {
      */
     public List<Event> findEventsByONG(String ongName) throws ReadException {
         List<Event> events = null;
-        try {
-            LOGGER.info("EventFacade: Finding events by ONG.");
-            events = getEntityManager()
-                    .createNamedQuery("findEventsByONG", Event.class)
-                    .setParameter("ongName", ongName)
-                    .getResultList();
-            LOGGER.log(Level.INFO, "EventFacade: Found {0} events associated with ONG {1}", new Object[]{events.size(), ongName});
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "EventFacade: Exception finding events by ONG:", e.getMessage());
-            throw new ReadException(e.getMessage());
-        }
+        LOGGER.info("EventFacade: Finding events by ONG.");
+        events = getEntityManager()
+                .createNamedQuery("findEventsByONG", Event.class)
+                .setParameter("ongName", ongName)
+                .getResultList();
+        LOGGER.log(Level.INFO, "EventFacade: Found {0} events associated with ONG {1}", new Object[]{events.size(), ongName});
         return events;
     }
 
