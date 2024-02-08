@@ -64,7 +64,7 @@ public class EventFacadeREST extends AbstractFacade<Event> {
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(Event entity) {
+    public void create(Event entity) throws InternalServerErrorException {
         try {
             LOGGER.info("Creating event...");
             super.create(entity);
@@ -86,7 +86,7 @@ public class EventFacadeREST extends AbstractFacade<Event> {
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") Long id, Event entity) {
+    public void edit(@PathParam("id") Long id, Event entity) throws InternalServerErrorException {
         try {
             LOGGER.info("Updating event...");
             super.edit(entity);
@@ -106,7 +106,7 @@ public class EventFacadeREST extends AbstractFacade<Event> {
      */
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") Long id) {
+    public void remove(@PathParam("id") Long id) throws InternalServerErrorException {
         try {
             LOGGER.info("Removing event...");
             deletePlayerEventsByEventId(id);
@@ -133,7 +133,7 @@ public class EventFacadeREST extends AbstractFacade<Event> {
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Event find(@PathParam("id") Long id) {
+    public Event find(@PathParam("id") Long id) throws InternalServerErrorException {
         try {
             LOGGER.info("Searching for event with ID: " + id);
             Event event = super.find(id);
@@ -157,7 +157,7 @@ public class EventFacadeREST extends AbstractFacade<Event> {
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Event> findAll() {
+    public List<Event> findAll() throws InternalServerErrorException {
         try {
             LOGGER.info("Searching all events");
             return super.findAll();
@@ -179,7 +179,7 @@ public class EventFacadeREST extends AbstractFacade<Event> {
     @GET
     @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Event> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
+    public List<Event> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) throws InternalServerErrorException {
         try {
             return super.findRange(new int[]{from, to});
         } catch (ReadException e) {
@@ -221,7 +221,7 @@ public class EventFacadeREST extends AbstractFacade<Event> {
     @GET
     @Path("findEventsByOrganizer/{organizerName}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Event> findEventsByOrganizer(@PathParam("organizerName") String organizerName) {
+    public List<Event> findEventsByOrganizer(@PathParam("organizerName") String organizerName) throws InternalServerErrorException {
         try {
             LOGGER.log(Level.INFO, "Searching for events for : {0}", organizerName);
             return super.findEventsByOrganizer(organizerName);
@@ -240,7 +240,7 @@ public class EventFacadeREST extends AbstractFacade<Event> {
     @GET
     @Path("findEventsByGame/{gameName}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Event> findEventsByGame(@PathParam("gameName") String gameName) {
+    public List<Event> findEventsByGame(@PathParam("gameName") String gameName) throws InternalServerErrorException {
         try {
             LOGGER.log(Level.INFO, "Searching for events for : {0}", gameName);
             return super.findEventsByGame(gameName);
@@ -265,7 +265,7 @@ public class EventFacadeREST extends AbstractFacade<Event> {
     @GET
     @Path("findEventsWonByPlayer/{playerId}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Event> findEventsWonByPlayer(@PathParam("playerId") Long playerId) throws ReadException {
+    public List<Event> findEventsWonByPlayer(@PathParam("playerId") Long playerId) throws InternalServerErrorException {
         try {
             LOGGER.log(Level.INFO, "Searching for events Won by player with ID: {0}", playerId);
             return super.findEventsWonByPlayer(playerId);
@@ -284,7 +284,7 @@ public class EventFacadeREST extends AbstractFacade<Event> {
     @GET
     @Path("findEventsWonByTeam/{teamName}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Event> findEventsWonByTeam(@PathParam("teamId") Long teamId) throws ReadException {
+    public List<Event> findEventsWonByTeam(@PathParam("teamId") Long teamId) throws InternalServerErrorException {
         try {
             LOGGER.log(Level.INFO, "Searching for events Won by team with ID: {0}", teamId);
             return super.findEventsWonByPlayer(teamId);
@@ -303,7 +303,7 @@ public class EventFacadeREST extends AbstractFacade<Event> {
     @GET
     @Path("findEventsByONG/{ongName}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Event> findEventsByONG(@PathParam("ongName") String ongName) {
+    public List<Event> findEventsByONG(@PathParam("ongName") String ongName) throws InternalServerErrorException {
         try {
             LOGGER.log(Level.INFO, "Searching for events for : {0}", ongName);
             return super.findEventsByONG(ongName);

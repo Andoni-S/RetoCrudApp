@@ -12,6 +12,7 @@ import java.util.logging.Logger;
  * @author Ander Goirigolzarri Iturburu
  */
 public class Hash {
+
     private static final Logger LOGGER = Logger.getLogger(Hash.class.getName());
 
     /**
@@ -32,7 +33,6 @@ public class Hash {
             }
             return sb.toString();
         } catch (NoSuchAlgorithmException e) {
-            // Log the exception using LOGGER
             LOGGER.log(Level.SEVERE,
                     "Error occurred while hashing password.", e);
             return null;
